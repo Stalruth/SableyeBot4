@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node -r dotenv/config . src/index.js",
-    "debug": "node inspect -r dotenv/config . src/index.js"
+    "start": "node src/index.js",
+    "debug": "node -r dotenv/config . src/index.js"
   },
   "author": "Stuart Rutheford",
   "license": "ISC",
@@ -15,7 +15,9 @@
     "@pkmn/dex": "^0.4.13",
     "@pkmn/img": "^0.1.9",
     "discord.js": "^13.0.0",
-    "dotenv": "^10.0.0",
     "fastest-levenshtein": "^1.0.12"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0"
   }
 }
