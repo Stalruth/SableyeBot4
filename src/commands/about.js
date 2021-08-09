@@ -26,7 +26,7 @@ const process = async function(client, interaction) {
         },
       ],
       footer: {
-        text: `SableyeBot version 4.0-dev`,
+        text: `SableyeBot version 4.0.0-alpha`,
       },
     }],
   });
