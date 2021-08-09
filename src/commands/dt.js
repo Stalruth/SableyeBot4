@@ -99,7 +99,7 @@ const process = async function(client, interaction) {
   });
 
   if(mostAccurate === null) {
-    await interaction.reply(`Could not find a result matching ${name} in Generation ${gen}.`);
+    await interaction.editReply(`Could not find a result matching ${name} in Generation ${gen}.`);
     return;
   }
 
