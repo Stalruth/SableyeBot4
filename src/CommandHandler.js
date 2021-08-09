@@ -20,6 +20,11 @@ addCommand('item', require('./commands/item.js'));
 addCommand('pokemon', require('./commands/pokemon.js'));
 addCommand('dt', require('./commands/dt.js'));
 addCommand('event', require('./commands/event.js'));
+addCommand('sprite', require('./commands/sprite.js'));
+addCommand('coverage', require('./commands/coverage.js'));
+addCommand('learn', require('./commands/learn.js'));
+addCommand('weakness', require('./commands/weakness.js'));
+addCommand('filter', require('./commands/filter.js'));
 
 const onReady = async (client) => {
   if(process.env.TEST_GUILD_ID) {
@@ -31,9 +36,10 @@ const onReady = async (client) => {
 
 const onInteractionCreate = async (client, interaction) => {
   if (!interaction.isCommand()) return;
+
+  await interaction.deferReply();
   if(interaction.options.getSubcommand(false) === null) {
     await processes[interaction.commandName](client, interaction);
-    return;
   } else {
     await processes[interaction.commandName][interaction.options.getSubcommandGroup(false)][interaction.options.getSubcommand(false)](client, interaction);
   }

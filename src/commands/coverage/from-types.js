@@ -2,16 +2,17 @@
 
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
-
 const dataSearch = require('datasearch');
 
+const { coverage } = require('typecheck');
+
 const command = {
-  description: 'Return information on the given ability.',
+  description: 'Returns the offensive coverage of the given types.',
   options: [
     {
-      name: 'name',
+      name: 'types',
       type: 'STRING',
-      description: 'Name of the Ability',
+      description: 'Comma separated list of types to check the combined coverage of.',
       required: true,
     },
     {
@@ -54,23 +55,41 @@ const command = {
       ]
     },
   ],
-};
+}
 
-const process = async function(client, interaction) {
-  const name = interaction.options.getString('name');
+const process = async (client, interaction) => {
+  const types_arg = interaction.options.getString('types').split(',');
+
   const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
 
   const data = new Data.Generations(Dex.Dex).get(gen);
 
-  const ability = dataSearch(data.abilities, Data.toID(name))?.result;
+  const types = types_arg.map((el) => {
+    return dataSearch(data.types, Data.toID(el))?.result?.name;
+  });
 
-  if(!ability) {
-    await interaction.editReply(`Could not find an ability named ${name} in Generation ${gen}.`);
+  if(types.some((el) => {return !el;})) {
+    nonTypes = [];
+    for(const i in types) {
+      if(!types[i]) {
+        nonTypes.push(types_arg[i]);
+      }
+    }
+
+    await interaction.editReply(`Could not find Types named ${nonTypes.join(',')} in Generation ${gen}.`);
     return;
   }
 
-  await interaction.editReply(`${ability['name']}\n${ability['desc']}`);
-};
+  let reply = `${types.join(', ')}`;
 
-module.exports = {command, process};
+  const eff = coverage(types, data);
+
+  for(const i of eff) {
+    reply += `\n${i['label']}: ${i['types'].join(', ')}`;
+  }
+
+  await interaction.editReply(reply);
+}
+
+module.exports = {command, process}
 

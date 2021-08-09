@@ -62,8 +62,6 @@ const command = {
 };
 
 const process = async function(client, interaction) {
-  await interaction.defer();
-
   const name = interaction.options.getString('name');
   const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
   const verbose = interaction.options.getBoolean('verbose') ?? false;
@@ -72,7 +70,7 @@ const process = async function(client, interaction) {
 
   const item = dataSearch(data.items, Data.toID(name))?.result;
 
-  if(item === null) {
+  if(!item) {
     await interaction.editReply(`Could not find an item named ${name} in Generation ${gen}.`);
     return;
   }

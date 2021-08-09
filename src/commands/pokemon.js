@@ -70,8 +70,6 @@ const command = {
 };
 
 const process = async function(client, interaction) {
-  await interaction.defer();
-
   const name = interaction.options.getString('name');
   const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
   const verbose = interaction.options.getBoolean('verbose') ?? false;
@@ -80,7 +78,7 @@ const process = async function(client, interaction) {
 
   const pokemon = dataSearch(data.species, Data.toID(name))?.result;
 
-  if(pokemon === null) {
+  if(!pokemon) {
     await interaction.editReply(`Could not find a Pokémon named ${name} in Generation ${gen}.`);
     return;
   }

@@ -5,7 +5,7 @@ const command = {
 };
 
 const process = async function(client, interaction) {
-  await interaction.reply('Pokemon damage calculator: https://pokemonshowdown.com/damagecalc/');
+  await interaction.editReply('Pokemon damage calculator: https://pokemonshowdown.com/damagecalc/');
 };
 
 module.exports = {command, process};

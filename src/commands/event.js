@@ -23,8 +23,6 @@ const command = {
 };
 
 const process = async function(client, interaction) {
-  await interaction.defer();
-
   const name = interaction.options.getString('name');
   const eventId = interaction.options.getInteger('event') ?? null;
   const gen = Dex.Dex.gen;
@@ -33,7 +31,7 @@ const process = async function(client, interaction) {
 
   const pokemon = dataSearch(data.species, Data.toID(name))?.result;
 
-  if(pokemon === null) {
+  if(!pokemon) {
     await interaction.editReply(`Could not find a Pokémon named ${name} in Generation ${gen}.`);
     return;
   }

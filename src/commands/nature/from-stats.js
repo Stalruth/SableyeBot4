@@ -52,12 +52,12 @@ const process = async (client, interaction) => {
   const lowered = interaction.options.getString('lowered');
 
   if (boosted === lowered) {
-    await interaction.reply(`The Natures without any effect are Hardy, Docile, Bashful, Quirky and Serious.`);
+    await interaction.editReply(`The Natures without any effect are Hardy, Docile, Bashful, Quirky and Serious.`);
   }
 
   for(const nature of gen.natures) {
     if (nature.plus === boosted && nature.minus === lowered) {
-      await interaction.reply(`${nature.name}: +${boosted.toUpperCase()} -${lowered.toUpperCase()}`);
+      await interaction.editReply(`${nature.name}: +${boosted.toUpperCase()} -${lowered.toUpperCase()}`);
       break;
     }
   }

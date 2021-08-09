@@ -34,9 +34,9 @@ const process = async (client, interaction) => {
 
   const nature = natures.get(param);
   if(nature.plus === nature.minus) {
-    await interaction.reply(`${nature['name']}: No effect.`);
+    await interaction.editReply(`${nature['name']}: No effect.`);
   } else {
-    await interaction.reply(`${nature['name']}: +${nature['plus'].toUpperCase()} -${nature['minus'].toUpperCase()}`);
+    await interaction.editReply(`${nature['name']}: +${nature['plus'].toUpperCase()} -${nature['minus'].toUpperCase()}`);
   }
 }
 

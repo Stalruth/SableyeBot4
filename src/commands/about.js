@@ -5,7 +5,7 @@ const command = {
 };
 
 const process = async function(client, interaction) {
-  await interaction.reply({
+  await interaction.editReply({
     embeds: [{
       title: 'About SableyeBot',
       description: 'Competitive Pokemon Discord Bot',

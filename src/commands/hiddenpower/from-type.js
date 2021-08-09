@@ -69,7 +69,6 @@ const command = {
 }
 
 const process = async (client, interaction) => {
-  await interaction.defer();
   const generation = interaction.options.getInteger('gen') ?? 7;
   const types = new Data.Generations(Dex.Dex).get(generation).types;
 

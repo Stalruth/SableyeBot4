@@ -85,7 +85,6 @@ const command = {
 }
 
 const process = async (client, interaction) => {
-  await interaction.defer();
   const generation = interaction.options.getInteger('gen') ?? 7;
 
   if(generation === 1) {

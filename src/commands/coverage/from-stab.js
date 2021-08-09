@@ -2,16 +2,17 @@
 
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
-
 const dataSearch = require('datasearch');
 
+const { coverage } = require('typecheck');
+
 const command = {
-  description: 'Return information on the given ability.',
+  description: 'Returns the offensive coverage of a Pokémon\'s moves.',
   options: [
     {
-      name: 'name',
+      name: 'pokemon',
       type: 'STRING',
-      description: 'Name of the Ability',
+      description: 'Pokemon to evaluate the STABs of',
       required: true,
     },
     {
@@ -54,23 +55,31 @@ const command = {
       ]
     },
   ],
-};
+}
 
-const process = async function(client, interaction) {
-  const name = interaction.options.getString('name');
+const process = async (client, interaction) => {
+  const name = interaction.options.getString('pokemon');
   const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
 
   const data = new Data.Generations(Dex.Dex).get(gen);
 
-  const ability = dataSearch(data.abilities, Data.toID(name))?.result;
+  const pokemon = dataSearch(data.species, Data.toID(name))?.result;
 
-  if(!ability) {
-    await interaction.editReply(`Could not find an ability named ${name} in Generation ${gen}.`);
+  if(!pokemon) {
+    await interaction.editReply(`Could not find a Pokémon named ${name} in Generation ${gen}.`);
     return;
   }
 
-  await interaction.editReply(`${ability['name']}\n${ability['desc']}`);
-};
+  let reply = `${pokemon['name']} [${pokemon['types'].join('/')}]`;
 
-module.exports = {command, process};
+  const eff = coverage(pokemon['types'], data);
+
+  for(const i of eff) {
+    reply += `\n${i['label']}: ${i['types'].join(', ')}`;
+  }
+
+  await interaction.editReply(reply);
+}
+
+module.exports = {command, process}
 
