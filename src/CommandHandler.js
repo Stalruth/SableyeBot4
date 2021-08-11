@@ -38,10 +38,24 @@ const onInteractionCreate = async (client, interaction) => {
   if (!interaction.isCommand()) return;
 
   await interaction.deferReply();
-  if(interaction.options.getSubcommand(false) === null) {
-    await processes[interaction.commandName](client, interaction);
-  } else {
-    await processes[interaction.commandName][interaction.options.getSubcommandGroup(false)][interaction.options.getSubcommand(false)](client, interaction);
+  console.log(interaction.id,
+    interaction.commandName,
+    interaction.options.getSubcommandGroup(false),
+    interaction.options.getSubcommand(false),
+    ...interaction.options.data.map((el) => [el.name, el.value]));
+  try {
+    if(interaction.options.getSubcommand(false) === null) {
+      await processes[interaction.commandName](client, interaction);
+    } else {
+      await processes[interaction.commandName][interaction.options.getSubcommandGroup(false)][interaction.options.getSubcommand(false)](client, interaction);
+    }
+  } catch (e) {
+    console.error(interaction.id,
+      interaction.commandName,
+      interaction.options.getSubcommandGroup(false),
+      interaction.options.getSubcommand(false),
+      ...interaction.options.data.map((el) => [el.name, el.value]));
+    throw e;
   }
 };
 
