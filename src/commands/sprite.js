@@ -63,7 +63,7 @@ const command = {
   ]
 };
 
-const process = async function(client, interaction) {
+const process = async function(interaction) {
   const name = interaction.options.getString('pokemon');
   const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
   const shiny = interaction.options.getBoolean('shiny') ?? false;

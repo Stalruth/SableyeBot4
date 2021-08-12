@@ -29,7 +29,7 @@ const command = {
   ],
 }
 
-const process = async (client, interaction) => {
+const process = async (interaction) => {
   const param = interaction.options.getString('name');
 
   const nature = natures.get(param);

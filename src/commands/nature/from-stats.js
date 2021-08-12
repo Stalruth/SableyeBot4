@@ -46,7 +46,7 @@ const command = {
   ],
 }
 
-const process = async (client, interaction) => {
+const process = async (interaction) => {
   const gen = new Data.Generations(Dex.Dex).get(8);
   const boosted = interaction.options.getString('boosted');
   const lowered = interaction.options.getString('lowered');

@@ -373,7 +373,7 @@ const toArray = (data) => {
   return results;
 }
 
-const process = async function(client, interaction) {
+const process = async function(interaction) {
   const args = {
     ability: interaction.options.getString('ability') ?? undefined,
     type: interaction.options.getString('types') ?? undefined,

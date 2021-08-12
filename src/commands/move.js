@@ -61,7 +61,7 @@ const command = {
   ],
 };
 
-const process = async function(client, interaction) {
+const process = async function(interaction) {
   const name = interaction.options.getString('name');
   const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
   const verbose = interaction.options.getBoolean('verbose') ?? false;

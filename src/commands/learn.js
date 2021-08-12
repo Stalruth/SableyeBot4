@@ -78,7 +78,7 @@ const command = {
   ],
 };
 
-const process = async function(client, interaction) {
+const process = async function(interaction) {
   const name = interaction.options.getString('name');
   const moveName = interaction.options.getString('move') ?? null;
   const checkLatestOnly = interaction.options.getString('mode') === 'vgc';

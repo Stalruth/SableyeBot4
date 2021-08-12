@@ -57,7 +57,7 @@ const command = {
   ],
 }
 
-const process = async (client, interaction) => {
+const process = async (interaction) => {
   const types_arg = interaction.options.getString('types').split(',');
 
   const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;

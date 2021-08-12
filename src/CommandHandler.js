@@ -34,7 +34,7 @@ const onReady = async (client) => {
   }
 };
 
-const onInteractionCreate = async (client, interaction) => {
+const onInteractionCreate = async (interaction) => {
   if (!interaction.isCommand()) return;
 
   await interaction.deferReply();
@@ -45,9 +45,9 @@ const onInteractionCreate = async (client, interaction) => {
     ...interaction.options.data.map((el) => [el.name, el.value]));
   try {
     if(interaction.options.getSubcommand(false) === null) {
-      await processes[interaction.commandName](client, interaction);
+      await processes[interaction.commandName](interaction);
     } else {
-      await processes[interaction.commandName][interaction.options.getSubcommandGroup(false)][interaction.options.getSubcommand(false)](client, interaction);
+      await processes[interaction.commandName][interaction.options.getSubcommandGroup(false)][interaction.options.getSubcommand(false)](interaction);
     }
   } catch (e) {
     console.error(interaction.id,

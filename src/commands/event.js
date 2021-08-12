@@ -22,7 +22,7 @@ const command = {
   ],
 };
 
-const process = async function(client, interaction) {
+const process = async function(interaction) {
   const name = interaction.options.getString('name');
   const eventId = interaction.options.getInteger('event') ?? null;
   const gen = Dex.Dex.gen;

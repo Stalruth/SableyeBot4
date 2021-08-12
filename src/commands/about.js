@@ -4,7 +4,7 @@ const command = {
   description: 'About SableyeBot',
 };
 
-const process = async function(client, interaction) {
+const process = async function(interaction) {
   await interaction.editReply({
     embeds: [{
       title: 'About SableyeBot',
