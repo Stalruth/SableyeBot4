@@ -31,7 +31,7 @@ const command = {
           value: 'vgc',
         },
         {
-          name: 'Smogon (default)',
+          name: 'Default',
           value: 'smogon',
         },
       ],
@@ -39,7 +39,7 @@ const command = {
     {
       name: 'gen',
       type: 'INTEGER',
-      description: 'The Generation used in calculation',
+      description: 'The Generation to check against.',
       choices: [
         {
           name: 'RBY',

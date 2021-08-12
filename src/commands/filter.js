@@ -27,42 +27,42 @@ const command = {
     {
       name: 'hp',
       type: 'STRING',
-      description: "Base HP, supports '<STAT', '>STAT', 'STAT-STAT'",
+      description: "Base HP, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'atk',
       type: 'STRING',
-      description: "Base Attack, supports '<STAT', '>STAT', 'STAT-STAT'",
+      description: "Base Attack, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'def',
       type: 'STRING',
-      description: "Base Defence, supports '<STAT', '>STAT', 'STAT-STAT'",
+      description: "Base Defence, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'spa',
       type: 'STRING',
-      description: "Base Special Attack, supports '<STAT', '>STAT', 'STAT-STAT'",
+      description: "Base Special Attack, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'spd',
       type: 'STRING',
-      description: "Base Special Defence, supports '<STAT', '>STAT', 'STAT-STAT'",
+      description: "Base Special Defence, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'spe',
       type: 'STRING',
-      description: "Base Speed, supports '<STAT', '>STAT', 'STAT-STAT'",
+      description: "Base Speed, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'bst',
       type: 'STRING',
-      description: "Base Stat Total, supports '<STAT', '>STAT', 'STAT-STAT'",
+      description: "Base Stat Total, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'weight-kg',
       type: 'STRING',
-      description: "Weight in kg, supports '<STAT', '>STAT', 'STAT-STAT'",
+      description: "Weight in kg, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'egg-group',

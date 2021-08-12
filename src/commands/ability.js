@@ -17,7 +17,7 @@ const command = {
     {
       name: 'gen',
       type: 'INTEGER',
-      description: 'The Generation used in calculation',
+      description: 'The Generation used for lookup.',
       choices: [
         {
           name: 'RBY',

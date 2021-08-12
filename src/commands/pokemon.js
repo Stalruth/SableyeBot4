@@ -25,12 +25,12 @@ const command = {
     {
       name: 'verbose',
       type: 'BOOLEAN',
-      description: 'Show more information such as target and generation.',
+      description: 'Show more information such as Evolution chain and Egg Groups.',
     },
     {
       name: 'gen',
       type: 'INTEGER',
-      description: 'The Generation used in calculation',
+      description: 'The Generation used for lookup.',
       choices: [
         {
           name: 'RBY',

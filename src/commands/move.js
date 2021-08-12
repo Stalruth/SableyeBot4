@@ -22,7 +22,7 @@ const command = {
     {
       name: 'gen',
       type: 'INTEGER',
-      description: 'The Generation to return information from',
+      description: 'The Generation used for lookup.',
       choices: [
         {
           name: 'RBY',
