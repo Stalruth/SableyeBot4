@@ -16,10 +16,8 @@ const command = {
 };
 
 const process = {
-  null: {
-    'from-pokemon': fromPokemon.process,
-    'from-types': fromTypes.process,
-  },
+  'from-pokemon': fromPokemon.process,
+  'from-types': fromTypes.process,
 };
 
 module.exports = {command, process};

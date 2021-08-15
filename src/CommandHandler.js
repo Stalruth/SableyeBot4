@@ -46,6 +46,8 @@ const onInteractionCreate = async (interaction) => {
   try {
     if(interaction.options.getSubcommand(false) === null) {
       await processes[interaction.commandName](interaction);
+    } else if(interaction.options.getSubcommandGroup(false) === null) {
+      await processes[interaction.commandName][interaction.options.getSubcommand(false)](interaction);
     } else {
       await processes[interaction.commandName][interaction.options.getSubcommandGroup(false)][interaction.options.getSubcommand(false)](interaction);
     }

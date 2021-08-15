@@ -16,10 +16,8 @@ const command = {
 };
 
 const process = {
-  null: {
-    'from-stab': fromStab.process,
-    'from-types': fromTypes.process,
-  },
+  'from-stab': fromStab.process,
+  'from-types': fromTypes.process,
 };
 
 module.exports = {command, process};

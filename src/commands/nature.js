@@ -16,10 +16,8 @@ const command = {
 };
 
 const process = {
-  null: {
-    'from-name': fromName.process,
-    'from-stats': fromStats.process,
-  },
+  'from-name': fromName.process,
+  'from-stats': fromStats.process,
 };
 
 module.exports = {command, process};
