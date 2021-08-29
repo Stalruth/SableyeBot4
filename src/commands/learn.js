@@ -4,6 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
+const getarg = require('discord-getarg');
 
 const {getChainLearnset, moveAvailable, getMoves, decodeLearnString} = require('learnsetutils');
 
@@ -78,11 +79,11 @@ const command = {
   ],
 };
 
-const process = async function(interaction) {
-  const name = interaction.options.getString('name');
-  const moveName = interaction.options.getString('move') ?? null;
-  const checkLatestOnly = interaction.options.getString('mode') === 'vgc';
-  const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
+const process = async function(req, res) {
+  const name = getarg(req.body, 'name').value;
+  const moveName = getarg(req.body, 'move')?.value ?? null;
+  const checkLatestOnly = getarg(req.body, 'mode')?.value === 'vgc';
+  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
 
   const genCheck = moveAvailable(gen, checkLatestOnly);
 
@@ -102,13 +103,23 @@ const process = async function(interaction) {
     const moveset = new Set();
     getMoves(data, learnsetChain, genCheck).forEach((el)=>{moveset.add(el)});
     reply += [...moveset].sort().join(', ');
-    await interaction.editReply(reply);
+    res.json({
+      type: 4,
+      data: {
+        content: reply,
+      },
+    });
     return;
   } else {
     const move = dataSearch(data.moves, Data.toID(moveName))?.result;
 
     if(!move) {
-      await interaction.editReply(`Could not find a move named ${moveName} in Generation ${gen}`);
+      res.json({
+        type: 4,
+        data: {
+          content: `Could not find a move named ${moveName} in Generation ${gen}`,
+        },
+      });
     }
 
     const results = [];
@@ -123,7 +134,12 @@ const process = async function(interaction) {
     if(results.reduce((acc, cur) => {
       return acc + cur.methods.length;
     }, 0) === 0) {
-      await interaction.editReply(`${pokemon['name']} does not learn ${move['name']} in Generation ${gen}.`);
+      res.json({
+        type: 4,
+        data: {
+          content: `${pokemon['name']} does not learn ${move['name']} in Generation ${gen}.`,
+        },
+      });
       return;
     }
 
@@ -148,7 +164,12 @@ const process = async function(interaction) {
       });
     }
 
-    await interaction.editReply(reply);
+    res.json({
+      type: 4,
+      data: {
+        content: reply,
+      },
+    });
   }
 };
 

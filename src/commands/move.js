@@ -4,6 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
+const getarg = require('discord-getarg');
 
 const command = {
   description: 'Return information on the given move.',
@@ -61,17 +62,22 @@ const command = {
   ],
 };
 
-const process = async function(interaction) {
-  const name = interaction.options.getString('name');
-  const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
-  const verbose = interaction.options.getBoolean('verbose') ?? false;
+const process = function(req, res) {
+  const name = getarg(req.body, 'name').value;
+  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
+  const verbose = getarg(req.body, 'verbose')?.value ?? false;
 
   const data = new Data.Generations(Dex.Dex).get(gen);
 
   const move = dataSearch(data.moves, Data.toID(name))?.result;
 
   if(!move) {
-    await interaction.editReply(`Could not find a move named ${name} in Generation ${gen}.`);
+    res.json({
+      type: 4,
+      data: {
+        content: `Could not find a move named ${name} in Generation ${gen}.`,
+      },
+    });
     return;
   }
 
@@ -183,7 +189,12 @@ const process = async function(interaction) {
     reply += `\nSound: Does not affect Soundproof Pokémon.`;
   }
 
-  await interaction.editReply(reply);
+  res.json({
+    type: 4,
+    data: {
+      content: reply,
+    },
+  });
 };
 
 module.exports = {command, process};

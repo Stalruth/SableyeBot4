@@ -1,5 +1,7 @@
 'use strict';
 
+const { performance } = require('perf_hooks');
+
 const commands = [];
 const processes = {};
 
@@ -26,40 +28,28 @@ addCommand('learn', require('./commands/learn.js'));
 addCommand('weakness', require('./commands/weakness.js'));
 addCommand('filter', require('./commands/filter.js'));
 
-const onReady = async (client) => {
-  if(process.env.TEST_GUILD_ID) {
-    await client.guilds.cache.get(process.env.TEST_GUILD_ID)?.commands.set(commands);
-  } else {
-    await client.application?.commands.set(commands);
+const onInteractionCreate = async (req, res) => {
+  const command = [req.body.data?.name];
+
+  if([1,2].includes(req.body.data?.options?.[0]?.type)) {
+    command.push(req.body.data.options[0].name);
+    if(req.body.data.options[0].options?.[0]?.type === 1) {
+      command.push(req.body.data.options[0].options[0].name);
+    }
   }
-};
 
-const onInteractionCreate = async (interaction) => {
-  if (!interaction.isCommand()) return;
-
-  await interaction.deferReply();
-  console.log(interaction.id,
-    interaction.commandName,
-    interaction.options.getSubcommandGroup(false),
-    interaction.options.getSubcommand(false),
-    ...interaction.options.data.map((el) => [el.name, el.value]));
   try {
-    if(interaction.options.getSubcommand(false) === null) {
-      await processes[interaction.commandName](interaction);
-    } else if(interaction.options.getSubcommandGroup(false) === null) {
-      await processes[interaction.commandName][interaction.options.getSubcommand(false)](interaction);
+    if(command.length === 1) {
+      processes[command[0]](req, res);
+    } else if(command.length === 2) {
+      processes[command[0]][command[1]](req, res);
     } else {
-      await processes[interaction.commandName][interaction.options.getSubcommandGroup(false)][interaction.options.getSubcommand(false)](interaction);
+      processes[command[0]][command[1]][command[2]](req, res);
     }
   } catch (e) {
-    console.error(interaction.id,
-      interaction.commandName,
-      interaction.options.getSubcommandGroup(false),
-      interaction.options.getSubcommand(false),
-      ...interaction.options.data.map((el) => [el.name, el.value]));
     throw e;
   }
 };
 
-module.exports = { onReady, onInteractionCreate };
+module.exports = { onInteractionCreate };
 

@@ -2,9 +2,11 @@
 
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
-const dataSearch = require('datasearch');
 
+const dataSearch = require('datasearch');
+const getarg = require('discord-getarg');
 const { coverage } = require('typecheck');
+
 
 const command = {
   description: 'Returns the offensive coverage of a Pokémon\'s moves.',
@@ -57,16 +59,21 @@ const command = {
   ],
 }
 
-const process = async (interaction) => {
-  const name = interaction.options.getString('pokemon');
-  const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
+const process = (req, res) => {
+  const name = getarg(req.body, 'pokemon').value;
+  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
 
   const data = new Data.Generations(Dex.Dex).get(gen);
 
   const pokemon = dataSearch(data.species, Data.toID(name))?.result;
 
   if(!pokemon) {
-    await interaction.editReply(`Could not find a Pokémon named ${name} in Generation ${gen}.`);
+    res.json({
+      type: 4,
+      data: {
+        content: `Could not find a Pokémon named ${name} in Generation ${gen}.`,
+      },
+    });
     return;
   }
 
@@ -78,7 +85,12 @@ const process = async (interaction) => {
     reply += `\n${i['label']}: ${i['types'].join(', ')}`;
   }
 
-  await interaction.editReply(reply);
+  res.json({
+    type: 4,
+    data: {
+      content: reply,
+    },
+  });
 }
 
 module.exports = {command, process}

@@ -1,23 +1,21 @@
 'use strict';
 
-const util = require('util');
+const express = require('express');
 
-const Discord = require('discord.js');
+const { signatureMiddleware, setupApplication, ping } = require('./discord-express');
+const { onInteractionCreate } = require('./CommandHandler.js');
 
-const CommandHandler = require('./CommandHandler.js');
+const PUBLIC_KEY = process.env.PUBLIC_KEY;
+const app = express();
+const port = process.env.PORT;
 
-const Client = new Discord.Client({
-  intents: [
-  ]
+function respond(req, res) {
+  onInteractionCreate(req, res);
+}
+
+setupApplication(app, PUBLIC_KEY, '/', [ping, respond]);
+
+app.listen(port, () => {
+  console.log(`Listening on http://localhost:${port}`);
 });
-
-Client.once('ready', async () => {
-  CommandHandler.onReady(Client);
-});
-
-Client.on('interactionCreate', async (interaction) => {
-  CommandHandler.onInteractionCreate(interaction);
-});
-
-Client.login(process.env.BOT_TOKEN);
 

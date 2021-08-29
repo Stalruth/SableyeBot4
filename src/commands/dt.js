@@ -4,6 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
+const getarg = require('discord-getarg');
 
 const dt = {
   ability: require('./ability.js').process,
@@ -69,9 +70,9 @@ const command = {
   ],
 };
 
-const process = async function(interaction) {
-  const name = interaction.options.getString('name');
-  const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
+const process = function(req, res) {
+  const name = getarg(req.body, 'name').value;
+  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
 
   const data = new Data.Generations(Dex.Dex).get(gen);
 
@@ -99,11 +100,16 @@ const process = async function(interaction) {
   });
 
   if(mostAccurate === null) {
-    await interaction.editReply(`Could not find a result matching ${name} in Generation ${gen}.`);
+    res.json({
+      type: 4,
+      data: {
+        content: `Could not find a result matching ${name} in Generation ${gen}.`,
+      },
+    });
     return;
   }
 
-  await dt[mostAccurate](interaction);
+  dt[mostAccurate](req, res);
 };
 
 module.exports = {command, process};

@@ -3,6 +3,8 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
+const getarg = require('discord-getarg');
+
 const types = new Data.Generations(Dex.Dex).get(7).types;
 
 const listTypes = function(typeList) {
@@ -68,19 +70,29 @@ const command = {
   ],
 }
 
-const process = async (interaction) => {
-  const generation = interaction.options.getInteger('gen') ?? 7;
+const process = (req, res) => {
+  const generation = getarg(req.body, 'gen')?.value ?? 7;
   const types = new Data.Generations(Dex.Dex).get(generation).types;
 
   if(generation === 1) {
-    await interaction.editReply(`Hidden power does not exist in Generation ${generation}.`);
+    res.json({
+      type: 4,
+      data: {
+        content: `Hidden power does not exist in Generation ${generation}.`,
+      },
+    });
     return;
   }
 
-  const type = types.get(interaction.options.getString('type'));
+  const type = types.get(getarg(req.body, 'type').value);
 
   if(['normal','fairy'].includes(type['id'])) {
-    await interaction.editReply(`There is no way to get a ${type['name']}-Type Hidden Power.`);
+    res.json({
+      type: 4,
+      data: {
+        content: `There is no way to get a ${type['name']}-Type Hidden Power.`,
+      },
+    });
     return;
   }
 
@@ -94,9 +106,15 @@ const process = async (interaction) => {
     spe: generation == 2 ? 15 : 31,
   }, ...(generation == 2 ? type.HPdvs : type.HPivs)};
 
-  await interaction.editReply(`Hidden Power ${type['name']} - HP: ${stats['hp']}, Atk: ${stats['atk']}, Def: ${stats['def']}, `
+  const result = `Hidden Power ${type['name']} - HP: ${stats['hp']}, Atk: ${stats['atk']}, Def: ${stats['def']}, `
     + (generation === 2 ? `Spc: ${stats['spc']},` : `SpA: ${stats['spa']}, SpD: ${stats['spd']},`)
-    + ` Spe: ${stats['spe']}`);
+    + ` Spe: ${stats['spe']}`;
+  res.json({
+    type: 4,
+    data: {
+      content: result,
+    },
+  });
 }
 
 module.exports = {command, process}

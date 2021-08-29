@@ -4,6 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
+const getarg = require('discord-getarg');
 
 const lowKickPower = function(weight) {
   if(weight < 10) return 20;
@@ -69,17 +70,22 @@ const command = {
   ],
 };
 
-const process = async function(interaction) {
-  const name = interaction.options.getString('name');
-  const gen = interaction.options.getInteger('gen') ?? Dex.Dex.gen;
-  const verbose = interaction.options.getBoolean('verbose') ?? false;
+const process = function(req, res) {
+  const name = getarg(req.body, 'name').value;
+  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
+  const verbose = getarg(req.body, 'verbose')?.value ?? false;
 
   const data = new Data.Generations(Dex.Dex).get(gen);
 
   const pokemon = dataSearch(data.species, Data.toID(name))?.result;
 
   if(!pokemon) {
-    await interaction.editReply(`Could not find a Pokémon named ${name} in Generation ${gen}.`);
+    res.json({
+      type: 4,
+      data: {
+        content: `Could not find a Pokémon named ${name} in Generation ${gen}.`,
+      },
+    });
     return;
   }
 
@@ -164,7 +170,12 @@ const process = async function(interaction) {
     }
   }
 
-  await interaction.editReply(reply);
+  res.json({
+    type: 4,
+    data: {
+      content: reply,
+    },
+  });
 };
 
 module.exports = {command, process};

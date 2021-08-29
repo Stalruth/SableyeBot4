@@ -3,6 +3,8 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
+const getarg = require('discord-getarg');
+
 const command = {
   description: 'Returns the Hidden Power produced by the given IVs.',
   options: [
@@ -84,23 +86,28 @@ const command = {
   ],
 }
 
-const process = async (interaction) => {
-  const generation = interaction.options.getInteger('gen') ?? 7;
+const process = (req, res) => {
+  const generation = getarg(req.body, 'gen')?.value ?? 7;
 
   if(generation === 1) {
-    await interaction.editReply(`Hidden power does not exist in Generation ${generation}.`);
+    res.json({
+      type: 4,
+      data: {
+        content: `Hidden power does not exist in Generation ${generation}.`,
+      },
+    });
     return;
   }
 
   const types = new Data.Generations(Dex.Dex).get(generation).types;
 
   const ivs = {
-    hp: interaction.options.getInteger('hp'),
-    atk: interaction.options.getInteger('atk'),
-    def: interaction.options.getInteger('def'),
-    spa: interaction.options.getInteger('spa'),
-    spd: interaction.options.getInteger('spd'),
-    spe: interaction.options.getInteger('spe'),
+    hp: getarg(req.body, 'hp').value,
+    atk: getarg(req.body, 'atk').value,
+    def: getarg(req.body, 'def').value,
+    spa: getarg(req.body, 'spa').value,
+    spd: getarg(req.body, 'spd').value,
+    spe: getarg(req.body, 'spe').value,
   }
 
   const problems = [];
@@ -112,13 +119,23 @@ const process = async (interaction) => {
   });
 
   if(problems.length > 0) {
-    await interaction.editReply(`IVs are restricted between 0 and 31.\nThe following IVs are out of range:\n - ${problems.join('\n - ')}`);
+    res.json({
+      type: 4,
+      data: {
+        contenet: `IVs are restricted between 0 and 31.\nThe following IVs are out of range:\n - ${problems.join('\n - ')}`,
+      },
+    });
     return;
   }
 
   const result = types.getHiddenPower(ivs);
 
-  await interaction.editReply(`Type: ${result['type']}; Power: ${result['power']}`);
+  res.json({
+    type: 4,
+    data: {
+      content: `Type: ${result['type']}; Power: ${result['power']}`,
+    },
+  });
 }
 
 module.exports = {command, process}

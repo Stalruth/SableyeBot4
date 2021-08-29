@@ -3,6 +3,8 @@
 let Dex = require('@pkmn/dex');
 let Data = require('@pkmn/data');
 
+const getarg = require('discord-getarg');
+
 const stats = [
   {
     name: 'Attack',
@@ -46,18 +48,28 @@ const command = {
   ],
 }
 
-const process = async (interaction) => {
+const process = (req, res) => {
   const gen = new Data.Generations(Dex.Dex).get(8);
-  const boosted = interaction.options.getString('boosted');
-  const lowered = interaction.options.getString('lowered');
+  const boosted = getarg(req.body, 'boosted').value;
+  const lowered = getarg(req.body, 'lowered').value;
 
   if (boosted === lowered) {
-    await interaction.editReply(`The Natures without any effect are Hardy, Docile, Bashful, Quirky and Serious.`);
+    res.json({
+      type: 4,
+      data: {
+        content: `The Natures without any effect are Hardy, Docile, Bashful, Quirky and Serious.`,
+      },
+    });
   }
 
   for(const nature of gen.natures) {
     if (nature.plus === boosted && nature.minus === lowered) {
-      await interaction.editReply(`${nature.name}: +${boosted.toUpperCase()} -${lowered.toUpperCase()}`);
+      res.json({
+        type: 4,
+        data: {
+          content: `${nature.name}: +${boosted.toUpperCase()} -${lowered.toUpperCase()}`,
+        },
+      });
       break;
     }
   }

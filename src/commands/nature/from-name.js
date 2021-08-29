@@ -3,6 +3,8 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
+const getarg = require('discord-getarg');
+
 const natures = new Data.Generations(Dex.Dex).get(8).natures;
 
 const listNatures = (natureList) => {
@@ -29,14 +31,24 @@ const command = {
   ],
 }
 
-const process = async (interaction) => {
-  const param = interaction.options.getString('name');
+const process = (req, res) => {
+  const param = getarg(req.body, 'name').value;
 
   const nature = natures.get(param);
   if(nature.plus === nature.minus) {
-    await interaction.editReply(`${nature['name']}: No effect.`);
+    res.json({
+      type: 4,
+      data: {
+        content: `${nature['name']}: No effect.`,
+      },
+    });
   } else {
-    await interaction.editReply(`${nature['name']}: +${nature['plus'].toUpperCase()} -${nature['minus'].toUpperCase()}`);
+    res.json({
+      type: 4,
+      data: {
+        content: `${nature['name']}: +${nature['plus'].toUpperCase()} -${nature['minus'].toUpperCase()}`,
+      },
+    });
   }
 }
 
