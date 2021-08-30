@@ -216,7 +216,7 @@ const process = async function(req, res) {
     weightkg: getarg(req.body, 'weight-kg')?.value ?? undefined,
     egggroup: getarg(req.body, 'egg-group')?.value ?? undefined,
   };
-  const isVgc = getarg(req.body, 'vgc')?.value === 'vgc';
+  const isVgc = getarg(req.body, 'mode')?.value === 'vgc';
   const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
 
   const data = new Data.Generations(Dex.Dex).get(gen);
