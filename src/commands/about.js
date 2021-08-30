@@ -24,7 +24,7 @@ const process = function(req, res) {
           },
           {
             name: 'Language',
-            value: 'JavaScript (using [discord.js v13 Beta](https://discord.js.org))',
+            value: 'JavaScript (using [Express](https://expressjs.com))',
           },
         ],
         footer: {
