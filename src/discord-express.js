@@ -15,7 +15,6 @@ function signatureMiddleware(publicKey) {
       Buffer.from(publicKey, 'hex'));
 
     if(!isVerified) throw 'Signature check failed.';
-    console.log(body);
   };
 }
 

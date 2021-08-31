@@ -3,7 +3,9 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
+const toArray = require('dexdata-toarray');
 const getarg = require('discord-getarg');
+const paginate = require('paginate');
 const { filterFactory, applyFilters } = require('pokemon-filters');
 
 const command = {
@@ -193,14 +195,6 @@ const command = {
   ],
 };
 
-const toArray = (data) => {
-  const results = [];
-  for(const i of data){
-    results.push(i);
-  }
-  return results;
-}
-
 const process = async function(req, res) {
   const args = {
     ability: getarg(req.body, 'ability')?.value ?? undefined,
@@ -229,7 +223,12 @@ const process = async function(req, res) {
         const filter = filterFactory['ability'](data, ability);
         filters.push(filter);
       } catch {
-        interaction.editReply(`The ability ${ability} could not be found in Generation ${gen}.`);
+        res.json({
+          type: 4,
+          data: {
+            content: `The ability ${ability} could not be found in Generation ${gen}.`,
+          },
+        });
         return;
       }
     }
@@ -242,7 +241,12 @@ const process = async function(req, res) {
         const filter = filterFactory['type'](data, type);
         filters.push(filter);
       } catch {
-        interaction.editReply(`The type ${type} could not be found in Generation ${gen}.`);
+        res.json({
+          type: 4,
+          data: {
+            content: `The type ${type} could not be found in Generation ${gen}.`,
+          },
+        });
         return;
       }
     }
@@ -255,8 +259,12 @@ const process = async function(req, res) {
         const filter = filterFactory['move'](data, move, isVgc);
         filters.push(filter);
       } catch {
-        console.log
-        interaction.editReply(`The move ${move} could not be found in Generation ${gen}.`);
+        res.json({
+          type: 4,
+          data: {
+            content: `The move ${move} could not be found in Generation ${gen}.`,
+          },
+        });
         return;
       }
     }
@@ -268,8 +276,12 @@ const process = async function(req, res) {
         const filter = filterFactory[stat](args[stat]);
         filters.push(filter);
       } catch(e) {
-        console.log(e);
-        interaction.editReply(`The query ${args[stat]} is not valid for the '${stat}' argument.`);
+        res.json({
+          type: 4,
+          data: {
+            content: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
+          },
+        });
         return;
       }
     }
@@ -284,24 +296,43 @@ const process = async function(req, res) {
     return;
   }
 
-  const threshold = Math.min(getarg(req.body, 'threshold') ?? Infinity, filters.length);
+  const threshold = Math.min(getarg(req.body, 'threshold')?.value ?? Infinity, filters.length);
 
-  let results = await applyFilters(toArray(data.species), filters, threshold);
+  const results = await applyFilters(toArray(data.species), filters, threshold);
 
   const filterDescriptions = filters.map(el=>`- ${el['description']}`).join('\n');
+  const genDescription = gen !== Dex.Dex.gen ? `Using Gen ${gen}\n` : '';
   const thresholdDescription = threshold !== filters.length ? ` (${threshold} must match)` : '';
-  const names = results.map((el)=>{return el.name}).join(', ');
+  const modeDescription = isVgc ? `VGC Mode enabled - Transfer moves excluded.\n` : '';
+  const responsePrefix = `${genDescription}${modeDescription}Filters${thresholdDescription}:\n${filterDescriptions}\n- - -\nResults (${results.length}):\n`;
+  const pages = paginate(results.map((el)=>{return el.name}), 1950 - responsePrefix.length);
+  const names = pages[0];
+  const page = pages.length === 1 ? '' : `Page 1 of ${pages.length}\n`;
 
-  let response = `Filters${thresholdDescription}:\n${filterDescriptions}\n- - -\nResults (${results.length}):\n${names}`;
-
-  if(response.length > 2000) {
-    let response = `Filters${thresholdDescription}:\n${filterDescriptions}\n- - -\nToo many results.`;
-  }
-  
   res.json({
     type: 4,
     data: {
-      content: response
+      content: responsePrefix + page + names,
+      components: (pages.length === 1 ? undefined : [
+        {
+          type: 1,
+          components: [
+            {
+              type: 2,
+              custom_id: 'filter_prev',
+              disabled: true,
+              style: 2,
+              label: 'Previous',
+            },
+            {
+              type: 2,
+              custom_id:`filter_next`,
+              style: 2,
+              label: 'Next',
+            },
+          ],
+        }
+      ]),
     },
   });
 };
