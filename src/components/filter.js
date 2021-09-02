@@ -8,6 +8,14 @@ const { filterFactory, applyFilters } = require('pokemon-filters');
 const paginate = require('paginate');
 
 async function getPage(req, res) {
+
+  if(req.body.member.user.id !== req.body.message.interaction.user.id) {
+    res.json({
+      type: 6
+    });
+    return;
+  }
+
   const lines = req.body.message.content.split('\n');
   let pageNumber = undefined;
   const filters = [];
