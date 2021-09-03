@@ -6,11 +6,11 @@ const command = {
   options: [
     Object.assign({
       name: 'from-stab',
-      type: 'SUB_COMMAND',
+      type: 1,
     }, fromStab.command),
     Object.assign({
       name: 'from-types',
-      type: 'SUB_COMMAND',
+      type: 1,
     }, fromTypes.command),
   ],
 };

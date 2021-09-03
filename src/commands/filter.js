@@ -13,62 +13,62 @@ const command = {
   options: [
     {
       name: 'ability',
-      type: 'STRING',
+      type: 3,
       description: 'Comma delimited list of Abilities.',
     },
     {
       name: 'types',
-      type: 'STRING',
+      type: 3,
       description: 'Comma delimited list of types. Prefix a type with `!` to negate.',
     },
     {
       name: 'moves',
-      type: 'STRING',
+      type: 3,
       description: 'Comma delimited list of moves.',
     },
     {
       name: 'hp',
-      type: 'STRING',
+      type: 3,
       description: "Base HP, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'atk',
-      type: 'STRING',
+      type: 3,
       description: "Base Attack, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'def',
-      type: 'STRING',
+      type: 3,
       description: "Base Defence, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'spa',
-      type: 'STRING',
+      type: 3,
       description: "Base Special Attack, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'spd',
-      type: 'STRING',
+      type: 3,
       description: "Base Special Defence, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'spe',
-      type: 'STRING',
+      type: 3,
       description: "Base Speed, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'bst',
-      type: 'STRING',
+      type: 3,
       description: "Base Stat Total, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'weight-kg',
-      type: 'STRING',
+      type: 3,
       description: "Weight in kg, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'egg-group',
-      type: 'STRING',
+      type: 3,
       description: 'Egg Group the Pokémon is in.',
       choices: [
         {
@@ -135,12 +135,12 @@ const command = {
     },
     {
       name: 'threshold',
-      type: 'INTEGER',
+      type: 4,
       description: 'Amount of filters that must match. Comma-separated fields count one for each item.',
     },
     {
       name: 'gen',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Generation used in calculation',
       choices: [
         {
@@ -179,7 +179,7 @@ const command = {
     },
     {
       name: 'mode',
-      type: 'STRING',
+      type: 3,
       description: 'Limit search to current generation.',
       choices: [
         {

@@ -12,13 +12,13 @@ const command = {
   options: [
     {
       name: 'pokemon',
-      type: 'STRING',
+      type: 3,
       description: 'Pokemon to evaluate the STABs of',
       required: true,
     },
     {
       name: 'gen',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Generation used in calculation',
       choices: [
         {

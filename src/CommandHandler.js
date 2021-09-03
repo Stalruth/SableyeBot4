@@ -49,5 +49,9 @@ const onInteractionCreate = (req, res) => {
   }
 };
 
-module.exports = { onInteractionCreate };
+function getCommands() {
+  return commands;
+}
+
+module.exports = { onInteractionCreate, getCommands };
 

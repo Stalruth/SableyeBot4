@@ -33,14 +33,14 @@ const command = {
   options: [
     {
       name: 'boosted',
-      type: 'STRING',
+      type: 3,
       description: 'Name of the stat boosted by the Nature.',
       required: true,
       choices: stats
     },
     {
       name: 'lowered',
-      type: 'STRING',
+      type: 3,
       description: 'Name of the stat lowered by the Nature.',
       required: true,
       choices: stats

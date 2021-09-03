@@ -6,11 +6,11 @@ const command = {
   options: [
     Object.assign({
       name: 'from-pokemon',
-      type: 'SUB_COMMAND',
+      type: 1,
     }, fromPokemon.command),
     Object.assign({
       name: 'from-types',
-      type: 'SUB_COMMAND',
+      type: 1,
     }, fromTypes.command),
   ],
 };

@@ -12,13 +12,13 @@ const command = {
   options: [
     {
       name: 'types',
-      type: 'STRING',
+      type: 3,
       description: 'Comma separated list of types to check the combined coverage of.',
       required: true,
     },
     {
       name: 'gen',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Generation used in calculation',
       choices: [
         {

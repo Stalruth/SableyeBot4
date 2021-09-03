@@ -12,28 +12,28 @@ const command = {
   options: [
     {
       name: 'pokemon',
-      type: 'STRING',
+      type: 3,
       description: 'Pokemon to show',
       required: 'true',
     },
     {
       name: 'shiny',
-      type: 'BOOLEAN',
+      type: 5,
       description: 'Show the Shiny variant.',
     },
     {
       name: 'back',
-      type: 'BOOLEAN',
+      type: 5,
       description: 'Show the back variant.',
     },
     {
       name: 'female',
-      type: 'BOOLEAN',
+      type: 5,
       description: 'Show the female variant.',
     },
     {
       name: 'gen',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Generation of the sprite.',
       choices: [
         {

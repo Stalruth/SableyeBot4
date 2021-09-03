@@ -23,14 +23,14 @@ const command = {
   options: [
     {
       name: 'type',
-      type: 'STRING',
+      type: 3,
       description: 'The Type to look up.',
       required: true,
       choices: listTypes(types),
     },
     {
       name: 'gen',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Generation used in calculation',
       choices: [
         {

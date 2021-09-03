@@ -11,13 +11,13 @@ const command = {
   options: [
     {
       name: 'name',
-      type: 'STRING',
+      type: 3,
       description: 'Name of the Pokémon',
       required: true,
     },
     {
       name: 'event',
-      type: 'INTEGER',
+      type: 4,
       description: 'ID of the event.',
     },
   ],

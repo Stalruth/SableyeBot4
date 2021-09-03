@@ -10,43 +10,43 @@ const command = {
   options: [
     {
       name: 'hp',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Pokemon\'s HP IV, between 0 and 31.',
       required: true,
     },
     {
       name: 'atk',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Pokemon\'s Attack IV, between 0 and 31.',
       required: true,
     },
     {
       name: 'def',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Pokemon\'s Defence IV, between 0 and 31.',
       required: true,
     },
     {
       name: 'spa',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Pokemon\'s Special Attack IV, between 0 and 31.',
       required: true,
     },
     {
       name: 'spd',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Pokemon\'s Special Defence IV, between 0 and 31.',
       required: true,
     },
     {
       name: 'spe',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Pokemon\'s Speed IV, between 0 and 31.',
       required: true,
     },
     {
       name: 'gen',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Generation used in calculation',
       choices: [
         {

@@ -11,13 +11,13 @@ const command = {
   options: [
     {
       name: 'name',
-      type: 'STRING',
+      type: 3,
       description: 'Name of the Ability',
       required: true,
     },
     {
       name: 'gen',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Generation used for lookup.',
       choices: [
         {

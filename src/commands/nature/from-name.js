@@ -23,7 +23,7 @@ const command = {
   options: [
     {
       name: 'name',
-      type: 'STRING',
+      type: 3,
       description: 'Name of the Nature.',
       required: true,
       choices: listNatures(natures)

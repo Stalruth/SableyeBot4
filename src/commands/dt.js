@@ -19,18 +19,18 @@ const command = {
   options: [
     {
       name: 'name',
-      type: 'STRING',
+      type: 3,
       description: 'Name of the Pokemon, Ability, Move, Item or Nature to look up.',
       required: true,
     },
     {
       name: 'verbose',
-      type: 'BOOLEAN',
+      type: 5,
       description: 'Return extra information.',
     },
     {
       name: 'gen',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Generation used for lookup.',
       choices: [
         {

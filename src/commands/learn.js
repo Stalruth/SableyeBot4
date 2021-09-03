@@ -13,18 +13,18 @@ const command = {
   options: [
     {
       name: 'name',
-      type: 'STRING',
+      type: 3,
       description: 'Name of the Pokémon',
       required: true,
     },
     {
       name: 'move',
-      type: 'STRING',
+      type: 3,
       description: 'Name of the move to check',
     },
     {
       name: 'mode',
-      type: 'STRING',
+      type: 3,
       description: 'Exclude previous generations in accordance with VGC rules',
       choices: [
         {
@@ -39,7 +39,7 @@ const command = {
     },
     {
       name: 'gen',
-      type: 'INTEGER',
+      type: 4,
       description: 'The Generation to check against.',
       choices: [
         {

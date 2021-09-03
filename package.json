@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
-    "debug": "node -r dotenv/config . src/index.js"
+    "debug": "node -r dotenv/config src/index.js",
+    "update-commands": "node -r dotenv/config src/updateCommands.js"
   },
   "author": "Stuart Rutheford",
   "license": "ISC",
@@ -19,7 +20,8 @@
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "node-fetch": "^2.6.1"
   },
   "engines": {
     "node": "^16.7.0"
