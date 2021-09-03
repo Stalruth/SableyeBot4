@@ -38,6 +38,8 @@ async function getPage(req, res) {
       console.log(threshold);
     } else if(match = line.match(/- Has the ability (.+)/)) {
       filters.push(filterFactory.ability(data, match[1]));
+    } else if(match = line.match(/- Is not (.+)-type/)) {
+      filters.push(filterFactory.type(data, `!${match[1]}`))
     } else if(match = line.match(/- Is (.+)-type/)) {
       filters.push(filterFactory.type(data, match[1]));
     } else if(match = line.match(/- Has the move (.+)/)) {
@@ -63,6 +65,10 @@ async function getPage(req, res) {
       } else if(match = line.match(/between (\d+) and (\d+)/)) {
         filters.push(filterFactory[statAbbr](match[1] + '-' + match[2]));
       }
+    } else if (match = line.match(/- Is weak to (.+)/)) {
+      filters.push(filterFactory.weakness(match[1]));
+    } else if (match = line.match(/- Resists (.+)/)) {
+      filters.push(filterFactory.resist(match[1]));
     } else if (match = line.match(/- Is in the (.+) egg group/)) {
       filters.push(filterFactory.egggroup(match[1]));
     } else if(match = line.match(/Page ([\d]+)/)) {

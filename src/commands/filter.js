@@ -12,7 +12,7 @@ const command = {
   description: 'Get all Pokémon fitting the given conditions.',
   options: [
     {
-      name: 'ability',
+      name: 'abilities',
       type: 3,
       description: 'Comma delimited list of Abilities.',
     },
@@ -65,6 +65,16 @@ const command = {
       name: 'weight-kg',
       type: 3,
       description: "Weight in kg, supports `<STAT`, `>STAT`, `STAT-STAT`",
+    },
+    {
+      name: 'weaknesses',
+      type: 3,
+      description: "Comma delimited list of Weaknesses."
+    },
+    {
+      name: 'resists',
+      type: 3,
+      description: "Comma delimited list of Resistances."
     },
     {
       name: 'egg-group',
@@ -197,7 +207,7 @@ const command = {
 
 const process = async function(req, res) {
   const args = {
-    ability: getarg(req.body, 'ability')?.value ?? undefined,
+    ability: getarg(req.body, 'abilities')?.value ?? undefined,
     type: getarg(req.body, 'types')?.value ?? undefined,
     move: getarg(req.body, 'moves')?.value ?? undefined,
     hp: getarg(req.body, 'hp')?.value ?? undefined,
@@ -208,6 +218,8 @@ const process = async function(req, res) {
     spe: getarg(req.body, 'spe')?.value ?? undefined,
     bst: getarg(req.body, 'bst')?.value ?? undefined,
     weightkg: getarg(req.body, 'weight-kg')?.value ?? undefined,
+    weakness: getarg(req.body, 'weaknesses')?.value ?? undefined,
+    resist: getarg(req.body, 'resists')?.value ?? undefined,
     egggroup: getarg(req.body, 'egg-group')?.value ?? undefined,
   };
   const isVgc = getarg(req.body, 'mode')?.value === 'vgc';
@@ -280,6 +292,42 @@ const process = async function(req, res) {
           type: 4,
           data: {
             content: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
+          },
+        });
+        return;
+      }
+    }
+  }
+
+  if(args['weakness']) {
+    const types = args['weakness'].split(',');
+    for(const type of types) {
+      try {
+        const filter = filterFactory['weakness'](data, type);
+        filters.push(filter);
+      } catch {
+        res.json({
+          type: 4,
+          data: {
+            content: `The type ${type} could not be found in Generation ${gen}.`,
+          },
+        });
+        return;
+      }
+    }
+  }
+
+  if(args['resist']) {
+    const types = args['resist'].split(',');
+    for(const type of types) {
+      try {
+        const filter = filterFactory['resist'](data, type);
+        filters.push(filter);
+      } catch {
+        res.json({
+          type: 4,
+          data: {
+            content: `The type ${type} could not be found in Generation ${gen}.`,
           },
         });
         return;
