@@ -78,10 +78,22 @@ const process = (req, res) => {
 
   let reply = `${pokemon['name']} [${pokemon['types'].join('/')}]`;
 
-  const eff = damageTaken(pokemon['types'], data);
+  const eff = {
+    '0x': [],
+    '0.25x': [],
+    '0.5x': [],
+    '1x': [],
+    '2x': [],
+    '4x': [],
+  };
 
-  for(const i of eff) {
-    reply += `\n${i['label']}: ${i['types'].join(', ')}`;
+  for(const i of data.types) {
+    eff[`${damageTaken(data, pokemon.types, i.id)}x`].push(i.name);
+  }
+
+  for(const i of ['0x', '0.25x', '0.5x', '1x', '2x', '4x']) {
+    if(eff[i].length === 0) { continue; }
+    reply += `\n${i}: ${eff[i].join(', ')}`;
   }
 
   res.json({

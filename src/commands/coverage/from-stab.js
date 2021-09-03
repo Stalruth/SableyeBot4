@@ -5,7 +5,7 @@ const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
 const getarg = require('discord-getarg');
-const { coverage } = require('typecheck');
+const { damageTaken } = require('typecheck');
 
 
 const command = {
@@ -79,10 +79,23 @@ const process = (req, res) => {
 
   let reply = `${pokemon['name']} [${pokemon['types'].join('/')}]`;
 
-  const eff = coverage(pokemon['types'], data);
+  const eff = {
+    '0': [],
+    '0.5': [],
+    '1': [],
+    '2': [],
+  };
 
-  for(const i of eff) {
-    reply += `\n${i['label']}: ${i['types'].join(', ')}`;
+  for(const dType of data.types) {
+    const mult = pokemon.types.reduce((acc, aType) => {
+      return Math.max(acc, damageTaken(data, [dType.id], aType));
+    }, 0);
+    eff[`${mult}`].push(dType.name);
+  }
+
+  for(const i of ['0', '0.5', '1', '2']) {
+    if(eff[i].length === 0) { continue; }
+    reply += `\n${i}x: ${eff[i].join(', ')}`;
   }
 
   res.json({
