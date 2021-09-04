@@ -239,6 +239,7 @@ const process = async function(req, res) {
           type: 4,
           data: {
             content: `The ability ${ability} could not be found in Generation ${gen}.`,
+            flags: 1<< 6,
           },
         });
         return;
@@ -257,6 +258,7 @@ const process = async function(req, res) {
           type: 4,
           data: {
             content: `The type ${type} could not be found in Generation ${gen}.`,
+            flags: 1<< 6,
           },
         });
         return;
@@ -275,6 +277,7 @@ const process = async function(req, res) {
           type: 4,
           data: {
             content: `The move ${move} could not be found in Generation ${gen}.`,
+            flags: 1<< 6,
           },
         });
         return;
@@ -292,6 +295,7 @@ const process = async function(req, res) {
           type: 4,
           data: {
             content: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
+            flags: 1<< 6,
           },
         });
         return;
@@ -310,6 +314,7 @@ const process = async function(req, res) {
           type: 4,
           data: {
             content: `The type ${type} could not be found in Generation ${gen}.`,
+            flags: 1<< 6,
           },
         });
         return;
@@ -328,6 +333,7 @@ const process = async function(req, res) {
           type: 4,
           data: {
             content: `The type ${type} could not be found in Generation ${gen}.`,
+            flags: 1<< 6,
           },
         });
         return;
@@ -340,7 +346,13 @@ const process = async function(req, res) {
   }
 
   if(filters.length === 0) {
-    res.json('You haven\'t added any filters.');
+    res.json({
+      type: 4,
+      data: {
+        content: 'You haven\'t added any filters.',
+        flags: 1<< 6,
+      },
+    });
     return;
   }
 

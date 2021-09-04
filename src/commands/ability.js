@@ -69,7 +69,8 @@ const process = function(req, res) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find an ability named ${name} in Generation ${gen}.`
+        content: `Could not find an ability named ${name} in Generation ${gen}.`,
+        flags: 1 << 6,
       }
     });
     return;

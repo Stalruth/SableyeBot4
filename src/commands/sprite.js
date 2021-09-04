@@ -81,6 +81,7 @@ const process = function(req, res) {
       type: 4,
       data: {
         content: `Could not find a Pokémon named ${name} in Generation ${gen}.`,
+        flags: 1 << 6,
       },
     });
     return;

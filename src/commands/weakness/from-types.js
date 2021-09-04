@@ -81,6 +81,7 @@ const process = (req, res) => {
       type: 4,
       data: {
         content: `Could not find Types named ${nonTypes.join(',')} in Generation ${gen}.`,
+        flags: 1 << 6,
       },
     });
     return;

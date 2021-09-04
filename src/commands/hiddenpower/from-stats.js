@@ -94,6 +94,7 @@ const process = (req, res) => {
       type: 4,
       data: {
         content: `Hidden power does not exist in Generation ${generation}.`,
+        flags: 1 << 6,
       },
     });
     return;

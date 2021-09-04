@@ -92,7 +92,13 @@ const process = async function(req, res) {
   const pokemon = dataSearch(data.species, Data.toID(name))?.result;
 
   if(!pokemon) {
-    await interaction.editReply(`Could not find a Pokémon named ${name} in Generation ${gen}.`);
+    res.json({
+      type: 4,
+      data: {
+        content: `Could not find a Pokémon named ${name} in Generation ${gen}.`,
+        flags: 1 << 6,
+      },
+    });
     return;
   }
 
@@ -152,7 +158,7 @@ const process = async function(req, res) {
     });
 
     let reply = `${pokemon['name']} can learn ${move['name']} in`;
-    
+
     if(currentGenResults.reduce((acc, stage)=>acc + stage.methods.length, 0) === 0) {
       reply += ` another generation.`;
     } else {
