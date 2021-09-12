@@ -6,7 +6,7 @@ const Data = require('@pkmn/data');
 const toArray = require('dexdata-toarray');
 const getarg = require('discord-getarg');
 const paginate = require('paginate');
-const { filterFactory, applyFilters } = require('pokemon-filters');
+const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 
 const command = {
   description: 'Get all Pokémon fitting the given conditions.',
@@ -232,7 +232,7 @@ const process = async function(req, res) {
     const abilities = args['ability'].split(',');
     for(const ability of abilities) {
       try {
-        const filter = filterFactory['ability'](data, ability);
+        const filter = filterFactory['ability'](data, ability, isVgc);
         filters.push(filter);
       } catch {
         res.json({
@@ -251,7 +251,7 @@ const process = async function(req, res) {
     const types = args['type'].split(',');
     for(const type of types) {
       try {
-        const filter = filterFactory['type'](data, type);
+        const filter = filterFactory['type'](data, type, isVgc);
         filters.push(filter);
       } catch {
         res.json({
@@ -288,7 +288,7 @@ const process = async function(req, res) {
   for (const stat of ['hp','atk','def','spa','spd','spe','bst','weightkg']) {
     if(args[stat]) {
       try {
-        const filter = filterFactory[stat](args[stat]);
+        const filter = filterFactory[stat](data, args[stat], isVgc);
         filters.push(filter);
       } catch(e) {
         res.json({
@@ -307,7 +307,7 @@ const process = async function(req, res) {
     const types = args['weakness'].split(',');
     for(const type of types) {
       try {
-        const filter = filterFactory['weakness'](data, type);
+        const filter = filterFactory['weakness'](data, type, isVgc);
         filters.push(filter);
       } catch {
         res.json({
@@ -326,7 +326,7 @@ const process = async function(req, res) {
     const types = args['resist'].split(',');
     for(const type of types) {
       try {
-        const filter = filterFactory['resist'](data, type);
+        const filter = filterFactory['resist'](data, type, isVgc);
         filters.push(filter);
       } catch {
         res.json({
@@ -342,7 +342,7 @@ const process = async function(req, res) {
   }
 
   if(args['egggroup']) {
-    filters.push(filterFactory['egggroup'](args['egggroup']));
+    filters.push(filterFactory['egggroup'](data, args['egggroup']), isVgc);
   }
 
   if(filters.length === 0) {
@@ -379,14 +379,14 @@ const process = async function(req, res) {
           components: [
             {
               type: 2,
-              custom_id: 'filter_prev',
+              custom_id: '-',
               disabled: true,
               style: 2,
               label: 'Previous',
             },
             {
               type: 2,
-              custom_id:`filter_next`,
+              custom_id:`filter_p2_${gen}_${threshold}${isVgc ?'_V':''}${packFilters(filters)}`,
               style: 2,
               label: 'Next',
             },

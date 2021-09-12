@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const toArray = require('dexdata-toarray');
-const { filterFactory, applyFilters } = require('pokemon-filters');
+const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 const paginate = require('paginate');
 
 async function getPage(req, res) {
@@ -17,71 +17,29 @@ async function getPage(req, res) {
   }
 
   const lines = req.body.message.content.split('\n');
-  let pageNumber = undefined;
+
+  const idData = req.body.data.custom_id.split('|');
+  const packedFilters = idData.slice(1);
+  const commandData = idData[0].split('_');
+
+  const pageNumber = Number(commandData[1].substring(1));
+  const gen = Number(commandData[2] ?? 8);
+  const data = new Data.Generations(Dex.Dex).get(gen);
+  const threshold = Number(commandData[3] ?? packedFilters.length);
+  const isVgc = commandData[4] === 'V';
+
   const filters = [];
 
-  let data = new Data.Generations(Dex.Dex).get(8);
-  let gen = 8;
-  let isVgc = false;
-  let threshold = null;
-
-
-  for(const line of lines) {
-    let match = null;
-    if(match = line.match(/Using gen (\d+)/)) {
-      gen = Number(match[1]);
-      data = new Data.Generations(Dex.Dex).get(gen);
-    } else if(match = line.match(/VGC Mode enabled/)) {
-      isVgc = true;
-    } else if(match = line.match(/Filters \((\d+) must match\):/)) {
-      threshold = Number(match[1]);
-      console.log(threshold);
-    } else if(match = line.match(/- Has the ability (.+)/)) {
-      filters.push(filterFactory.ability(data, match[1]));
-    } else if(match = line.match(/- Is not (.+)-type/)) {
-      filters.push(filterFactory.type(data, `!${match[1]}`))
-    } else if(match = line.match(/- Is (.+)-type/)) {
-      filters.push(filterFactory.type(data, match[1]));
-    } else if(match = line.match(/- Has the move (.+)/)) {
-      filters.push(filterFactory.move(data, match[1], isVgc));
-    } else if(match = line.match(/- Has an? (.+) (?:greater|lower|between|of)/)) {
-      const shortStats = {
-        'HP stat': 'hp',
-        'Attack stat': 'atk',
-        'Defence stat': 'def',
-        'Special Attack stat': 'spa',
-        'Special Defence stat': 'spd',
-        'Speed stat': 'spe',
-        'Weight': 'weightkg',
-        'Base Stat Total': 'bst',
-      };
-      const statAbbr = shortStats[match[1]];
-      if(match = line.match(/greater than (\d+)/)) {
-        filters.push(filterFactory[statAbbr]('>' + match[1]));
-      } else if(match = line.match(/lower than (\d+)/)) {
-        filters.push(filterFactory[statAbbr]('<' + match[1]));
-      } else if(match = line.match(/of (\d+)/)) {
-        filters.push(filterFactory[statAbbr](match[1]));
-      } else if(match = line.match(/between (\d+) and (\d+)/)) {
-        filters.push(filterFactory[statAbbr](match[1] + '-' + match[2]));
-      }
-    } else if (match = line.match(/- Is weak to (.+)/)) {
-      filters.push(filterFactory.weakness(match[1]));
-    } else if (match = line.match(/- Resists (.+)/)) {
-      filters.push(filterFactory.resist(match[1]));
-    } else if (match = line.match(/- Is in the (.+) egg group/)) {
-      filters.push(filterFactory.egggroup(match[1]));
-    } else if(match = line.match(/Page ([\d]+)/)) {
-      const currentPage = Number(match[1]);
-      pageNumber = currentPage + (req.body.data.custom_id.endsWith('next') ? 1 : -1);
-    }
+  for(const def of packedFilters) {
+    const [name, value] = def.split(':');
+    filters.push(filterFactory[name](data, value, isVgc));
   }
 
   if(!threshold) {
     threshold = filters.length;
   }
 
-  if(!pageNumber) {
+  if(!pageNumber || isNaN(pageNumber)) {
     res.json({
       type: 6,
     });
@@ -109,14 +67,14 @@ async function getPage(req, res) {
           components: [
             {
               type: 2,
-              custom_id: 'filter_prev',
+              custom_id: pageNumber === 1 ? '-' : `filter_p${pageNumber-1}_${gen}_${threshold}${isVgc?'_V':''}${packFilters(filters)}`,
               disabled: pageNumber === 1,
               style: 2,
               label: 'Previous',
             },
             {
               type: 2,
-              custom_id:`filter_next`,
+              custom_id: pageNumber === pages.length ? '-' : `filter_p${pageNumber+1}_${gen}_${threshold}${isVgc?'_V':''}${packFilters(filters)}`,
               disabled: pageNumber === pages.length,
               style: 2,
               label: 'Next',
