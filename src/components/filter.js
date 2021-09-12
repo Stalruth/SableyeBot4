@@ -35,10 +35,6 @@ async function getPage(req, res) {
     filters.push(filterFactory[name](data, value, isVgc));
   }
 
-  if(!threshold) {
-    threshold = filters.length;
-  }
-
   if(!pageNumber || isNaN(pageNumber)) {
     res.json({
       type: 6,
