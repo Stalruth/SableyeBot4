@@ -13,7 +13,7 @@ const options = {
   headers: {
     'Authorization': `Bot ${BOT_TOKEN}`,
     'Content-Type': 'application/json',
-    'User-Agent': 'SableyeBot4 (github.com/Stalruth/Sableyebot4, 4.x)',
+    'User-Agent': 'DiscordBot (github.com/Stalruth/Sableyebot4, 4.x)',
   },
   body: JSON.stringify(getCommands()),
 };
