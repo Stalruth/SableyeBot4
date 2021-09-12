@@ -8,7 +8,7 @@ function addComponent(pattern, process) {
 
 addComponent(/^filter_/, require('./components/filter.js'));
 
-function onActivate(req, res) {
+function onComponentInteraction(req, res) {
   for(const command of commands) {
     if(req.body.data.custom_id.match(command.pattern)) {
       command.process(req, res);
@@ -17,5 +17,5 @@ function onActivate(req, res) {
   }
 }
 
-module.exports = { onActivate };
+module.exports = { onComponentInteraction };
 

@@ -18,7 +18,7 @@ function signatureMiddleware(publicKey) {
   };
 }
 
-function ping(req, res) {
+function onPing(req, res) {
   res.json({type: 1});
 }
 
@@ -33,5 +33,5 @@ function setupApplication(app, publicKey, route, handlers) {
   });
 }
 
-module.exports = { signatureMiddleware, setupApplication, ping };
+module.exports = { setupApplication, onPing };
 

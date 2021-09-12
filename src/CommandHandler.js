@@ -26,7 +26,7 @@ addCommand('learn', require('./commands/learn.js'));
 addCommand('weakness', require('./commands/weakness.js'));
 addCommand('filter', require('./commands/filter.js'));
 
-const onInteractionCreate = (req, res) => {
+const onApplicationCommand = (req, res) => {
   const command = [req.body.data?.name];
 
   if([1,2].includes(req.body.data?.options?.[0]?.type)) {
@@ -53,5 +53,5 @@ function getCommands() {
   return commands;
 }
 
-module.exports = { onInteractionCreate, getCommands };
+module.exports = { onApplicationCommand, getCommands };
 

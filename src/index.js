@@ -2,21 +2,15 @@
 
 const express = require('express');
 
-const { signatureMiddleware, setupApplication, ping } = require('./discord-express');
-const { onInteractionCreate } = require('./CommandHandler.js');
-const { onActivate } = require('./ComponentHandler.js');
+const { setupApplication, onPing } = require('./discord-express');
+const { onApplicationCommand } = require('./CommandHandler.js');
+const { onComponentInteraction } = require('./ComponentHandler.js');
 
 const PUBLIC_KEY = process.env.PUBLIC_KEY;
+const PORT = process.env.PORT;
 const app = express();
-const port = process.env.PORT;
 
-function respond(req, res) {
-  onInteractionCreate(req, res);
-}
+setupApplication(app, PUBLIC_KEY, '/', [onPing, onApplicationCommand, onComponentInteraction]);
 
-setupApplication(app, PUBLIC_KEY, '/', [ping, respond, onActivate]);
-
-app.listen(port, () => {
-  console.log(`Listening on http://localhost:${port}`);
-});
+app.listen(PORT);
 
