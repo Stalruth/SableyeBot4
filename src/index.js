@@ -3,7 +3,7 @@
 const express = require('express');
 
 const { setupApplication, onPing } = require('./discord-express');
-const { onApplicationCommand } = require('./CommandHandler.js');
+const { onApplicationCommand } = require('./AppCommandHandler.js');
 const { onComponentInteraction } = require('./ComponentHandler.js');
 
 const PUBLIC_KEY = process.env.PUBLIC_KEY;

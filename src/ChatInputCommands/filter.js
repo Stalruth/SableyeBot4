@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const toArray = require('dexdata-toarray');
-const getarg = require('discord-getarg');
+const { getarg } = require('discord-getarg');
 const paginate = require('paginate');
 const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 

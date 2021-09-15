@@ -3,7 +3,7 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
-const getarg = require('discord-getarg');
+const { getarg } = require('discord-getarg');
 
 const types = new Data.Generations(Dex.Dex).get(7).types;
 

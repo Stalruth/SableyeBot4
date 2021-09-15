@@ -2,18 +2,18 @@
 
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
-
 const dataSearch = require('datasearch');
-const getarg = require('discord-getarg');
+
 const { damageTaken } = require('typecheck');
+const { getarg } = require('discord-getarg');
 
 const command = {
-  description: 'Returns the resistances and weaknesses of a Pokémon with the given types.',
+  description: 'Returns the given Pokémon\'s weaknesses and resistances.',
   options: [
     {
-      name: 'types',
+      name: 'pokemon',
       type: 3,
-      description: 'Comma separated list of types to check the combined coverage of.',
+      description: 'Pokemon to evaluate the STABs of',
       required: true,
     },
     {
@@ -59,35 +59,25 @@ const command = {
 }
 
 const process = (req, res) => {
-  const types_arg = getarg(req.body, 'types').value.split(',');
-
+  const name = getarg(req.body, 'pokemon').value;
   const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
 
   const data = new Data.Generations(Dex.Dex).get(gen);
 
-  const types = types_arg.map((el) => {
-    return dataSearch(data.types, Data.toID(el))?.result?.name;
-  });
+  const pokemon = dataSearch(data.species, Data.toID(name))?.result;
 
-  if(types.some((el) => {return !el;})) {
-    nonTypes = [];
-    for(const i in types) {
-      if(!types[i]) {
-        nonTypes.push(types_arg[i]);
-      }
-    }
-
+  if(!pokemon) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find Types named ${nonTypes.join(',')} in Generation ${gen}.`,
+        content: `Could not find a Pokémon named ${name} in Generation ${gen}.`,
         flags: 1 << 6,
       },
     });
     return;
   }
 
-  let reply = `[${types.join('/')}]`;
+  let reply = `${pokemon['name']} [${pokemon['types'].join('/')}]`;
 
   const eff = {
     '0x': [],
@@ -99,7 +89,7 @@ const process = (req, res) => {
   };
 
   for(const i of data.types) {
-    eff[`${damageTaken(data, types, i.id)}x`].push(i.name);
+    eff[`${damageTaken(data, pokemon.types, i.id)}x`].push(i.name);
   }
 
   for(const i of ['0x', '0.25x', '0.5x', '1x', '2x', '4x']) {
@@ -110,7 +100,7 @@ const process = (req, res) => {
   res.json({
     type: 4,
     data: {
-      content: reply,
+      content: reply
     },
   });
 }

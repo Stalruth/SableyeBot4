@@ -5,7 +5,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const getarg = require('discord-getarg');
+const { getarg } = require('discord-getarg');
 
 const command = {
   description: 'Link to the Pokemon Showdown Damage Calculator.',

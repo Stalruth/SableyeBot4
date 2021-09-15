@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const getarg = require('discord-getarg');
+const { getarg } = require('discord-getarg');
 
 const command = {
   description: 'Return the number of events a Pokemon has or the details of a specific event.',

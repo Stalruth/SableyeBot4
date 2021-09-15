@@ -3,7 +3,7 @@
 let Dex = require('@pkmn/dex');
 let Data = require('@pkmn/data');
 
-const getarg = require('discord-getarg');
+const { getarg } = require('discord-getarg');
 
 const stats = [
   {

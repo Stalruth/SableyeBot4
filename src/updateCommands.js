@@ -2,7 +2,7 @@
 
 const fetch = require('node-fetch');
 
-const { getCommands } = require('./CommandHandler.js');
+const { getCommands } = require('./AppCommandHandler.js');
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const APP_ID = process.env.APP_ID;

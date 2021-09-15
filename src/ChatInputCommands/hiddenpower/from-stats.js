@@ -3,7 +3,7 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
-const getarg = require('discord-getarg');
+const { getarg } = require('discord-getarg');
 
 const command = {
   description: 'Returns the Hidden Power produced by the given IVs.',
