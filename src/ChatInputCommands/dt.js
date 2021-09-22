@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const dt = {
   ability: require('./ability.js').process,
@@ -71,17 +71,17 @@ const command = {
 };
 
 const process = function(req, res) {
-  const name = getarg(req.body, 'name').value;
-  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
+  const args = getargs(req.body).params;
+  args.gen ??= Dex.Dex.gen;
 
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(args.gen);
 
   const distance = {
-    ability: dataSearch(data.abilities, Data.toID(name)),
-    item: dataSearch(data.items, Data.toID(name)),
-    move: dataSearch(data.moves, Data.toID(name)),
-    nature: dataSearch(data.natures, Data.toID(name)),
-    pokemon: dataSearch(data.species, Data.toID(name)),
+    ability: dataSearch(data.abilities, Data.toID(args.name)),
+    item: dataSearch(data.items, Data.toID(args.name)),
+    move: dataSearch(data.moves, Data.toID(args.name)),
+    nature: dataSearch(data.natures, Data.toID(args.name)),
+    pokemon: dataSearch(data.species, Data.toID(args.name)),
   };
 
   let mostAccurate = null;
@@ -103,7 +103,7 @@ const process = function(req, res) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a result matching ${name} in Generation ${gen}.`,
+        content: `Could not find a result matching ${args.name} in Generation ${args.gen}.`,
         flags: 1 << 6,
       },
     });

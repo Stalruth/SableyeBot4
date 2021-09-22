@@ -3,7 +3,7 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const command = {
   description: 'Returns the Hidden Power produced by the given IVs.',
@@ -87,34 +87,26 @@ const command = {
 }
 
 const process = (req, res) => {
-  const generation = getarg(req.body, 'gen')?.value ?? 7;
+  const args = getargs(req.body).params;
+  args.gen ??= 7;
 
-  if(generation === 1) {
+  if(args.gen === 1) {
     res.json({
       type: 4,
       data: {
-        content: `Hidden power does not exist in Generation ${generation}.`,
+        content: `Hidden power does not exist in Generation ${args.gen}.`,
         flags: 1 << 6,
       },
     });
     return;
   }
 
-  const types = new Data.Generations(Dex.Dex).get(generation).types;
-
-  const ivs = {
-    hp: getarg(req.body, 'hp').value,
-    atk: getarg(req.body, 'atk').value,
-    def: getarg(req.body, 'def').value,
-    spa: getarg(req.body, 'spa').value,
-    spd: getarg(req.body, 'spd').value,
-    spe: getarg(req.body, 'spe').value,
-  }
+  const types = new Data.Generations(Dex.Dex).get(args.gen).types;
 
   const problems = [];
 
   ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach((el) => {
-    if(ivs[el] < 0 || ivs[el] > 31) {
+    if(args[el] < 0 || args[el] > 31) {
       problems.push(el);
     }
   });
@@ -129,7 +121,7 @@ const process = (req, res) => {
     return;
   }
 
-  const result = types.getHiddenPower(ivs);
+  const result = types.getHiddenPower(args);
 
   res.json({
     type: 4,

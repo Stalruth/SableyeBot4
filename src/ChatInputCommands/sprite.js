@@ -5,7 +5,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const command = {
   description: 'Link to the Pokemon Showdown Damage Calculator.',
@@ -66,21 +66,18 @@ const command = {
 };
 
 const process = function(req, res) {
-  const name = getarg(req.body, 'pokemon').value;
-  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
-  const shiny = getarg(req.body, 'shiny')?.value ?? false;
-  const back = getarg(req.body, 'back')?.value ?? false;
-  const female = getarg(req.body, 'female')?.value ?? false;
+  const args = getargs(req.body).params;
+  args.gen ??= 8;
 
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(args.gen);
 
-  const pokemon = dataSearch(data.species, Data.toID(name))?.result;
+  const pokemon = dataSearch(data.species, Data.toID(args.pokemon))?.result;
 
   if(!pokemon) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a Pokémon named ${name} in Generation ${gen}.`,
+        content: `Could not find a Pokémon named ${args.pokemon} in Generation ${args.gen}.`,
         flags: 1 << 6,
       },
     });
@@ -88,14 +85,14 @@ const process = function(req, res) {
   }
 
   const options = {};
-  options['gen'] = gen;
-  if(shiny) {
+  options['gen'] = args.gen;
+  if(args.shiny) {
     options['shiny'] = true;
   }
-  if(back) {
+  if(args.back) {
     options['side'] = 'p1';
   }
-  if(female) {
+  if(args.female) {
     options['gender'] = 'F';
   }
   const spriteUrl = Img.Sprites.getPokemon(pokemon['id'], options).url;

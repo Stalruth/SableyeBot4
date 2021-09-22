@@ -3,7 +3,7 @@
 let Dex = require('@pkmn/dex');
 let Data = require('@pkmn/data');
 
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const stats = [
   {
@@ -49,11 +49,11 @@ const command = {
 }
 
 const process = (req, res) => {
-  const gen = new Data.Generations(Dex.Dex).get(8);
-  const boosted = getarg(req.body, 'boosted').value;
-  const lowered = getarg(req.body, 'lowered').value;
+  const args = getargs(req.body).params;
 
-  if (boosted === lowered) {
+  const gen = new Data.Generations(Dex.Dex).get(8);
+
+  if (args.boosted === args.lowered) {
     res.json({
       type: 4,
       data: {
@@ -63,11 +63,11 @@ const process = (req, res) => {
   }
 
   for(const nature of gen.natures) {
-    if (nature.plus === boosted && nature.minus === lowered) {
+    if (nature.plus === args.boosted && nature.minus === args.lowered) {
       res.json({
         type: 4,
         data: {
-          content: `${nature.name}: +${boosted.toUpperCase()} -${lowered.toUpperCase()}`,
+          content: `${nature.name}: +${args.boosted.toUpperCase()} -${args.lowered.toUpperCase()}`,
         },
       });
       break;

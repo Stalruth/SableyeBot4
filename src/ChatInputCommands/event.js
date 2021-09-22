@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const command = {
   description: 'Return the number of events a Pokemon has or the details of a specific event.',
@@ -24,19 +24,17 @@ const command = {
 };
 
 const process = async function(req, res) {
-  const name = getarg(req.body, 'name').value;
-  const eventId = getarg(req.body, 'event')?.value ?? null;
+  const args = getargs(req.body).params;
 
-  const gen = Dex.Dex.gen;
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(Dex.Dex.gen);
 
-  const pokemon = dataSearch(data.species, Data.toID(name))?.result;
+  const pokemon = dataSearch(data.species, Data.toID(args.name))?.result;
 
   if(!pokemon) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a Pokémon named ${name} in Generation ${gen}.`,
+        content: `Could not find a Pokémon named ${args.name} in Generation ${Dex.Dex.gen}.`,
         flags: 1 << 6,
       },
     });
@@ -46,14 +44,14 @@ const process = async function(req, res) {
   const learnset = await data.learnsets.get(pokemon['id']);
 
   let reply = '';
-  if(eventId === null || eventId < 1 || eventId > learnset['eventData'].length) {
+  if(!args.event || args.event < 1 || args.event > learnset['eventData'].length) {
     reply = `${pokemon['name']} has ${learnset['eventData'].length} events.`;
     if(learnset['eventData'].length > 0) {
       reply += `\nInclude an Event ID for more information (1-${learnset['eventData'].length})`;
     }
   } else {
-    const eventData = learnset['eventData'][eventId - 1];
-    reply += `${pokemon['name']} (Event #${eventId})\n`;
+    const eventData = learnset['eventData'][args.event - 1];
+    reply += `${pokemon['name']} (Event #${args.event})\n`;
     reply += `Generation ${eventData['generation']}; Level ${eventData['level']}\n`;
     reply += `Poke Ball: ${eventData.pokeball ? data.items.get(eventData.pokeball).name : '-'}; `;
     reply += `Gender: ${(eventData.gender || 'Random')}; Nature: ${(eventData.nature || 'Random')}\n`;

@@ -3,7 +3,7 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const natures = new Data.Generations(Dex.Dex).get(8).natures;
 
@@ -32,9 +32,9 @@ const command = {
 }
 
 const process = (req, res) => {
-  const param = getarg(req.body, 'name').value;
+  const args = getargs(req.body).params;
 
-  const nature = natures.get(param);
+  const nature = natures.get(args.name);
   if(nature.plus === nature.minus) {
     res.json({
       type: 4,

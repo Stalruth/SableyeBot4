@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const lowKickPower = function(weight) {
   if(weight < 10) return 20;
@@ -71,19 +71,18 @@ const command = {
 };
 
 const process = function(req, res) {
-  const name = getarg(req.body, 'name').value;
-  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
-  const verbose = getarg(req.body, 'verbose')?.value ?? false;
+  const args = getargs(req.body).params;
+  args.gen ??= Dex.Dex.gen;
 
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(args.gen);
 
-  const pokemon = dataSearch(data.species, Data.toID(name))?.result;
+  const pokemon = dataSearch(data.species, Data.toID(args.name))?.result;
 
   if(!pokemon) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a Pokémon named ${name} in Generation ${gen}.`,
+        content: `Could not find a Pokémon named ${args.name} in Generation ${args.gen}.`,
         flags: 1 << 6,
       },
     });
@@ -92,7 +91,7 @@ const process = function(req, res) {
 
   let reply = `No. ${pokemon['num']}: ${pokemon['name']} [${pokemon['types'].join('/')}]`;
 
-  if(gen >= 3) {
+  if(args.gen >= 3) {
     const abilities = [pokemon['abilities'][0]]
     if(pokemon['abilities'][1]) {
       abilities.push(pokemon['abilities'][1]);
@@ -103,12 +102,12 @@ const process = function(req, res) {
     reply += `\nAbilities: ${abilities.join(', ')}`;
   }
 
-  const statNames = ['HP', 'Atk', 'Def', ...(gen <= 2 ? ['Spc'] : ['SpA', 'SpD']), 'Spe']
+  const statNames = ['HP', 'Atk', 'Def', ...(args.gen <= 2 ? ['Spc'] : ['SpA', 'SpD']), 'Spe']
   const stats = [
     pokemon.baseStats.hp,
     pokemon.baseStats.atk,
     pokemon.baseStats.def,
-    ...(gen === 1 ? [
+    ...(args.gen === 1 ? [
       pokemon.baseStats.spa
     ] : [
       pokemon.baseStats.spa,
@@ -118,7 +117,7 @@ const process = function(req, res) {
   ];
   reply += `\n${statNames.join('/')}: ${stats.join('/')} [BST: ${stats.reduce((ac, el) => ac + el)}]`;
 
-  if(verbose) {
+  if(args.verbose) {
     reply += `\nIntroduced: Generation ${pokemon['gen']}`;
     reply += `\nWeight: ${pokemon['weightkg']}kg (${lowKickPower(pokemon['weightkg'])} BP)`;
   }
@@ -131,7 +130,7 @@ const process = function(req, res) {
     reply += `\nOther Formes: ${pokemon['otherFormes'].join(', ')}`;
   }
 
-  if(verbose) {
+  if(args.verbose) {
     if(pokemon['prevo']) {
       reply += `\nPre-evolution: ${pokemon['prevo']}`;
     }

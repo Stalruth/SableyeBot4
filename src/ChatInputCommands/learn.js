@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const {getChainLearnset, moveAvailable, getMoves, decodeLearnString} = require('learnsetutils');
 
@@ -80,22 +80,20 @@ const command = {
 };
 
 const process = async function(req, res) {
-  const name = getarg(req.body, 'name').value;
-  const moveName = getarg(req.body, 'move')?.value ?? null;
-  const checkLatestOnly = getarg(req.body, 'mode')?.value === 'vgc';
-  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
+  const args = getargs(req.body).params;
+  args.gen ??= Dex.Dex.gen;
 
-  const genCheck = moveAvailable(gen, checkLatestOnly);
+  const genCheck = moveAvailable(args.gen, args.mode === 'vgc');
 
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(args.gen);
 
-  const pokemon = dataSearch(data.species, Data.toID(name))?.result;
+  const pokemon = dataSearch(data.species, Data.toID(args.name))?.result;
 
   if(!pokemon) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a Pokémon named ${name} in Generation ${gen}.`,
+        content: `Could not find a Pokémon named ${args.name} in Generation ${args.gen}.`,
         flags: 1 << 6,
       },
     });
@@ -104,7 +102,7 @@ const process = async function(req, res) {
 
   const learnsetChain = await getChainLearnset(data, pokemon);
 
-  if(!moveName) {
+  if(!args.move) {
     let reply = `${pokemon['name']}'s moveset:\n`;
     const moveset = new Set();
     getMoves(data, learnsetChain, genCheck).forEach((el)=>{moveset.add(el)});
@@ -117,13 +115,13 @@ const process = async function(req, res) {
     });
     return;
   } else {
-    const move = dataSearch(data.moves, Data.toID(moveName))?.result;
+    const move = dataSearch(data.moves, Data.toID(args.move))?.result;
 
     if(!move) {
       res.json({
         type: 4,
         data: {
-          content: `Could not find a move named ${moveName} in Generation ${gen}`,
+          content: `Could not find a move named ${args.move} in Generation ${args.gen}`,
         },
       });
     }
@@ -149,7 +147,7 @@ const process = async function(req, res) {
       return;
     }
 
-    const isCurrentGen = (el) => {return el[0] == gen};
+    const isCurrentGen = (el) => {return el[0] == args.gen};
     const currentGenResults = results.map((stage) => {
       return {
         name: stage['name'],
@@ -162,7 +160,7 @@ const process = async function(req, res) {
     if(currentGenResults.reduce((acc, stage)=>acc + stage.methods.length, 0) === 0) {
       reply += ` another generation.`;
     } else {
-      reply += `:\nGen ${gen}:`;
+      reply += `:\nGen ${args.gen}:`;
       currentGenResults.forEach((stage) => {
         if(stage.methods.length !== 0) {
           reply += `\n- ${stage['name']}: ${stage.methods.map(decodeLearnString).join(', ')}`;

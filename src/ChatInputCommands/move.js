@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const command = {
   description: 'Return information on the given move.',
@@ -63,19 +63,18 @@ const command = {
 };
 
 const process = function(req, res) {
-  const name = getarg(req.body, 'name').value;
-  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
-  const verbose = getarg(req.body, 'verbose')?.value ?? false;
+  const args = getargs(req.body).params;
+  args.gen ??= Dex.Dex.gen;
 
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(args.gen);
 
-  const move = dataSearch(data.moves, Data.toID(name))?.result;
+  const move = dataSearch(data.moves, Data.toID(args.name))?.result;
 
   if(!move) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a move named ${name} in Generation ${gen}.`,
+        content: `Could not find a move named ${args.name} in Generation ${args.gen}.`,
         flags: 1 << 6,
       },
     });
@@ -85,7 +84,7 @@ const process = function(req, res) {
   let reply = `${move['name']} [${move['type']}] [${move['category']}]`;
   reply += `\nPower: ${move['basePower']} `;
 
-  if(gen === 7) {
+  if(args.gen === 7) {
     if(move['isZ']) {
       reply += `(Z: ${data.items.get(move['isZ'])['name']})`;
     } else if (move['zMove']['effect']) {
@@ -104,7 +103,7 @@ const process = function(req, res) {
     }
   }
 
-  if(gen === 8) {
+  if(args.gen === 8) {
     if(move.maxMove && move.maxMove.basePower) {
       reply += `(Max Power: ${move['maxMove']['basePower']})`;
     } else {
@@ -116,7 +115,7 @@ const process = function(req, res) {
   reply += `\n${(move['desc'] || move['shortDesc'])}`;
   reply += `\nPriority: ${(move['priority'] > 0) ? '+' : ''}${move['priority']}`;
 
-  if(verbose) {
+  if(args.verbose) {
     reply += `\nTarget: ${move['target']}`;
     reply += `\nIntroduced: Generation ${move['gen']}`;
   }
@@ -156,7 +155,7 @@ const process = function(req, res) {
   if(move['flags']['defrost']) {
     reply += `\nDefrost: Thaws the user if completed while frozen`;
   }
-  if(move['flags']['distance'] && gen >=5 && gen <= 6) {
+  if(move['flags']['distance'] && args.gen >= 5 && args.gen <= 6) {
     reply += `\nDistance: Can target Pokémon positioned anywhere in a Triple Battle.`;
   }
   if(move['flags']['gravity']) {
@@ -165,7 +164,7 @@ const process = function(req, res) {
   if(move['flags']['heal']) {
     reply += `\nHeal: Cannot be selected or executed under Heal Block.`;
   }
-  if(move['flags']['nonsky'] && gen === 6) {
+  if(move['flags']['nonsky'] && args.gen === 6) {
     reply += `\nNon-Sky: Cannot be selected or excecuted in a Sky Battle.`;
   }
   if(move['flags']['powder']) {

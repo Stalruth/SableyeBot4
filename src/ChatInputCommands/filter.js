@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const toArray = require('dexdata-toarray');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 const paginate = require('paginate');
 const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 
@@ -206,39 +206,23 @@ const command = {
 };
 
 const process = async function(req, res) {
-  const args = {
-    ability: getarg(req.body, 'abilities')?.value ?? undefined,
-    type: getarg(req.body, 'types')?.value ?? undefined,
-    move: getarg(req.body, 'moves')?.value ?? undefined,
-    hp: getarg(req.body, 'hp')?.value ?? undefined,
-    atk: getarg(req.body, 'atk')?.value ?? undefined,
-    def: getarg(req.body, 'def')?.value ?? undefined,
-    spa: getarg(req.body, 'spa')?.value ?? undefined,
-    spa: getarg(req.body, 'spd')?.value ?? undefined,
-    spe: getarg(req.body, 'spe')?.value ?? undefined,
-    bst: getarg(req.body, 'bst')?.value ?? undefined,
-    weightkg: getarg(req.body, 'weight-kg')?.value ?? undefined,
-    weakness: getarg(req.body, 'weaknesses')?.value ?? undefined,
-    resist: getarg(req.body, 'resists')?.value ?? undefined,
-    egggroup: getarg(req.body, 'egg-group')?.value ?? undefined,
-  };
-  const isVgc = getarg(req.body, 'mode')?.value === 'vgc';
-  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
+  const args = getargs(req.body).params;
+  args.gen ??= Dex.Dex.gen;
 
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(args.gen);
   const filters = [];
 
-  if(args['ability']) {
-    const abilities = args['ability'].split(',');
+  if(args.abilities) {
+    const abilities = args.abilities.split(',');
     for(const ability of abilities) {
       try {
-        const filter = filterFactory['ability'](data, ability, isVgc);
+        const filter = filterFactory['ability'](data, ability, args.mode === 'vgc');
         filters.push(filter);
       } catch {
         res.json({
           type: 4,
           data: {
-            content: `The ability ${ability} could not be found in Generation ${gen}.`,
+            content: `The ability ${ability} could not be found in Generation ${args.gen}.`,
             flags: 1<< 6,
           },
         });
@@ -247,17 +231,17 @@ const process = async function(req, res) {
     }
   }
 
-  if(args['type']) {
-    const types = args['type'].split(',');
+  if(args.types) {
+    const types = args.types.split(',');
     for(const type of types) {
       try {
-        const filter = filterFactory['type'](data, type, isVgc);
+        const filter = filterFactory['type'](data, type, args.mode === 'vgc');
         filters.push(filter);
       } catch {
         res.json({
           type: 4,
           data: {
-            content: `The type ${type} could not be found in Generation ${gen}.`,
+            content: `The type ${type} could not be found in Generation ${args.gen}.`,
             flags: 1<< 6,
           },
         });
@@ -266,17 +250,17 @@ const process = async function(req, res) {
     }
   }
 
-  if(args['move']) {
-    const moves = args['move'].split(',');
+  if(args.moves) {
+    const moves = args.moves.split(',');
     for(const move of moves) {
       try {
-        const filter = filterFactory['move'](data, move, isVgc);
+        const filter = filterFactory['move'](data, move, args.move === 'vgc');
         filters.push(filter);
       } catch {
         res.json({
           type: 4,
           data: {
-            content: `The move ${move} could not be found in Generation ${gen}.`,
+            content: `The move ${move} could not be found in Generation ${args.gen}.`,
             flags: 1<< 6,
           },
         });
@@ -285,10 +269,10 @@ const process = async function(req, res) {
     }
   }
 
-  for (const stat of ['hp','atk','def','spa','spd','spe','bst','weightkg']) {
+  for (const stat of ['hp','atk','def','spa','spd','spe','bst']) {
     if(args[stat]) {
       try {
-        const filter = filterFactory[stat](data, args[stat], isVgc);
+        const filter = filterFactory[stat](data, args[stat], args.move === 'vgc');
         filters.push(filter);
       } catch(e) {
         res.json({
@@ -302,18 +286,34 @@ const process = async function(req, res) {
       }
     }
   }
+  
+  if(args['weight-kg']) {
+    try {
+      const filter = filterFactory['weightkg'](data, args['weight-kg'], args.move === 'vgc');
+      filters.push(filter);
+    } catch(e) {
+      res.json({
+        type: 4,
+        data: {
+          content: `The query ${args['weight-kg']} is not valid for the 'weight-kg' argument.`,
+          flags: 1<< 6,
+        },
+      });
+      return;
+    }
+  }
 
-  if(args['weakness']) {
-    const types = args['weakness'].split(',');
+  if(args.weaknesses) {
+    const types = args.weaknesses.split(',');
     for(const type of types) {
       try {
-        const filter = filterFactory['weakness'](data, type, isVgc);
+        const filter = filterFactory['weakness'](data, type, args.move === 'vgc');
         filters.push(filter);
       } catch {
         res.json({
           type: 4,
           data: {
-            content: `The type ${type} could not be found in Generation ${gen}.`,
+            content: `The type ${type} could not be found in Generation ${args.gen}.`,
             flags: 1<< 6,
           },
         });
@@ -322,17 +322,17 @@ const process = async function(req, res) {
     }
   }
 
-  if(args['resist']) {
-    const types = args['resist'].split(',');
+  if(args.resists) {
+    const types = args.resists.split(',');
     for(const type of types) {
       try {
-        const filter = filterFactory['resist'](data, type, isVgc);
+        const filter = filterFactory['resist'](data, type, args.move === 'vgc');
         filters.push(filter);
       } catch {
         res.json({
           type: 4,
           data: {
-            content: `The type ${type} could not be found in Generation ${gen}.`,
+            content: `The type ${type} could not be found in Generation ${args.gen}.`,
             flags: 1<< 6,
           },
         });
@@ -341,8 +341,8 @@ const process = async function(req, res) {
     }
   }
 
-  if(args['egggroup']) {
-    filters.push(filterFactory['egggroup'](data, args['egggroup']), isVgc);
+  if(args['egg-group']) {
+    filters.push(filterFactory['egggroup'](data, args['egg-group']), args.move === 'vgc');
   }
 
   if(filters.length === 0) {
@@ -356,14 +356,14 @@ const process = async function(req, res) {
     return;
   }
 
-  const threshold = Math.min(getarg(req.body, 'threshold')?.value ?? Infinity, filters.length);
+  const threshold = args.threshold ?? filters.length;
 
   const results = await applyFilters(toArray(data.species), filters, threshold);
 
   const filterDescriptions = filters.map(el=>`- ${el['description']}`).join('\n');
-  const genDescription = gen !== Dex.Dex.gen ? `Using Gen ${gen}\n` : '';
+  const genDescription = args.gen !== Dex.Dex.gen ? `Using Gen ${args.gen}\n` : '';
   const thresholdDescription = threshold !== filters.length ? ` (${threshold} must match)` : '';
-  const modeDescription = isVgc ? `VGC Mode enabled - Transfer moves excluded.\n` : '';
+  const modeDescription = args.mode === 'vgc' ? `VGC Mode enabled - Transfer moves excluded.\n` : '';
   const responsePrefix = `${genDescription}${modeDescription}Filters${thresholdDescription}:\n${filterDescriptions}\n- - -\nResults (${results.length}):\n`;
   const pages = paginate(results.map((el)=>{return el.name}), 1950 - responsePrefix.length);
   const names = pages[0];
@@ -386,7 +386,7 @@ const process = async function(req, res) {
             },
             {
               type: 2,
-              custom_id:`filter_p2_${gen}_${threshold}${isVgc ?'_V':''}${packFilters(filters)}`,
+              custom_id:`filter_p2_${args.gen}_${threshold}${args.mode === 'vgc' ?'_V':''}${packFilters(filters)}`,
               style: 2,
               label: 'Next',
             },

@@ -5,7 +5,7 @@ const Data = require('@pkmn/data');
 const dataSearch = require('datasearch');
 
 const { damageTaken } = require('typecheck');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const command = {
   description: 'Returns the given Pokémon\'s weaknesses and resistances.',
@@ -59,18 +59,18 @@ const command = {
 }
 
 const process = (req, res) => {
-  const name = getarg(req.body, 'pokemon').value;
-  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
+  const args = getargs(req.body).params;
+  args.gen ??= 8;
 
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(args.gen);
 
-  const pokemon = dataSearch(data.species, Data.toID(name))?.result;
+  const pokemon = dataSearch(data.species, Data.toID(args.pokemon))?.result;
 
   if(!pokemon) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a Pokémon named ${name} in Generation ${gen}.`,
+        content: `Could not find a Pokémon named ${args.pokemon} in Generation ${args.gen}.`,
         flags: 1 << 6,
       },
     });

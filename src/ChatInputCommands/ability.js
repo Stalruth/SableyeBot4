@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const command = {
   description: 'Return information on the given ability.',
@@ -58,18 +58,18 @@ const command = {
 };
 
 const process = function(req, res) {
-  const name = getarg(req.body, 'name').value;
-  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
+  const args = getargs(req.body).params;
+  args.gen ??= Dex.Dex.gen;
 
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(args.gen);
 
-  const ability = dataSearch(data.abilities, Data.toID(name))?.result;
+  const ability = dataSearch(data.abilities, Data.toID(args.name))?.result;
 
   if(!ability) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find an ability named ${name} in Generation ${gen}.`,
+        content: `Could not find an ability named ${args.name} in Generation ${args.gen}.`,
         flags: 1 << 6,
       }
     });

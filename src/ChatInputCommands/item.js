@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 
 const command = {
   description: 'Return information on the given item.',
@@ -63,19 +63,18 @@ const command = {
 };
 
 const process = function(req, res) {
-  const name = getarg(req.body, 'name').value;
-  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
-  const verbose = getarg(req.body, 'verbose')?.value ?? false;
+  const args = getargs(req.body).params;
+  args.gen ??= Dex.Dex.gen;
 
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(args.gen);
 
-  const item = dataSearch(data.items, Data.toID(name))?.result;
+  const item = dataSearch(data.items, Data.toID(args.name))?.result;
 
   if(!item) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find an item named ${name} in Generation ${gen}.`,
+        content: `Could not find an item named ${args.name} in Generation ${args.gen}.`,
         flags: 1<< 6,
       },
     });
@@ -84,7 +83,7 @@ const process = function(req, res) {
 
   let reply = `${item['name']}\n${item['desc']}`;
 
-  if(verbose) {
+  if(args.verbose) {
     if(item['naturalGift']) {
       reply += `\nNatural Gift: ${item['naturalGift']['basePower']} Power ${item['naturalGift']['type']}-type.`;
     }

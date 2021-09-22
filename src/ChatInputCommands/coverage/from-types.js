@@ -4,7 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
-const { getarg } = require('discord-getarg');
+const { getargs } = require('discord-getarg');
 const { damageTaken } = require('typecheck');
 
 const command = {
@@ -59,12 +59,12 @@ const command = {
 }
 
 const process = (req, res) => {
-  const types_arg = getarg(req.body, 'types').value.split(',');
-  const gen = getarg(req.body, 'gen')?.value ?? Dex.Dex.gen;
+  const args = getargs(req.body).params;
+  args.gen ??= Dex.Dex.gen;
 
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Dex.Dex).get(args.gen);
 
-  const types = types_arg.map((el) => {
+  const types = args.types.split(',').map((el) => {
     return dataSearch(data.types, Data.toID(el))?.result?.name;
   });
 
@@ -72,14 +72,14 @@ const process = (req, res) => {
     nonTypes = [];
     for(const i in types) {
       if(!types[i]) {
-        nonTypes.push(types_arg[i]);
+        nonTypes.push(args.types[i]);
       }
     }
 
     res.json({
       type: 4,
       data: {
-        content: `Could not find Types named ${nonTypes.join(',')} in Generation ${gen}.`,
+        content: `Could not find Types named ${nonTypes.join(',')} in Generation ${args.gen}.`,
         flags: 1 << 6,
       },
     });
