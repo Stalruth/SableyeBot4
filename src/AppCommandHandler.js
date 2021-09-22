@@ -13,7 +13,6 @@ const addCommand = async function(name, module) {
 };
 
 addCommand('nature', require('./ChatInputCommands/nature.js'));
-addCommand('calculator', require('./ChatInputCommands/calculator.js'));
 addCommand('hiddenpower', require('./ChatInputCommands/hiddenpower.js'));
 addCommand('about', require('./ChatInputCommands/about.js'));
 addCommand('ability', require('./ChatInputCommands/ability.js'));
