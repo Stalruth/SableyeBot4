@@ -56,7 +56,15 @@ async function getPage(req, res) {
   res.json({
     type: 7,
     data: {
-      content: responsePrefix + page + names,
+      embeds: [{
+        title: `Results: ${page}`,
+        description: responsePrefix + names,
+        color: 0x5F32AB,
+        footer: {
+          text: `SableyeBot version 4.0.0-alpha`,
+          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+        },
+      }],
       components: [
         {
           type: 1,

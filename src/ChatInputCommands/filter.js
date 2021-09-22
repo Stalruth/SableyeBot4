@@ -222,8 +222,16 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            content: `The ability ${ability} could not be found in Generation ${args.gen}.`,
-            flags: 1<< 6,
+            embeds: [{
+              title: "Error",
+              description: `The ability ${ability} could not be found in Generation ${args.gen}.`,
+              color: 0xCC0000,
+              footer: {
+                text: `SableyeBot version 4.0.0-alpha`,
+                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+              },
+            }],
+            flags: 1 << 6,
           },
         });
         return;
@@ -241,8 +249,16 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            content: `The type ${type} could not be found in Generation ${args.gen}.`,
-            flags: 1<< 6,
+            embeds: [{
+              title: "Error",
+              description: `The type ${type} could not be found in Generation ${args.gen}.`,
+              color: 0xCC0000,
+              footer: {
+                text: `SableyeBot version 4.0.0-alpha`,
+                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+              },
+            }],
+            flags: 1 << 6,
           },
         });
         return;
@@ -260,8 +276,16 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            content: `The move ${move} could not be found in Generation ${args.gen}.`,
-            flags: 1<< 6,
+            embeds: [{
+              title: "Error",
+              description: `The move ${move} could not be found in Generation ${args.gen}.`,
+              color: 0xCC0000,
+              footer: {
+                text: `SableyeBot version 4.0.0-alpha`,
+                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+              },
+            }],
+            flags: 1 << 6,
           },
         });
         return;
@@ -278,8 +302,16 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            content: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
-            flags: 1<< 6,
+            embeds: [{
+              title: "Error",
+              description: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
+              color: 0xCC0000,
+              footer: {
+                text: `SableyeBot version 4.0.0-alpha`,
+                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+              },
+            }],
+            flags: 1 << 6,
           },
         });
         return;
@@ -295,8 +327,16 @@ const process = async function(req, res) {
       res.json({
         type: 4,
         data: {
-          content: `The query ${args['weight-kg']} is not valid for the 'weight-kg' argument.`,
-          flags: 1<< 6,
+            embeds: [{
+              title: "Error",
+              description: `The query ${args['weight-kg']} is not valid for the 'weight-kg' argument.`,
+              color: 0xCC0000,
+              footer: {
+                text: `SableyeBot version 4.0.0-alpha`,
+                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+              },
+            }],
+          flags: 1 << 6,
         },
       });
       return;
@@ -313,8 +353,16 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            content: `The type ${type} could not be found in Generation ${args.gen}.`,
-            flags: 1<< 6,
+            embeds: [{
+              title: "Error",
+              description: `The type ${type} could not be found in Generation ${args.gen}.`,
+              color: 0xCC0000,
+              footer: {
+                text: `SableyeBot version 4.0.0-alpha`,
+                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+              },
+            }],
+            flags: 1 << 6,
           },
         });
         return;
@@ -332,8 +380,16 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            content: `The type ${type} could not be found in Generation ${args.gen}.`,
-            flags: 1<< 6,
+            embeds: [{
+              title: "Error",
+              description: `The type ${type} could not be found in Generation ${args.gen}.`,
+              color: 0xCC0000,
+              footer: {
+                text: `SableyeBot version 4.0.0-alpha`,
+                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+              },
+            }],
+            flags: 1 << 6,
           },
         });
         return;
@@ -349,8 +405,16 @@ const process = async function(req, res) {
     res.json({
       type: 4,
       data: {
-        content: 'You haven\'t added any filters.',
-        flags: 1<< 6,
+        embeds: [{
+          title: "Error",
+          description: "You haven't added any filters.",
+          color: 0xCC0000,
+          footer: {
+            text: `SableyeBot version 4.0.0-alpha`,
+            icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+          },
+        }],
+        flags: 1 << 6,
       },
     });
     return;
@@ -372,7 +436,15 @@ const process = async function(req, res) {
   res.json({
     type: 4,
     data: {
-      content: responsePrefix + page + names,
+      embeds: [{
+        title: `Results: ${page}`,
+        description: responsePrefix + names,
+        color: 0x5F32AB,
+        footer: {
+          text: `SableyeBot version 4.0.0-alpha`,
+          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+        },
+      }],
       components: (pages.length === 1 ? undefined : [
         {
           type: 1,
