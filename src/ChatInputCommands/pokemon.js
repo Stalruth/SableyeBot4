@@ -82,14 +82,23 @@ const process = function(req, res) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a Pokémon named ${args.name} in Generation ${args.gen}.`,
+        embeds: [{
+          title: "Error",
+          description: `Could not find a Pokemon named ${args.name} in Generation ${args.gen}`,
+          color: 0xCC0000,
+          footer: {
+            text: `SableyeBot version 4.0.0-alpha`,
+            icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+          },
+        }],
         flags: 1 << 6,
       },
     });
     return;
   }
 
-  let reply = `No. ${pokemon['num']}: ${pokemon['name']} [${pokemon['types'].join('/')}]`;
+  let title = `No. ${pokemon['num']}: ${pokemon['name']}`;
+  let description = `${pokemon['types'].join('/')} Type`;
 
   if(args.gen >= 3) {
     const abilities = [pokemon['abilities'][0]]
@@ -99,7 +108,7 @@ const process = function(req, res) {
     if(pokemon['abilities']['H'] && !pokemon['unreleasedHidden']) {
       abilities.push(pokemon['abilities']['H'] + ' (Hidden)');
     }
-    reply += `\nAbilities: ${abilities.join(', ')}`;
+    description += `\nAbilities: ${abilities.join(', ')}`;
   }
 
   const statNames = ['HP', 'Atk', 'Def', ...(args.gen <= 2 ? ['Spc'] : ['SpA', 'SpD']), 'Spe']
@@ -115,31 +124,31 @@ const process = function(req, res) {
     ]),
     pokemon.baseStats.spe
   ];
-  reply += `\n${statNames.join('/')}: ${stats.join('/')} [BST: ${stats.reduce((ac, el) => ac + el)}]`;
+  description += `\n${statNames.join('/')}: ${stats.join('/')} [BST: ${stats.reduce((ac, el) => ac + el)}]`;
 
   if(args.verbose) {
-    reply += `\nIntroduced: Generation ${pokemon['gen']}`;
-    reply += `\nWeight: ${pokemon['weightkg']}kg (${lowKickPower(pokemon['weightkg'])} BP)`;
+    description += `\nIntroduced: Generation ${pokemon['gen']}`;
+    description += `\nWeight: ${pokemon['weightkg']}kg (${lowKickPower(pokemon['weightkg'])} BP)`;
   }
 
   if(pokemon['baseSpecies'] !== pokemon['name']) {
-    reply += `\nBase Species: ${pokemon['baseSpecies']}`;
+    description += `\nBase Species: ${pokemon['baseSpecies']}`;
   }
 
   if(pokemon['otherFormes']) {
-    reply += `\nOther Formes: ${pokemon['otherFormes'].join(', ')}`;
+    description += `\nOther Formes: ${pokemon['otherFormes'].join(', ')}`;
   }
 
   if(args.verbose) {
     if(pokemon['prevo']) {
-      reply += `\nPre-evolution: ${pokemon['prevo']}`;
+      description += `\nPre-evolution: ${pokemon['prevo']}`;
     }
     if(pokemon['evos']) {
-      reply += `\nEvolution(s): ${pokemon['evos'].join(', ')}`;
+      description += `\nEvolution(s): ${pokemon['evos'].join(', ')}`;
     }
-    reply += `\nEgg Groups: ${pokemon['eggGroups']}`;
+    description += `\nEgg Groups: ${pokemon['eggGroups']}`;
 
-    reply += `\nGender Ratio: `
+    description += `\nGender Ratio: `
     const genderRatio = {
       'M': pokemon['genderRatio']['M'] * 100,
       'F': pokemon['genderRatio']['F'] * 100,
@@ -151,29 +160,37 @@ const process = function(req, res) {
         ratios.push(`${el}: ${genderRatio[el]}%`);
       }
     });
-    reply += ratios.join(', ');
+    description += ratios.join(', ');
 
     if(pokemon['requiredItems']) {
-      reply += `\nRequired Item: ${pokemon['requiredItems'].join(', ')}`;
+      description += `\nRequired Item: ${pokemon['requiredItems'].join(', ')}`;
     }
 
     if(pokemon['requiredAbility']) {
-      reply += `\nRequired Ability: ${pokemon['requiredAbility']}`;
+      description += `\nRequired Ability: ${pokemon['requiredAbility']}`;
     }
 
     if(pokemon['eventOnly']) {
-      reply += `\nThis Pokémon is only available through events.`;
+      description += `\nThis Pokémon is only available through events.`;
     }
 
     if(pokemon['battleOnly']) {
-      reply += `\nThis Pokémon only appears in battle.`;
+      description += `\nThis Pokémon only appears in battle.`;
     }
   }
 
   res.json({
     type: 4,
     data: {
-      content: reply,
+      embeds: [{
+        title,
+        description,
+        color: 0x5F32AB,
+        footer: {
+          text: `SableyeBot version 4.0.0-alpha`,
+          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+        },
+      }],
     },
   });
 };

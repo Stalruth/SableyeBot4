@@ -77,7 +77,15 @@ const process = function(req, res) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a Pokémon named ${args.pokemon} in Generation ${args.gen}.`,
+        embeds: [{
+          title: "Error",
+          description: `Could not find a Pokemon named ${args.pokemon} in Generation ${args.gen}`,
+          color: 0xCC0000,
+          footer: {
+            text: `SableyeBot version 4.0.0-alpha`,
+            icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+          },
+        }],
         flags: 1 << 6,
       },
     });

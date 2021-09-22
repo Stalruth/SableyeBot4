@@ -74,21 +74,30 @@ const process = function(req, res) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a move named ${args.name} in Generation ${args.gen}.`,
+      embeds: [{
+          title: "Error",
+          description: `Could not find a move named ${args.name} in Generation ${args.gen}`,
+          color: 0xCC0000,
+          footer: {
+            text: `SableyeBot version 4.0.0-alpha`,
+            icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+          },
+        }],
         flags: 1 << 6,
       },
     });
     return;
   }
 
-  let reply = `${move['name']} [${move['type']}] [${move['category']}]`;
-  reply += `\nPower: ${move['basePower']} `;
+  const title = `${move['name']}`;
+  let description = `Type: ${move['type']}; Category: [${move['category']}]`;
+  description += `\nPower: ${move['basePower']} `;
 
   if(args.gen === 7) {
     if(move['isZ']) {
-      reply += `(Z: ${data.items.get(move['isZ'])['name']})`;
+      description += `(Z: ${data.items.get(move['isZ'])['name']})`;
     } else if (move['zMove']['effect']) {
-      reply += `(Z: ${move.zMove.effect})`;
+      description += `(Z: ${move.zMove.effect})`;
     } else if (move['zMove']['boost']) {
       const stats = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
       const boosts = [];
@@ -97,102 +106,110 @@ const process = function(req, res) {
           boosts.push(el.toUpperCase() + '+' + move['zMove']['boost'][el]);
         }
       });
-      reply += `(Z: ${boosts.join(', ')})`;
+      description += `(Z: ${boosts.join(', ')})`;
     } else {
-      reply += `(Z: ${move['zMove']['basePower']})`;
+      description += `(Z: ${move['zMove']['basePower']})`;
     }
   }
 
   if(args.gen === 8) {
     if(move.maxMove && move.maxMove.basePower) {
-      reply += `(Max Power: ${move['maxMove']['basePower']})`;
+      description += `(Max Power: ${move['maxMove']['basePower']})`;
     } else {
-      reply += `(Max Guard)`;
+      description += `(Max Guard)`;
     }
   }
 
-  reply += `; Accuracy: ${move['accuracy']}; PP: ${move['pp']} (max ${Math.floor(move['pp']*1.6)})`;
-  reply += `\n${(move['desc'] || move['shortDesc'])}`;
-  reply += `\nPriority: ${(move['priority'] > 0) ? '+' : ''}${move['priority']}`;
+  description += `; Accuracy: ${move['accuracy']}; PP: ${move['pp']} (max ${Math.floor(move['pp']*1.6)})`;
+  description += `\n${(move['desc'] || move['shortDesc'])}`;
+  description += `\nPriority: ${(move['priority'] > 0) ? '+' : ''}${move['priority']}`;
 
   if(args.verbose) {
-    reply += `\nTarget: ${move['target']}`;
-    reply += `\nIntroduced: Generation ${move['gen']}`;
+    description += `\nTarget: ${move['target']}`;
+    description += `\nIntroduced: Generation ${move['gen']}`;
   }
 
   if(Object.keys(move['flags']).length > 0) {
-    reply += `\n~~`;
+    description += `\n~~`;
   }
   if(move['flags']['bullet']) {
-    reply += `\nArtillery: Does not affect Bulletproof Pokémon.`;
+    description += `\nArtillery: Does not affect Bulletproof Pokémon.`;
   }
   if(!move['flags']['protect']) {
-    reply += `\nProtect: Blocked by Detect, Protect, `;
+    description += `\nProtect: Blocked by Detect, Protect, `;
     if(move['category'] === 'status') {
-      reply += `and Spiky Shield.`;
+      description += `and Spiky Shield.`;
     } else {
-      reply += `Spiky Shield, and King's Shield.`;
+      description += `Spiky Shield, and King's Shield.`;
     }
   }
   if(move['flags']['mirror']) {
-    reply += `\nMirror: Can be copied by Mirror Move.`;
+    description += `\nMirror: Can be copied by Mirror Move.`;
   }
   if(move['flags']['authentic']) {
-    reply += `\nAuthentic: Bypasses a target's substitute.`;
+    description += `\nAuthentic: Bypasses a target's substitute.`;
   }
   if(move['flags']['bite']) {
-    reply += `\nBite: Power is boosted by Strong Jaw.`;
+    description += `\nBite: Power is boosted by Strong Jaw.`;
   }
   if(move['flags']['charge']) {
-    reply += `\nCharge: This move spends a turn charging before executing.`;
+    description += `\nCharge: This move spends a turn charging before executing.`;
   }
   if(move['flags']['contact']) {
-    reply += `\nContact: Makes contact.`;
+    description += `\nContact: Makes contact.`;
   }
   if(move['flags']['dance']) {
-    reply += `\nDance: Triggers the Dancer Ability.`;
+    description += `\nDance: Triggers the Dancer Ability.`;
   }
   if(move['flags']['defrost']) {
-    reply += `\nDefrost: Thaws the user if completed while frozen`;
+    description += `\nDefrost: Thaws the user if completed while frozen`;
   }
   if(move['flags']['distance'] && args.gen >= 5 && args.gen <= 6) {
-    reply += `\nDistance: Can target Pokémon positioned anywhere in a Triple Battle.`;
+    description += `\nDistance: Can target Pokémon positioned anywhere in a Triple Battle.`;
   }
   if(move['flags']['gravity']) {
-    reply += `\nGravity: Cannot be selected or executed under Gravity.`;
+    description += `\nGravity: Cannot be selected or executed under Gravity.`;
   }
   if(move['flags']['heal']) {
-    reply += `\nHeal: Cannot be selected or executed under Heal Block.`;
+    description += `\nHeal: Cannot be selected or executed under Heal Block.`;
   }
   if(move['flags']['nonsky'] && args.gen === 6) {
-    reply += `\nNon-Sky: Cannot be selected or excecuted in a Sky Battle.`;
+    description += `\nNon-Sky: Cannot be selected or excecuted in a Sky Battle.`;
   }
   if(move['flags']['powder']) {
-    reply += `\nPowder: Does not affect Grass-type Pokémon, Pokémon with the ability Overcoat or the item Safety Goggles`;
+    description += `\nPowder: Does not affect Grass-type Pokémon, Pokémon with the ability Overcoat or the item Safety Goggles`;
   }
   if(move['flags']['pulse']) {
-    reply += `\nPulse: Power is boosted by Mega Launcher`;
+    description += `\nPulse: Power is boosted by Mega Launcher`;
   }
   if(move['flags']['punch']) {
-    reply += `\nPunch: Power is boosted by Iron Fist.`;
+    description += `\nPunch: Power is boosted by Iron Fist.`;
   }
   if(move['flags']['recharge']) {
-    reply += `\nRecharge: If this move succeeds, the user skips the next turn.`;
+    description += `\nRecharge: If this move succeeds, the user skips the next turn.`;
   }
   if(move['flags']['reflectable']) {
-    reply += `\nReflectable: Can be reflected by Magic Coat or Magic Bounce`;
+    description += `\nReflectable: Can be reflected by Magic Coat or Magic Bounce`;
   }
   if(move['flags']['snatch']) {
-    reply += `\nSnatch: Is affected by Snatch.`;
+    description += `\nSnatch: Is affected by Snatch.`;
   }
   if(move['flags']['sound']) {
-    reply += `\nSound: Does not affect Soundproof Pokémon.`;
+    description += `\nSound: Does not affect Soundproof Pokémon.`;
   }
 
   res.json({
     type: 4,
     data: {
-      content: reply,
+      embeds: [{
+        title,
+        description,
+        color: 0x5F32AB,
+        footer: {
+          text: `SableyeBot version 4.0.0-alpha`,
+          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+        },
+      }],
     },
   });
 };

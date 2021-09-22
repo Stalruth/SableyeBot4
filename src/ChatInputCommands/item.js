@@ -73,34 +73,50 @@ const process = function(req, res) {
   if(!item) {
     res.json({
       type: 4,
-      data: {
-        content: `Could not find an item named ${args.name} in Generation ${args.gen}.`,
+      data: {embeds: [{
+          title: "Error",
+          description: `Could not find an item named ${args.name} in Generation ${args.gen}.`,
+          color: 0xCC0000,
+          footer: {
+            text: `SableyeBot version 4.0.0-alpha`,
+            icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+          },
+        }],
         flags: 1<< 6,
       },
     });
     return;
   }
 
-  let reply = `${item['name']}\n${item['desc']}`;
+  let title = item['name'];
+  let description = item['desc'];
 
   if(args.verbose) {
     if(item['naturalGift']) {
-      reply += `\nNatural Gift: ${item['naturalGift']['basePower']} Power ${item['naturalGift']['type']}-type.`;
+      description += `\nNatural Gift: ${item['naturalGift']['basePower']} Power ${item['naturalGift']['type']}-type.`;
     }
     if(item['fling']) {
-      reply += `\nFling: ${item['fling']['basePower']} Power`;
+      description += `\nFling: ${item['fling']['basePower']} Power`;
       if(item['fling']['status'] || item['fling']['volatileStatus']) {
-        reply += `, causes ${item['fling']['status'] || item['fling']['volatileStatus']}`;
+        description += `, causes ${item['fling']['status'] || item['fling']['volatileStatus']}`;
       }
     }
 
-    reply += `\nIntroduced: Generation ${item['gen']}`;
+    description += `\nIntroduced: Generation ${item['gen']}`;
   }
 
   res.json({
     type: 4,
     data: {
-      content: reply,
+      embeds: [{
+        title,
+        description,
+        color: 0x5F32AB,
+        footer: {
+          text: `SableyeBot version 4.0.0-alpha`,
+          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+        },
+      }],
     },
   });
 };

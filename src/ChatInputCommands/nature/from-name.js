@@ -34,22 +34,45 @@ const command = {
 const process = (req, res) => {
   const args = getargs(req.body).params;
 
+  // Uh oh sisters! hardcoding!
+  const neutralNatures = {
+    'Hardy': 'ATK',
+    'Docile': 'DEF',
+    'Bashful': 'SPA',
+    'Quirky': 'SPD',
+    'Serious': 'SPE',
+  };
+
   const nature = natures.get(args.name);
-  if(nature.plus === nature.minus) {
-    res.json({
-      type: 4,
-      data: {
-        content: `${nature['name']}: No effect.`,
-      },
-    });
-  } else {
-    res.json({
-      type: 4,
-      data: {
-        content: `${nature['name']}: +${nature['plus'].toUpperCase()} -${nature['minus'].toUpperCase()}`,
-      },
-    });
-  }
+  
+  const title = nature.name;
+  const fields = [
+    {
+      name: 'Boosted',
+      value: nature['plus'] ? nature['plus'].toUpperCase() : neutralNatures[nature.name],
+      inline: true,
+    },
+    {
+      name: 'Lowered',
+      value: nature['minus'] ? nature['minus'].toUpperCase() : neutralNatures[nature.name],
+      inline: true,
+    },
+  ];
+
+  res.json({
+    type: 4,
+    data: {
+      embeds: [{
+        title,
+        fields,
+        color: 0x5F32AB,
+        footer: {
+          text: `SableyeBot version 4.0.0-alpha`,
+          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+        },
+      }],
+    },
+  });
 }
 
 module.exports = {command, process}

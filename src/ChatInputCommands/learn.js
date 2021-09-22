@@ -93,7 +93,15 @@ const process = async function(req, res) {
     res.json({
       type: 4,
       data: {
-        content: `Could not find a Pokémon named ${args.name} in Generation ${args.gen}.`,
+        embeds: [{
+          title: "Error",
+          description: `Could not find a Pokémon named ${args.name} in Generation ${args.gen}.`,
+          color: 0xCC0000,
+          footer: {
+            text: `SableyeBot version 4.0.0-alpha`,
+            icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+          },
+        }],
         flags: 1 << 6,
       },
     });
@@ -101,19 +109,15 @@ const process = async function(req, res) {
   }
 
   const learnsetChain = await getChainLearnset(data, pokemon);
+  
+  let title = '';
+  let description = '';
 
   if(!args.move) {
-    let reply = `${pokemon['name']}'s moveset:\n`;
+    title = `${pokemon['name']}'s moveset:\n`;
     const moveset = new Set();
     getMoves(data, learnsetChain, genCheck).forEach((el)=>{moveset.add(el)});
-    reply += [...moveset].sort().join(', ');
-    res.json({
-      type: 4,
-      data: {
-        content: reply,
-      },
-    });
-    return;
+    description += [...moveset].sort().join(', ');
   } else {
     const move = dataSearch(data.moves, Data.toID(args.move))?.result;
 
@@ -121,9 +125,19 @@ const process = async function(req, res) {
       res.json({
         type: 4,
         data: {
-          content: `Could not find a move named ${args.move} in Generation ${args.gen}`,
+          embeds: [{
+            title: "Error",
+            description: `Could not find a move named ${args.move} in Generation ${args.gen}`,
+            color: 0xCC0000,
+            footer: {
+              text: `SableyeBot version 4.0.0-alpha`,
+              icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+            },
+          }],
+          flags: 1 << 6,
         },
       });
+      return;
     }
 
     const results = [];
@@ -138,43 +152,45 @@ const process = async function(req, res) {
     if(results.reduce((acc, cur) => {
       return acc + cur.methods.length;
     }, 0) === 0) {
-      res.json({
-        type: 4,
-        data: {
-          content: `${pokemon['name']} does not learn ${move['name']} in Generation ${gen}.`,
-        },
-      });
-      return;
-    }
-
-    const isCurrentGen = (el) => {return el[0] == args.gen};
-    const currentGenResults = results.map((stage) => {
-      return {
-        name: stage['name'],
-        methods: stage.methods.filter(isCurrentGen),
-      };
-    });
-
-    let reply = `${pokemon['name']} can learn ${move['name']} in`;
-
-    if(currentGenResults.reduce((acc, stage)=>acc + stage.methods.length, 0) === 0) {
-      reply += ` another generation.`;
+      description = `${pokemon['name']} does not learn ${move['name']} in Generation ${gen}.`
     } else {
-      reply += `:\nGen ${args.gen}:`;
-      currentGenResults.forEach((stage) => {
-        if(stage.methods.length !== 0) {
-          reply += `\n- ${stage['name']}: ${stage.methods.map(decodeLearnString).join(', ')}`;
-        }
+      const isCurrentGen = (el) => {return el[0] == args.gen};
+      const currentGenResults = results.map((stage) => {
+        return {
+          name: stage['name'],
+          methods: stage.methods.filter(isCurrentGen),
+        };
       });
-    }
 
-    res.json({
-      type: 4,
-      data: {
-        content: reply,
-      },
-    });
+      description = `${pokemon['name']} can learn ${move['name']} in`;
+
+      if(currentGenResults.reduce((acc, stage)=>acc + stage.methods.length, 0) === 0) {
+        description += ` another generation.`;
+      } else {
+        description += `:\nGen ${args.gen}:`;
+        currentGenResults.forEach((stage) => {
+          if(stage.methods.length !== 0) {
+            description += `\n- ${stage['name']}: ${stage.methods.map(decodeLearnString).join(', ')}`;
+          }
+        });
+      }
+    }
   }
+
+  res.json({
+    type: 4,
+    data: {
+      embeds: [{
+        title,
+        description,
+        color: 0x5F32AB,
+        footer: {
+          text: `SableyeBot version 4.0.0-alpha`,
+          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+        },
+      }],
+    },
+  });
 };
 
 module.exports = {command, process};

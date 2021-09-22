@@ -108,13 +108,63 @@ const process = (req, res) => {
     spe: args.gen == 2 ? 15 : 31,
   }, ...(args.gen == 2 ? type.HPdvs : type.HPivs)};
 
-  const result = `Hidden Power ${type['name']} - HP: ${stats['hp']}, Atk: ${stats['atk']}, Def: ${stats['def']}, `
-    + (args.gen === 2 ? `Spc: ${stats['spc']},` : `SpA: ${stats['spa']}, SpD: ${stats['spd']},`)
-    + ` Spe: ${stats['spe']}`;
+  const title = `Hidden Power ${type['name']}`;
   res.json({
     type: 4,
     data: {
-      content: result,
+      embeds: [{
+        title,
+        color: 0x5F32AB,
+        fields: [
+          {
+            name: 'HP',
+            value: stats['hp'],
+            inline: true,
+          },
+          {
+            name: 'Attack',
+            value: stats['atk'],
+            inline: true,
+          },
+          {
+            name: 'Defence',
+            value: stats['def'],
+            inline: true,
+          },
+          ...(
+            args.gen === 2 ?
+            [
+              {
+                name: 'Special',
+                value: stats['spc'],
+                inline: true,
+              }
+            ]
+            :
+            [
+              {
+                name: 'Sp. Attack',
+                value: stats['spa'],
+                inline: true,
+              },
+              {
+                name: 'Sp. Defence',
+                value: stats['spd'],
+                inline: true,
+              }
+            ]
+          ),
+          {
+            name: 'Speed',
+            value: stats['spe'],
+            inline: true,
+          },
+        ],
+        footer: {
+          text: `SableyeBot version 4.0.0-alpha`,
+          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
+        },
+      }],
     },
   });
 }
