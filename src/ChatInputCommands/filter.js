@@ -240,7 +240,7 @@ const process = async function(req, res) {
     const types = args.types.split(',');
     for(const type of types) {
       try {
-        const filter = filterFactory['type'](data, type, args.mode === 'vgc');
+        const filter = filterFactory['type'](data, type.trimStart(), args.mode === 'vgc');
         filters.push(filter);
       } catch {
         res.json({
