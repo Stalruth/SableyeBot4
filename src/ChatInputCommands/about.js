@@ -1,5 +1,7 @@
 'use strict';
 
+const buildEmbed = require('embed-builder');
+
 const command = {
   description: 'About SableyeBot',
 };
@@ -8,7 +10,7 @@ const process = function(req, res) {
   res.json({
     type: 4,
     data: {
-      embeds: [{
+      embeds: [buildEmbed({
         title: 'About SableyeBot',
         description: 'Competitive Pokemon Discord Bot',
         url: 'https://github.com/StAlRuth/SableyeBot4',
@@ -16,7 +18,6 @@ const process = function(req, res) {
           name: 'stalruth#3021',
           icon_url: 'https://cdn.discordapp.com/avatars/112038152390123520/56a380f68b4127e8bc49d8e08dd6bd6e.webp',
         },
-        color: 0x5F32AB,
         fields: [
           {
             name: 'Invite Link',
@@ -27,10 +28,7 @@ const process = function(req, res) {
             value: 'JavaScript (using [Express](https://expressjs.com))',
           },
         ],
-        footer: {
-          text: `SableyeBot version 4.0.0-alpha`,
-        },
-      }],
+      })],
     },
   });
 };

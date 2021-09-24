@@ -5,6 +5,7 @@ const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
+const buildEmbed = require('embed-builder');
 
 const command = {
   description: 'Return the number of events a Pokemon has or the details of a specific event.',
@@ -34,15 +35,11 @@ const process = async function(req, res) {
     res.json({
       type: 4,
       data: {
-        embeds: [{
+        embeds: [buildEmbed({
           title: "Error",
           description: `Could not find a Pokémon named ${args.name} in Generation ${Dex.Dex.gen}.`,
           color: 0xCC0000,
-          footer: {
-            text: `SableyeBot version 4.0.0-alpha`,
-            icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-          },
-        }],
+        })],
         flags: 1 << 6,
       },
     });
@@ -52,52 +49,60 @@ const process = async function(req, res) {
   const learnset = await data.learnsets.get(pokemon['id']);
 
   let title = '';
-  let reply = '';
-  if(!args.event || args.event < 1 || args.event > learnset['eventData'].length) {
+  let description = '';
+  if(!args.event) {
     title = `${pokemon['name']} has ${learnset['eventData'].length} events.`;
     if(learnset['eventData'].length > 0) {
-      reply = `\nInclude an Event ID for more information (1-${learnset['eventData'].length})`;
+      description = `\nInclude an Event ID for more information (1-${learnset['eventData'].length})`;
     }
+  } else if (args.event < 1 || args.event > learnset['eventData'].length) {
+    res.json({
+      type: 4,
+      data: {
+        embeds: [buildEmbed({
+          title: "Error",
+          description: `${pokemon.name} only has ${learnset.eventData.length} events.`,
+          color: 0xCC0000,
+        })],
+        flags: 1 << 6,
+      },
+    });
+    return;
   } else {
     const eventData = learnset['eventData'][args.event - 1];
     title += `${pokemon['name']} (Event #${args.event})\n`;
-    reply += `Generation ${eventData['generation']}; Level ${eventData['level']}\n`;
-    reply += `Poke Ball: ${eventData.pokeball ? data.items.get(eventData.pokeball).name : '-'}; `;
-    reply += `Gender: ${(eventData.gender || 'Random')}; Nature: ${(eventData.nature || 'Random')}\n`;
-    reply += `Hidden Ability: ${eventData.isHidden ? 'Yes' : 'No'}; Shiny: ${eventData.shiny ? 'Yes' : 'No'}\n`;
+    description += `Generation ${eventData['generation']}; Level ${eventData['level']}\n`;
+    description += `Poke Ball: ${eventData.pokeball ? data.items.get(eventData.pokeball).name : '-'}; `;
+    description += `Gender: ${(eventData.gender || 'Random')}; Nature: ${(eventData.nature || 'Random')}\n`;
+    description += `Hidden Ability: ${eventData.isHidden ? 'Yes' : 'No'}; Shiny: ${eventData.shiny ? 'Yes' : 'No'}\n`;
 
     if(eventData['ivs']) {
-      reply += `IVs: `;
+      description += `IVs: `;
       ['HP', 'Atk', 'Def', 'SpA', 'SpD', 'Spe'].forEach((el) => {
         if(eventData['ivs'][el] || eventData['ivs'][el] === 0) {
-          reply += `${eventData['ivs'][el]} ${el}; `;
+          description += `${eventData['ivs'][el]} ${el}; `;
         }
       });
-      reply += `\n`;
+      description += `\n`;
     }
 
     if(eventData['perfectIVs']) {
-      reply += `Guaranteed at least ${eventData['perfectIVs']} perfect IVs.\n`;
+      description += `Guaranteed at least ${eventData['perfectIVs']} perfect IVs.\n`;
     }
 
-    reply += `Moves:\n`;
+    description += `Moves:\n`;
     eventData['moves'].forEach((el) => {
-      reply += ` - ${data.moves.get(el).name}\n`;
+      description += ` - ${data.moves.get(el).name}\n`;
     });
   }
 
   res.json({
     type: 4,
     data: {
-      embeds: [{
+      embeds: [buildEmbed({
         title,
-        description: reply,
-        color: 0x5F32AB,
-        footer: {
-          text: `SableyeBot version 4.0.0-alpha`,
-          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-        },
-      }],
+        description,
+      })],
     },
   });
 };

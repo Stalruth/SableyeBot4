@@ -7,6 +7,7 @@ const toArray = require('dexdata-toarray');
 const { getargs } = require('discord-getarg');
 const paginate = require('paginate');
 const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
+const buildEmbed = require('embed-builder');
 
 const command = {
   description: 'Get all Pokémon fitting the given conditions.',
@@ -222,15 +223,11 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            embeds: [{
+            embeds: [buildEmbed({
               title: "Error",
               description: `The ability ${ability} could not be found in Generation ${args.gen}.`,
               color: 0xCC0000,
-              footer: {
-                text: `SableyeBot version 4.0.0-alpha`,
-                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-              },
-            }],
+            })],
             flags: 1 << 6,
           },
         });
@@ -249,15 +246,11 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            embeds: [{
+            embeds: [buildEmbed({
               title: "Error",
               description: `The type ${type} could not be found in Generation ${args.gen}.`,
               color: 0xCC0000,
-              footer: {
-                text: `SableyeBot version 4.0.0-alpha`,
-                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-              },
-            }],
+            })],
             flags: 1 << 6,
           },
         });
@@ -276,15 +269,11 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            embeds: [{
+            embeds: [buildEmbed({
               title: "Error",
               description: `The move ${move} could not be found in Generation ${args.gen}.`,
               color: 0xCC0000,
-              footer: {
-                text: `SableyeBot version 4.0.0-alpha`,
-                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-              },
-            }],
+            })],
             flags: 1 << 6,
           },
         });
@@ -302,15 +291,11 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            embeds: [{
+            embeds: [buildEmbed({
               title: "Error",
               description: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
               color: 0xCC0000,
-              footer: {
-                text: `SableyeBot version 4.0.0-alpha`,
-                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-              },
-            }],
+            })],
             flags: 1 << 6,
           },
         });
@@ -318,7 +303,7 @@ const process = async function(req, res) {
       }
     }
   }
-  
+
   if(args['weight-kg']) {
     try {
       const filter = filterFactory['weightkg'](data, args['weight-kg'], args.move === 'vgc');
@@ -327,15 +312,11 @@ const process = async function(req, res) {
       res.json({
         type: 4,
         data: {
-            embeds: [{
-              title: "Error",
-              description: `The query ${args['weight-kg']} is not valid for the 'weight-kg' argument.`,
-              color: 0xCC0000,
-              footer: {
-                text: `SableyeBot version 4.0.0-alpha`,
-                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-              },
-            }],
+          embeds: [buildEmbed({
+            title: "Error",
+            description: `The query ${args['weight-kg']} is not valid for the 'weight-kg' argument.`,
+            color: 0xCC0000,
+          })],
           flags: 1 << 6,
         },
       });
@@ -353,15 +334,11 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            embeds: [{
+            embeds: [buildEmbed({
               title: "Error",
               description: `The type ${type} could not be found in Generation ${args.gen}.`,
               color: 0xCC0000,
-              footer: {
-                text: `SableyeBot version 4.0.0-alpha`,
-                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-              },
-            }],
+            })],
             flags: 1 << 6,
           },
         });
@@ -380,15 +357,11 @@ const process = async function(req, res) {
         res.json({
           type: 4,
           data: {
-            embeds: [{
+            embeds: [buildEmbed({
               title: "Error",
               description: `The type ${type} could not be found in Generation ${args.gen}.`,
               color: 0xCC0000,
-              footer: {
-                text: `SableyeBot version 4.0.0-alpha`,
-                icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-              },
-            }],
+            })],
             flags: 1 << 6,
           },
         });
@@ -405,15 +378,11 @@ const process = async function(req, res) {
     res.json({
       type: 4,
       data: {
-        embeds: [{
+        embeds: [buildEmbed({
           title: "Error",
           description: "You haven't added any filters.",
           color: 0xCC0000,
-          footer: {
-            text: `SableyeBot version 4.0.0-alpha`,
-            icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-          },
-        }],
+        })],
         flags: 1 << 6,
       },
     });
@@ -436,15 +405,10 @@ const process = async function(req, res) {
   res.json({
     type: 4,
     data: {
-      embeds: [{
+      embeds: [buildEmbed({
         title: `Results: ${page}`,
         description: responsePrefix + names,
-        color: 0x5F32AB,
-        footer: {
-          text: `SableyeBot version 4.0.0-alpha`,
-          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-        },
-      }],
+      })],
       components: (pages.length === 1 ? undefined : [
         {
           type: 1,

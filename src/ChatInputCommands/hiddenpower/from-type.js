@@ -4,6 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const { getargs } = require('discord-getarg');
+const buildEmbed = require('embed-builder');
 
 const types = new Data.Generations(Dex.Dex).get(7).types;
 
@@ -34,10 +35,6 @@ const command = {
       description: 'The Generation used in calculation',
       choices: [
         {
-          name: 'RBY',
-          value: 1,
-        },
-        {
           name: 'GSC',
           value: 2,
         },
@@ -61,10 +58,6 @@ const command = {
           name: 'SM/USM',
           value: 7,
         },
-        {
-          name: 'SwSh',
-          value: 8,
-        },
       ]
     },
   ],
@@ -77,22 +70,16 @@ const process = (req, res) => {
   const types = new Data.Generations(Dex.Dex).get(args.gen).types;
   const type = types.get(args.type);
 
-  if(args.gen === 1 || args.gen === 8) {
-    res.json({
-      type: 4,
-      data: {
-        content: `Hidden power does not exist in Generation ${args.gen}.`,
-        flags: 1 << 6,
-      },
-    });
-    return;
-  }
-
   if(['normal','fairy'].includes(type['id'])) {
     res.json({
       type: 4,
       data: {
-        content: `There is no way to get a ${type['name']}-Type Hidden Power.`,
+        embeds: [buildEmbed({
+          title: 'Error',
+          description: `There is no way to get a ${type['name']}-Type Hidden Power.`,
+          color: 0xCC0000,
+        })],
+        flags: 1 << 6,
       },
     });
     return;
@@ -112,9 +99,8 @@ const process = (req, res) => {
   res.json({
     type: 4,
     data: {
-      embeds: [{
+      embeds: [buildEmbed({
         title,
-        color: 0x5F32AB,
         fields: [
           {
             name: 'HP',
@@ -160,11 +146,7 @@ const process = (req, res) => {
             inline: true,
           },
         ],
-        footer: {
-          text: `SableyeBot version 4.0.0-alpha`,
-          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-        },
-      }],
+      })],
     },
   });
 }

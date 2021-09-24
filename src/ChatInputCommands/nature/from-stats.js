@@ -4,6 +4,7 @@ let Dex = require('@pkmn/dex');
 let Data = require('@pkmn/data');
 
 const { getargs } = require('discord-getarg');
+const buildEmbed = require('embed-builder');
 
 const stats = [
   {
@@ -90,15 +91,10 @@ const process = (req, res) => {
   res.json({
     type: 4,
     data: {
-      embeds: [{
+      embeds: [buildEmbed({
         title,
         fields,
-        color: 0x5F32AB,
-        footer: {
-          text: `SableyeBot version 4.0.0-alpha`,
-          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-        },
-      }],
+      })],
     },
   });
 }

@@ -5,6 +5,7 @@ const Data = require('@pkmn/data');
 
 const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
+const buildEmbed = require('embed-builder');
 
 const lowKickPower = function(weight) {
   if(weight < 10) return 20;
@@ -82,15 +83,11 @@ const process = function(req, res) {
     res.json({
       type: 4,
       data: {
-        embeds: [{
+        embeds: [buildEmbed({
           title: "Error",
           description: `Could not find a Pokemon named ${args.name} in Generation ${args.gen}`,
           color: 0xCC0000,
-          footer: {
-            text: `SableyeBot version 4.0.0-alpha`,
-            icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-          },
-        }],
+        })],
         flags: 1 << 6,
       },
     });
@@ -182,15 +179,10 @@ const process = function(req, res) {
   res.json({
     type: 4,
     data: {
-      embeds: [{
+      embeds: [buildEmbed({
         title,
         description,
-        color: 0x5F32AB,
-        footer: {
-          text: `SableyeBot version 4.0.0-alpha`,
-          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-        },
-      }],
+      })],
     },
   });
 };

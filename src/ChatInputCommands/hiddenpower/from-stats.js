@@ -4,6 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
 const { getargs } = require('discord-getarg');
+const buildEmbed = require('embed-builder');
 
 const command = {
   description: 'Returns the Hidden Power produced by the given IVs.',
@@ -50,10 +51,6 @@ const command = {
       description: 'The Generation used in calculation',
       choices: [
         {
-          name: 'RBY',
-          value: 1,
-        },
-        {
           name: 'GSC',
           value: 2,
         },
@@ -77,10 +74,6 @@ const command = {
           name: 'SM/USM',
           value: 7,
         },
-        {
-          name: 'SwSh',
-          value: 8,
-        },
       ]
     },
   ],
@@ -89,25 +82,6 @@ const command = {
 const process = (req, res) => {
   const args = getargs(req.body).params;
   args.gen ??= 7;
-
-  if(args.gen === 1) {
-    res.json({
-      type: 4,
-      data: {
-        embeds: [{
-          title: "Error",
-          description: `Hidden power does not exist in Generation ${args.gen}.`,
-          color: 0xCC0000,
-          footer: {
-            text: `SableyeBot version 4.0.0-alpha`,
-            icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-          },
-        }],
-        flags: 1 << 6,
-      },
-    });
-    return;
-  }
 
   const types = new Data.Generations(Dex.Dex).get(args.gen).types;
 
@@ -123,7 +97,12 @@ const process = (req, res) => {
     res.json({
       type: 4,
       data: {
-        contenet: `IVs are restricted between 0 and 31.\nThe following IVs are out of range:\n - ${problems.join('\n - ')}`,
+        embeds: [buildEmbed({
+          title: 'Error',
+          description: `IVs are restricted between 0 and 31.\nThe following IVs are out of range:\n - ${problems.join('\n - ')}`,
+          color: 0xCC0000,
+        })],
+        flags: 1 << 6,
       },
     });
     return;
@@ -134,14 +113,9 @@ const process = (req, res) => {
   res.json({
     type: 4,
     data: {
-      embeds: [{
+      embeds: [buildEmbed({
         description: `Type: ${result['type']}; Power: ${result['power']}`,
-        color: 0x5F32AB,
-        footer: {
-          text: `SableyeBot version 4.0.0-alpha`,
-          icon_url: 'https://cdn.discordapp.com/avatars/211522070620667905/6b037c17fc6671f0a5dc73803a4c3338.webp',
-        },
-      }],
+      })],
     },
   });
 }
