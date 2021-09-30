@@ -25,7 +25,7 @@ async function main() {
     console.log('Updated!');
   } else {
     console.log('Oh no!');
-    console.log(result.json());
+    console.log(await result.json());
   }
 }
 
