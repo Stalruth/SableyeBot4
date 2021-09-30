@@ -146,7 +146,7 @@ const process = async function(req, res) {
     if(results.reduce((acc, cur) => {
       return acc + cur.methods.length;
     }, 0) === 0) {
-      description = `${pokemon['name']} does not learn ${move['name']} in Generation ${gen}.`
+      description = `${pokemon['name']} does not learn ${move['name']} in Generation ${args.gen}.`
     } else {
       const isCurrentGen = (el) => {return el[0] == args.gen};
       const currentGenResults = results.map((stage) => {
