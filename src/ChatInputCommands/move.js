@@ -6,6 +6,7 @@ const Data = require('@pkmn/data');
 const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const colours = require('pkmn-colours');
 
 const command = {
   description: 'Return information on the given move.',
@@ -201,6 +202,7 @@ const process = function(req, res) {
       embeds: [buildEmbed({
         title,
         description,
+        color: colours.types[Data.toID(move.type)]
       })],
     },
   });

@@ -7,6 +7,7 @@ const dataSearch = require('datasearch');
 const { damageTaken } = require('typecheck');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const colours = require('pkmn-colours');
 
 const command = {
   description: 'Returns the given Pokémon\'s weaknesses and resistances.',
@@ -109,6 +110,7 @@ const process = (req, res) => {
       embeds: [buildEmbed({
         title,
         description,
+        color: colours.types[Data.toID(pokemon.types[0])]
       })]
     },
   });

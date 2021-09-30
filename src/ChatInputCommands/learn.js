@@ -6,6 +6,7 @@ const Data = require('@pkmn/data');
 const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const colours = require('pkmn-colours');
 
 const {getChainLearnset, moveAvailable, getMoves, decodeLearnString} = require('learnsetutils');
 
@@ -176,6 +177,7 @@ const process = async function(req, res) {
       embeds: [buildEmbed({
         title,
         description,
+        color: colours.types[Data.toID(pokemon.types[0])]
       })],
     },
   });

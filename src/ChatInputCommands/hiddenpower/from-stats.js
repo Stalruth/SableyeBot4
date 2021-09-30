@@ -5,6 +5,7 @@ const Data = require('@pkmn/data');
 
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const colours = require('pkmn-colours');
 
 const command = {
   description: 'Returns the Hidden Power produced by the given IVs.',
@@ -115,6 +116,7 @@ const process = (req, res) => {
     data: {
       embeds: [buildEmbed({
         description: `Type: ${result['type']}; Power: ${result['power']}`,
+        color: colours.types[Data.toID(result['type'])]
       })],
     },
   });

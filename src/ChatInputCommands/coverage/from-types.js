@@ -7,6 +7,7 @@ const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const { damageTaken } = require('typecheck');
 const buildEmbed = require('embed-builder');
+const colours = require('pkmn-colours');
 
 const command = {
   description: 'Returns the offensive coverage of the given types.',
@@ -119,6 +120,7 @@ const process = (req, res) => {
       embeds: [buildEmbed({
         title,
         description,
+        color: colours.types[Data.toID(types[0])]
       })],
     },
   });

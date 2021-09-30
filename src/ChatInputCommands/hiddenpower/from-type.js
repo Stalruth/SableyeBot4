@@ -5,6 +5,7 @@ const Data = require('@pkmn/data');
 
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const colours = require('pkmn-colours');
 
 const types = new Data.Generations(Dex.Dex).get(7).types;
 
@@ -146,6 +147,7 @@ const process = (req, res) => {
             inline: true,
           },
         ],
+        color: colours.types[Data.toID(type['name'])]
       })],
     },
   });

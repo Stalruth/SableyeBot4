@@ -7,6 +7,7 @@ const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const { damageTaken } = require('typecheck');
 const buildEmbed = require('embed-builder');
+const colours = require('pkmn-colours');
 
 
 const command = {
@@ -111,6 +112,7 @@ const process = (req, res) => {
       embeds: [buildEmbed({
         title,
         description,
+        color: colours.types[Data.toID(pokemon.types[0])]
       })],
     },
   });
