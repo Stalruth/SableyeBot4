@@ -62,9 +62,8 @@ const command = {
 
 const process = (req, res) => {
   const args = getargs(req.body).params;
-  args.gen ??= 8;
 
-  const data = new Data.Generations(Dex.Dex).get(args.gen);
+  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : Dex.Dex;
 
   const pokemon = dataSearch(data.species, Data.toID(args.pokemon))?.result;
 
@@ -95,7 +94,7 @@ const process = (req, res) => {
     '4x': [],
   };
 
-  for(const i of data.types) {
+  for(const i of data.types.all ? data.types.all() : data.types) {
     eff[`${damageTaken(data, pokemon.types, i.id)}x`].push(i.name);
   }
 

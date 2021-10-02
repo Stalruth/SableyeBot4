@@ -208,9 +208,8 @@ const command = {
 
 const process = async function(req, res) {
   const args = getargs(req.body).params;
-  args.gen ??= Dex.Dex.gen;
 
-  const data = new Data.Generations(Dex.Dex).get(args.gen);
+  const data = !!args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : Dex.Dex;
   const filters = [];
 
   if(args.abilities) {
@@ -225,7 +224,7 @@ const process = async function(req, res) {
           data: {
             embeds: [buildEmbed({
               title: "Error",
-              description: `The ability ${ability} could not be found in Generation ${args.gen}.`,
+              description: `The ability ${ability} could not be found in Generation ${args.gen ?? Dex.Dex.gen}.`,
               color: 0xCC0000,
             })],
             flags: 1 << 6,
@@ -248,7 +247,7 @@ const process = async function(req, res) {
           data: {
             embeds: [buildEmbed({
               title: "Error",
-              description: `The type ${type} could not be found in Generation ${args.gen}.`,
+              description: `The type ${type} could not be found in Generation ${args.gen ?? Dex.Dex.gen}.`,
               color: 0xCC0000,
             })],
             flags: 1 << 6,
@@ -271,7 +270,7 @@ const process = async function(req, res) {
           data: {
             embeds: [buildEmbed({
               title: "Error",
-              description: `The move ${move} could not be found in Generation ${args.gen}.`,
+              description: `The move ${move} could not be found in Generation ${args.gen ?? Dex.Dex.gen}.`,
               color: 0xCC0000,
             })],
             flags: 1 << 6,
@@ -336,7 +335,7 @@ const process = async function(req, res) {
           data: {
             embeds: [buildEmbed({
               title: "Error",
-              description: `The type ${type} could not be found in Generation ${args.gen}.`,
+              description: `The type ${type} could not be found in Generation ${args.gen ?? Dex.Dex.gen}.`,
               color: 0xCC0000,
             })],
             flags: 1 << 6,
@@ -359,7 +358,7 @@ const process = async function(req, res) {
           data: {
             embeds: [buildEmbed({
               title: "Error",
-              description: `The type ${type} could not be found in Generation ${args.gen}.`,
+              description: `The type ${type} could not be found in Generation ${args.gen ?? Dex.Dex.gen}.`,
               color: 0xCC0000,
             })],
             flags: 1 << 6,
@@ -394,7 +393,7 @@ const process = async function(req, res) {
   const results = await applyFilters(toArray(data.species), filters, threshold);
 
   const filterDescriptions = filters.map(el=>`- ${el['description']}`).join('\n');
-  const genDescription = args.gen !== Dex.Dex.gen ? `Using Gen ${args.gen}\n` : '';
+  const genDescription = !!args.gen ? `Using Gen ${args.gen}\n` : '';
   const thresholdDescription = threshold !== filters.length ? ` (${threshold} must match)` : '';
   const modeDescription = args.mode === 'vgc' ? `VGC Mode enabled - Transfer moves excluded.\n` : '';
   const responsePrefix = `${genDescription}${modeDescription}Filters${thresholdDescription}:\n${filterDescriptions}\n- - -\nResults (${results.length}):\n`;
@@ -422,7 +421,7 @@ const process = async function(req, res) {
             },
             {
               type: 2,
-              custom_id:`filter_p2_${args.gen}_${threshold}${args.mode === 'vgc' ?'_V':''}${packFilters(filters)}`,
+              custom_id:`filter_p2_${args.gen ?? 'NaN'}_${threshold}${args.mode === 'vgc' ?'_V':''}${packFilters(filters)}`,
               style: 2,
               label: 'Next',
             },

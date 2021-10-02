@@ -70,9 +70,7 @@ const process = function(req, res) {
   const args = getargs(req.body).params;
   args.gen ??= 8;
 
-  const data = new Data.Generations(Dex.Dex).get(args.gen);
-
-  const pokemon = dataSearch(data.species, Data.toID(args.pokemon))?.result;
+  const pokemon = dataSearch(Dex.Dex.species, Data.toID(args.pokemon))?.result;
 
   if(!pokemon) {
     res.json({
@@ -80,7 +78,7 @@ const process = function(req, res) {
       data: {
         embeds: [buildEmbed({
           title: "Error",
-          description: `Could not find a Pokemon named ${args.pokemon} in Generation ${args.gen}`,
+          description: `Could not find a Pokemon named ${args.pokemon}.`,
           color: 0xCC0000,
         })],
         flags: 1 << 6,
@@ -101,6 +99,21 @@ const process = function(req, res) {
     options['gender'] = 'F';
   }
   const spriteUrl = Img.Sprites.getPokemon(pokemon['id'], options).url;
+  
+  if(spriteUrl.endsWith('0.png')) {
+    res.json({
+      type: 4,
+      data: {
+        embeds: [buildEmbed({
+          title: "Error",
+          description: `Could not find a Pokemon named ${args.pokemon} in Generation ${args.gen}.`,
+          color: 0xCC0000,
+        })],
+        flags: 1 << 6,
+      },
+    });
+    return;
+  }
 
   res.json({
     type: 4,

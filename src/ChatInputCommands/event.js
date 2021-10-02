@@ -28,9 +28,7 @@ const command = {
 const process = async function(req, res) {
   const args = getargs(req.body).params;
 
-  const data = new Data.Generations(Dex.Dex).get(Dex.Dex.gen);
-
-  const pokemon = dataSearch(data.species, Data.toID(args.name))?.result;
+  const pokemon = dataSearch(Dex.Dex.species, Data.toID(args.name))?.result;
 
   if(!pokemon) {
     res.json({
@@ -47,13 +45,13 @@ const process = async function(req, res) {
     return;
   }
 
-  const learnset = await data.learnsets.get(pokemon['id']);
+  const learnset = await Dex.Dex.learnsets.get(pokemon['id']);
 
   let title = '';
   let description = '';
   if(!args.event) {
-    title = `${pokemon['name']} has ${learnset['eventData'].length} events.`;
-    if(learnset['eventData'].length > 0) {
+    title = `${pokemon['name']} has ${learnset['eventData']?.length ?? 'no'} events.`;
+    if(learnset['eventData']?.length) {
       description = `\nInclude an Event ID for more information (1-${learnset['eventData'].length})`;
     }
   } else if (args.event < 1 || args.event > learnset['eventData'].length) {
@@ -93,7 +91,7 @@ const process = async function(req, res) {
 
     description += `Moves:\n`;
     eventData['moves'].forEach((el) => {
-      description += ` - ${data.moves.get(el).name}\n`;
+      description += ` - ${Dex.Dex.moves.get(el).name}\n`;
     });
   }
 

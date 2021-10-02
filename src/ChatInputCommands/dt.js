@@ -73,9 +73,8 @@ const command = {
 
 const process = function(req, res) {
   const args = getargs(req.body).params;
-  args.gen ??= Dex.Dex.gen;
 
-  const data = new Data.Generations(Dex.Dex).get(args.gen);
+  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : Dex.Dex;
 
   const distance = {
     ability: dataSearch(data.abilities, Data.toID(args.name)),
@@ -106,7 +105,7 @@ const process = function(req, res) {
       data: {
         embeds: [buildEmbed({
           title: "Error",
-          description: `Could not find a result matching ${args.name} in Generation ${args.gen}`,
+          description: `Could not find a result matching ${args.name} in Generation ${args.gen ?? Dex.Dex.gen}`,
           color: 0xCC0000,
         })],
         flags: 1 << 6,

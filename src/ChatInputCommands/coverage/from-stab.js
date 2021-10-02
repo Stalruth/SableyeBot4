@@ -63,9 +63,8 @@ const command = {
 
 const process = (req, res) => {
   const args = getargs(req.body).params;
-  args.gen ??= Dex.Dex.gen;
 
-  const data = new Data.Generations(Dex.Dex).get(args.gen);
+  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : Dex.Dex;
 
   const pokemon = dataSearch(data.species, Data.toID(args.pokemon))?.result;
 
@@ -94,7 +93,7 @@ const process = (req, res) => {
     '2': [],
   };
 
-  for(const dType of data.types) {
+  for(const dType of data.types.all ? data.types.all() : data.types) {
     const mult = pokemon.types.reduce((acc, aType) => {
       return Math.max(acc, damageTaken(data, [dType.id], aType));
     }, 0);

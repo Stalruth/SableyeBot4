@@ -25,7 +25,7 @@ async function getPage(req, res) {
 
   const pageNumber = Number(commandData[1].substring(1));
   const gen = Number(commandData[2] ?? 8);
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = gen !== 'D' ? new Data.Generations(Dex.Dex).get(gen) : Dex.Dex;
   const threshold = Number(commandData[3] ?? packedFilters.length);
   const isVgc = commandData[4] === 'V';
 
@@ -46,7 +46,7 @@ async function getPage(req, res) {
   const results = await applyFilters(toArray(data.species), filters, threshold)
 
   const filterDescriptions = filters.map(el=>`- ${el['description']}`).join('\n');
-  const genDescription = gen !== Dex.Dex.gen ? `Using Gen ${gen}\n` : '';
+  const genDescription = gen !== 'D' ? `Using Gen ${gen}\n` : '';
   const thresholdDescription = threshold !== filters.length ? ` (${threshold} must match)` : '';
   const modeDescription = isVgc ? `VGC Mode enabled - Transfer moves excluded.\n` : '';
   const responsePrefix = `${genDescription}${modeDescription}Filters${thresholdDescription}:\n${filterDescriptions}\n- - -\nResults (${results.length}):\n`;

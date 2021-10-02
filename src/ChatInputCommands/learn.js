@@ -83,11 +83,10 @@ const command = {
 
 const process = async function(req, res) {
   const args = getargs(req.body).params;
-  args.gen ??= Dex.Dex.gen;
 
   const genCheck = moveAvailable(args.gen, args.mode === 'vgc');
 
-  const data = new Data.Generations(Dex.Dex).get(args.gen);
+  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : Dex.Dex;
 
   const pokemon = dataSearch(data.species, Data.toID(args.name))?.result;
 
