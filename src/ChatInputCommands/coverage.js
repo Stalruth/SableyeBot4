@@ -20,5 +20,9 @@ const process = {
   'from-types': fromTypes.process,
 };
 
-module.exports = {command, process};
+const autocomplete = {
+  'from-stab': fromStab.autocomplete,
+}
+
+module.exports = {command, process, autocomplete};
 

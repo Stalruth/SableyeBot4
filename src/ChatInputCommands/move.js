@@ -7,6 +7,7 @@ const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const colours = require('pkmn-colours');
+const { completeMove } = require('pkmn-complete');
 
 const command = {
   description: 'Return information on the given move.',
@@ -16,6 +17,7 @@ const command = {
       type: 3,
       description: 'Name of the Move',
       required: true,
+      autocomplete: true,
     },
     {
       name: 'verbose',
@@ -207,5 +209,15 @@ const process = function(req, res) {
   });
 };
 
-module.exports = {command, process};
+function autocomplete(req, res) {
+  const args = getargs(req.body).params;
+  res.json({
+    type: 8,
+    data: {
+      choices: completeMove(args['name']),
+    },
+  });
+}
+
+module.exports = {command, process, autocomplete};
 

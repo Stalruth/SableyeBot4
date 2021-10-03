@@ -7,6 +7,7 @@ const Data = require('@pkmn/data');
 const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const { completePokemon } = require('pkmn-complete');
 
 const command = {
   description: 'Link to the Pokemon Showdown Damage Calculator.',
@@ -15,7 +16,8 @@ const command = {
       name: 'pokemon',
       type: 3,
       description: 'Pokemon to show',
-      required: 'true',
+      required: true,
+      autocomplete: true
     },
     {
       name: 'shiny',
@@ -123,5 +125,15 @@ const process = function(req, res) {
   });
 };
 
-module.exports = {command, process};
+function autocomplete(req, res) {
+  const args = getargs(req.body).params;
+  res.json({
+    type: 8,
+    data: {
+      choices: completePokemon(args['name']),
+    },
+  });
+}
+
+module.exports = {command, process, autocomplete};
 

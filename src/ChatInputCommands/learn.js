@@ -7,6 +7,7 @@ const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const colours = require('pkmn-colours');
+const { completePokemon, completeMove } = require('pkmn-complete');
 
 const {getChainLearnset, moveAvailable, getMoves, decodeLearnString} = require('learnsetutils');
 
@@ -18,11 +19,13 @@ const command = {
       type: 3,
       description: 'Name of the Pokémon',
       required: true,
+      autocomplete: true,
     },
     {
       name: 'move',
       type: 3,
       description: 'Name of the move to check',
+      autocomplete: true,
     },
     {
       name: 'mode',
@@ -96,7 +99,7 @@ const process = async function(req, res) {
       data: {
         embeds: [buildEmbed({
           title: "Error",
-          description: `Could not find a Pokémon named ${args.name} in Generation ${args.gen}.`,
+          description: `Could not find a Pokémon named ${args.name} in Generation ${args.gen ?? Dex.Dex.gen}.`,
           color: 0xCC0000,
         })],
         flags: 1 << 6,
@@ -124,7 +127,7 @@ const process = async function(req, res) {
         data: {
           embeds: [buildEmbed({
             title: "Error",
-            description: `Could not find a move named ${args.move} in Generation ${args.gen}`,
+            description: `Could not find a move named ${args.move} in Generation ${args.gen ?? Dex.Dex.gen}`,
             color: 0xCC0000,
           })],
           flags: 1 << 6,
@@ -145,7 +148,7 @@ const process = async function(req, res) {
     if(results.reduce((acc, cur) => {
       return acc + cur.methods.length;
     }, 0) === 0) {
-      description = `${pokemon['name']} does not learn ${move['name']} in Generation ${args.gen}.`
+      description = `${pokemon['name']} does not learn ${move['name']} in Generation ${args.gen ?? Dex.Dex.gen}.`
     } else {
       const isCurrentGen = (el) => {return el[0] == args.gen};
       const currentGenResults = results.map((stage) => {
@@ -182,5 +185,15 @@ const process = async function(req, res) {
   });
 };
 
-module.exports = {command, process};
+function autocomplete(req, res) {
+  const {params, focused} = getargs(req.body);
+  res.json({
+    type: 8,
+    data: {
+      choices: focused === 'name' ? completePokemon(params['name']) : completeMove(params['move']),
+    },
+  });
+}
+
+module.exports = {command, process, autocomplete};
 

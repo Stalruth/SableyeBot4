@@ -6,6 +6,7 @@ const Data = require('@pkmn/data');
 const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const { completeAbility } = require('pkmn-complete');
 
 const command = {
   description: 'Return information on the given ability.',
@@ -15,6 +16,7 @@ const command = {
       type: 3,
       description: 'Name of the Ability',
       required: true,
+      autocomplete: true,
     },
     {
       name: 'gen',
@@ -91,5 +93,15 @@ const process = function(req, res) {
   });
 };
 
-module.exports = {command, process};
+function autocomplete(req, res) {
+  const args = getargs(req.body).params;
+  res.json({
+    type: 8,
+    data: {
+      choices: completeAbility(Data.toID(args['name'])),
+    },
+  });
+}
+
+module.exports = {command, process, autocomplete};
 

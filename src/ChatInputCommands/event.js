@@ -7,6 +7,7 @@ const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const colours = require('pkmn-colours');
+const { completePokemon } = require('pkmn-complete');
 
 const command = {
   description: 'Return the number of events a Pokemon has or the details of a specific event.',
@@ -16,6 +17,7 @@ const command = {
       type: 3,
       description: 'Name of the Pokémon',
       required: true,
+      autocomplete: true,
     },
     {
       name: 'event',
@@ -107,5 +109,15 @@ const process = async function(req, res) {
   });
 };
 
-module.exports = {command, process};
+function autocomplete(req, res) {
+  const args = getargs(req.body).params;
+  res.json({
+    type: 8,
+    data: {
+      choices: completePokemon(args['name']),
+    },
+  });
+}
+
+module.exports = {command, process, autocomplete};
 

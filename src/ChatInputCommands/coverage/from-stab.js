@@ -8,7 +8,7 @@ const { getargs } = require('discord-getarg');
 const { damageTaken } = require('typecheck');
 const buildEmbed = require('embed-builder');
 const colours = require('pkmn-colours');
-
+const { completePokemon } = require('pkmn-complete');
 
 const command = {
   description: 'Returns the offensive coverage of a Pokémon\'s moves.',
@@ -18,6 +18,7 @@ const command = {
       type: 3,
       description: 'Pokemon to evaluate the STABs of',
       required: true,
+      autocomplete: true,
     },
     {
       name: 'gen',
@@ -115,7 +116,17 @@ const process = (req, res) => {
       })],
     },
   });
+};
+
+function autocomplete(req, res) {
+  const args = getargs(req.body).params;
+  res.json({
+    type: 8,
+    data: {
+      choices: completePokemon(args['pokemon']),
+    },
+  });
 }
 
-module.exports = {command, process}
+module.exports = {command, process, autocomplete};
 

@@ -6,6 +6,7 @@ const Data = require('@pkmn/data');
 const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const { completeAll } = require('pkmn-complete');
 
 const dt = {
   ability: require('./ability.js').process,
@@ -23,6 +24,7 @@ const command = {
       type: 3,
       description: 'Name of the Pokemon, Ability, Move, Item or Nature to look up.',
       required: true,
+      autocomplete: true,
     },
     {
       name: 'verbose',
@@ -117,5 +119,15 @@ const process = function(req, res) {
   dt[mostAccurate](req, res);
 };
 
-module.exports = {command, process};
+function autocomplete(req, res) {
+  const args = getargs(req.body).params;
+  res.json({
+    type: 8,
+    data: {
+      choices: completeAll(args['name']),
+    },
+  });
+}
+
+module.exports = {command, process, autocomplete};
 
