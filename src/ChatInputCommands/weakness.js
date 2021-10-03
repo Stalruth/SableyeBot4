@@ -22,6 +22,7 @@ const process = {
 
 const autocomplete = {
   'from-pokemon': fromPokemon.autocomplete,
+  'from-types': fromTypes.autocomplete,
 };
 
 module.exports = {command, process, autocomplete};

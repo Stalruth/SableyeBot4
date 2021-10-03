@@ -22,6 +22,7 @@ const process = {
 
 const autocomplete = {
   'from-stab': fromStab.autocomplete,
+  'from-types': fromTypes.autocomplete,
 }
 
 module.exports = {command, process, autocomplete};

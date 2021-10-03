@@ -8,6 +8,7 @@ const { getargs } = require('discord-getarg');
 const { damageTaken } = require('typecheck');
 const buildEmbed = require('embed-builder');
 const colours = require('pkmn-colours');
+const { completeType } = require('pkmn-complete');
 
 const command = {
   description: 'Returns the offensive coverage of the given types.',
@@ -17,6 +18,7 @@ const command = {
       type: 3,
       description: 'Comma separated list of types to check the combined coverage of.',
       required: true,
+      autocomplete: true,
     },
     {
       name: 'gen',
@@ -126,5 +128,46 @@ const process = (req, res) => {
   });
 }
 
-module.exports = {command, process}
+function autocomplete(req, res) {
+  const args = getargs(req.body).params;
+
+  const types = args.types.split(',')
+      .slice(0,4)
+      .map(Data.toID);
+  const current = types.pop();
+  const resolved = types.map(e=>dataSearch(Dex.Dex.types, e)?.result);
+
+  if(resolved.some(e=>!e)) {
+    res.json({
+      type: 8,
+      data: {
+        choices: [],
+      },
+    });
+    return;
+  }
+
+  const prefix = resolved.reduce((acc,cur) => {
+    return {
+      name: `${acc.name}${cur.name}, `,
+      value: `${acc.value}${cur.id},`,
+    };
+  }, {name:'',value:''});
+
+  res.json({
+    type: 8,
+    data: {
+      choices: completeType(current)
+        .filter(e=>!resolved.some(r=>e.value===r.id))
+        .map(e=>{
+          return {
+            name: `${prefix.name}${e.name}`,
+            value: `${prefix.value}${e.value}`,
+          };
+        }),
+    },
+  });
+}
+
+module.exports = {command, process, autocomplete}
 
