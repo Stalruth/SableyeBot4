@@ -68,9 +68,13 @@ const process = (req, res) => {
 
   const data = new Data.Generations(Dex.Dex).get(args.gen);
 
-  const types = args.types.split(',').map((el) => {
-    return dataSearch(data.types, Data.toID(el))?.result?.name;
-  });
+  const types = [...new Set(args.types
+      .split(',')
+      .map((el) => {
+        return dataSearch(data.types, Data.toID(el))?.result?.name;
+      })
+      .slice(0,4)
+  )];
 
   if(types.some((el) => {return !el;})) {
     const nonTypes = [];
