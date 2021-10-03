@@ -66,9 +66,12 @@ const process = (req, res) => {
 
   const data = new Data.Generations(Dex.Dex).get(args.gen);
 
-  const types = args.types.split(',').map((el) => {
-    return dataSearch(data.types, Data.toID(el))?.result?.name;
-  });
+  const types = [...new Set(args.types
+      .split(',')
+      .slice(0,3)
+      .map((el) => {
+        return dataSearch(data.types, Data.toID(el))?.result?.name;
+      }))]
 
   if(types.some((el) => {return !el;})) {
     let nonTypes = [];
@@ -97,18 +100,20 @@ const process = (req, res) => {
 
   const eff = {
     '0x': [],
+    '0.125x': [],
     '0.25x': [],
     '0.5x': [],
     '1x': [],
     '2x': [],
     '4x': [],
+    '8x': [],
   };
 
   for(const i of data.types) {
     eff[`${damageTaken(data, types, i.id)}x`].push(i.name);
   }
 
-  for(const i of ['0x', '0.25x', '0.5x', '1x', '2x', '4x']) {
+  for(const i of ['0x', '0.125x', '0.25x', '0.5x', '1x', '2x', '4x', '8x']) {
     if(eff[i].length === 0) { continue; }
     description += `\n${i}: ${eff[i].join(', ')}`;
   }
