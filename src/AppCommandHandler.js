@@ -63,6 +63,14 @@ function onAutocomplete(req, res) {
       autocompletes[command[0]][command[1]][command[2]](req, res);
     }
   } catch(e) {
+    res.json({
+      type: 8,
+      data: {
+        choices: [
+          info.params[info.focused],
+        ],
+      },
+    });
     throw e;
   }
 }

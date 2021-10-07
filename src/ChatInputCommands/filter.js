@@ -8,6 +8,8 @@ const { getargs } = require('discord-getarg');
 const paginate = require('paginate');
 const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 const buildEmbed = require('embed-builder');
+const { completeAbility, completeFilterType, completeMove, completeType } = require('pkmn-complete');
+const dataSearch = require('datasearch');
 
 const command = {
   description: 'Get all Pokémon fitting the given conditions.',
@@ -16,16 +18,19 @@ const command = {
       name: 'abilities',
       type: 3,
       description: 'Comma delimited list of Abilities.',
+      autocomplete: true,
     },
     {
       name: 'types',
       type: 3,
       description: 'Comma delimited list of types. Prefix a type with `!` to negate.',
+      autocomplete: true,
     },
     {
       name: 'moves',
       type: 3,
       description: 'Comma delimited list of moves.',
+      autocomplete: true,
     },
     {
       name: 'hp',
@@ -70,12 +75,14 @@ const command = {
     {
       name: 'weaknesses',
       type: 3,
-      description: "Comma delimited list of Weaknesses."
+      description: "Comma delimited list of Weaknesses.",
+      autocomplete: true,
     },
     {
       name: 'resists',
       type: 3,
-      description: "Comma delimited list of Resistances."
+      description: "Comma delimited list of Resistances.",
+      autocomplete: true,
     },
     {
       name: 'egg-group',
@@ -432,5 +439,73 @@ const process = async function(req, res) {
   });
 };
 
-module.exports = {command, process};
+function autocomplete(req, res) {
+  const {params: args, focused} = getargs(req.body);
+
+  const autoArg = args[focused];
+  const completers = {
+    'abilities': completeAbility,
+    'types': completeFilterType,
+    'moves': completeMove,
+    'weaknesses': completeType,
+    'resists': completeType,
+  };
+  const searches = {
+    'abilities': 'abilities',
+    'types': 'types',
+    'moves': 'moves',
+    'weaknesses': 'types',
+    'resists': 'types',
+  };
+
+  const items = autoArg.split(',')
+    .map(e => {
+      const negate = e.startsWith('!') ? '!' : '';
+      return `${negate}${Data.toID(e)}`
+    });
+  const current = items.pop();
+  const resolved = items.map((e) => {
+    const item = dataSearch(Dex.Dex[searches[focused]], e)?.result;
+    if(!item) {
+      return null;
+    }
+    const negated = e.startsWith('!') ? '!' : '';
+    return {
+      id: `${negated}${item.id}`,
+      name: `${negated}${item.name}`,
+    };
+  });
+
+  if(resolved.some(e=>!e)) {
+    res.json({
+      type: 8,
+      data: {
+        choices: [],
+      },
+    });
+    return;
+  }
+
+  const prefix = resolved.reduce((acc,cur) => {
+    return {
+      name: `${acc.name}${cur.name}, `,
+      value: `${acc.value}${cur.id},`,
+    };
+  }, {name:'',value:''});
+
+  res.json({
+    type: 8,
+    data: {
+      choices: completers[focused](current)
+      .map(e=>{
+        return {
+          name: `${prefix.name}${e.name}`,
+          value: `${prefix.value}${e.value}`,
+        };
+      }),
+    },
+  });
+}
+
+module.exports = {command, process, autocomplete};
 
