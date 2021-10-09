@@ -36,32 +36,36 @@ const command = {
     },
     {
       name: 'gen',
-      type: 4,
+      type: 3,
       description: 'The Generation of the sprite.',
       choices: [
         {
           name: 'Yellow',
-          value: 1,
+          value: 'gen1',
         },
         {
           name: 'Crystal',
-          value: 2,
+          value: 'gen2',
         },
         {
           name: 'Emerald',
-          value: 3,
+          value: 'gen3',
         },
         {
           name: 'Platinum',
-          value: 4,
+          value: 'gen4',
         },
         {
           name: 'BW',
-          value: 5,
+          value: 'gen5',
         },
         {
           name: 'X/Y Onwards',
-          value: 8,
+          value: 'ani',
+        },
+        {
+          name: 'April Fools',
+          value: 'afd',
         },
       ]
     },
@@ -70,7 +74,9 @@ const command = {
 
 const process = function(req, res) {
   const args = getargs(req.body).params;
-  args.gen ??= 8;
+  args.gen ??= 'ani';
+  
+  const gen = args.gen === 'afd' ? 'gen5' : args.gen;
 
   const pokemon = dataSearch(Dex.Dex.species, Data.toID(args.pokemon))?.result;
 
@@ -90,7 +96,7 @@ const process = function(req, res) {
   }
 
   const options = {};
-  options['gen'] = args.gen;
+  options['gen'] = gen;
   if(args.shiny) {
     options['shiny'] = true;
   }
@@ -120,7 +126,7 @@ const process = function(req, res) {
   res.json({
     type: 4,
     data: {
-      content: spriteUrl,
+      content: args.gen === 'afd' ? spriteUrl.replace('gen5', 'afd') : spriteUrl,
     },
   });
 };
