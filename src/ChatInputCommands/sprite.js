@@ -35,6 +35,11 @@ const command = {
       description: 'Show the female variant.',
     },
     {
+      name: 'afd',
+      type: 5,
+      description: 'Use the April Fools Day sprites.',
+    },
+    {
       name: 'gen',
       type: 3,
       description: 'The Generation of the sprite.',
@@ -63,10 +68,6 @@ const command = {
           name: 'X/Y Onwards',
           value: 'ani',
         },
-        {
-          name: 'April Fools',
-          value: 'afd',
-        },
       ]
     },
   ]
@@ -76,7 +77,7 @@ const process = function(req, res) {
   const args = getargs(req.body).params;
   args.gen ??= 'ani';
   
-  const gen = args.gen === 'afd' ? 'gen5' : args.gen;
+  const gen = args.afd ? 'gen5' : args.gen;
 
   const pokemon = dataSearch(Dex.Dex.species, Data.toID(args.pokemon))?.result;
 
@@ -114,7 +115,7 @@ const process = function(req, res) {
       data: {
         embeds: [buildEmbed({
           title: "Error",
-          description: `Could not find a Pokemon named ${args.pokemon} in Generation ${args.gen}.`,
+          description: `Could not find a Pokemon named ${args.pokemon}.`,
           color: 0xCC0000,
         })],
         flags: 1 << 6,
@@ -126,7 +127,7 @@ const process = function(req, res) {
   res.json({
     type: 4,
     data: {
-      content: args.gen === 'afd' ? spriteUrl.replace('gen5', 'afd') : spriteUrl,
+      content: args.afd ? spriteUrl.replace('gen5', 'afd') : spriteUrl,
     },
   });
 };
