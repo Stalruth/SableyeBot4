@@ -130,7 +130,7 @@ function autocomplete(req, res) {
   res.json({
     type: 8,
     data: {
-      choices: completePokemon(args['name']),
+      choices: completePokemon(args['pokemon']),
     },
   });
 }
