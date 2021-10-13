@@ -73,7 +73,7 @@ const process = async function(req, res) {
     const eventData = learnset['eventData'][args.event - 1];
     title += `${pokemon['name']} (Event #${args.event})\n`;
     description += `Generation ${eventData['generation']}; Level ${eventData['level']}\n`;
-    description += `Poke Ball: ${eventData.pokeball ? data.items.get(eventData.pokeball).name : '-'}; `;
+    description += `Poke Ball: ${eventData.pokeball ? Dex.Dex.items.get(eventData.pokeball).name : '-'}; `;
     description += `Gender: ${(eventData.gender || 'Random')}; Nature: ${(eventData.nature || 'Random')}\n`;
     description += `Hidden Ability: ${eventData.isHidden ? 'Yes' : 'No'}; Shiny: ${eventData.shiny ? 'Yes' : 'No'}\n`;
 
