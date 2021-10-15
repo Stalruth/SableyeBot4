@@ -3,6 +3,7 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
+const { natDexData } = require('natDexData');
 const toArray = require('dexdata-toarray');
 const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 const paginate = require('paginate');
@@ -25,7 +26,7 @@ async function getPage(req, res) {
 
   const pageNumber = Number(commandData[1].substring(1));
   const gen = Number(commandData[2] ?? 8);
-  const data = !isNaN(gen) ? new Data.Generations(Dex.Dex).get(gen) : Dex.Dex;
+  const data = !isNaN(gen) ? new Data.Generations(Dex.Dex).get(gen) : natDexData;
   const threshold = Number(commandData[3] ?? packedFilters.length);
   const isVgc = commandData[4] === 'V';
 

@@ -3,6 +3,7 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
+const { natDexData } = require('natdexdata');
 const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
@@ -30,7 +31,7 @@ const command = {
 const process = async function(req, res) {
   const args = getargs(req.body).params;
 
-  const pokemon = dataSearch(Dex.Dex.species, Data.toID(args.name))?.result;
+  const pokemon = dataSearch(natDexData.species, Data.toID(args.name))?.result;
 
   if(!pokemon) {
     res.json({
@@ -47,7 +48,7 @@ const process = async function(req, res) {
     return;
   }
 
-  const learnset = await Dex.Dex.learnsets.get(pokemon['id']);
+  const learnset = await natDexData.learnsets.get(pokemon['id']);
 
   let title = '';
   let description = '';
@@ -93,7 +94,7 @@ const process = async function(req, res) {
 
     description += `Moves:\n`;
     eventData['moves'].forEach((el) => {
-      description += ` - ${Dex.Dex.moves.get(el).name}\n`;
+      description += ` - ${natDexData.moves.get(el).name}\n`;
     });
   }
 

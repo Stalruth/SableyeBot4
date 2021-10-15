@@ -3,6 +3,7 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
+const { natDexData } = require('natdexdata');
 const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
@@ -89,7 +90,7 @@ const process = async function(req, res) {
 
   const genCheck = moveAvailable(args.gen, args.mode === 'vgc');
 
-  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : Dex.Dex;
+  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
 
   const pokemon = dataSearch(data.species, Data.toID(args.name))?.result;
 

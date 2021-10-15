@@ -3,6 +3,7 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
+const { natDexData } = require('natdexdata');
 const toArray = require('dexdata-toarray');
 const { getargs } = require('discord-getarg');
 const paginate = require('paginate');
@@ -216,7 +217,7 @@ const command = {
 const process = async function(req, res) {
   const args = getargs(req.body).params;
 
-  const data = !!args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : Dex.Dex;
+  const data = !!args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
   const filters = [];
 
   if(args.abilities) {
@@ -377,7 +378,7 @@ const process = async function(req, res) {
   }
 
   if(args['egg-group']) {
-    filters.push(filterFactory['egggroup'](data, args['egg-group']), args.move === 'vgc');
+    filters.push(filterFactory['egggroup'](data, args['egg-group'], args.move === 'vgc'));
   }
 
   if(filters.length === 0) {
@@ -396,6 +397,8 @@ const process = async function(req, res) {
   }
 
   const threshold = args.threshold ?? filters.length;
+  
+  console.log(filters);
 
   const results = await applyFilters(toArray(data.species), filters, threshold);
 

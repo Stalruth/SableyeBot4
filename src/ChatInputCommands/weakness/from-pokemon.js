@@ -4,6 +4,7 @@ const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 const dataSearch = require('datasearch');
 
+const { natDexData } = require('natdexdata');
 const { damageTaken } = require('typecheck');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
@@ -65,7 +66,7 @@ const command = {
 const process = (req, res) => {
   const args = getargs(req.body).params;
 
-  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : Dex.Dex;
+  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
 
   const pokemon = dataSearch(data.species, Data.toID(args.pokemon))?.result;
 
@@ -96,7 +97,7 @@ const process = (req, res) => {
     '4x': [],
   };
 
-  for(const i of data.types.all ? data.types.all() : data.types) {
+  for(const i of data.types) {
     eff[`${damageTaken(data, pokemon.types, i.id)}x`].push(i.name);
   }
 

@@ -3,6 +3,7 @@
 const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
 
+const { natDexData } = require('natdexdata');
 const dataSearch = require('datasearch');
 const { getargs } = require('discord-getarg');
 const buildEmbed = require('embed-builder');
@@ -68,7 +69,7 @@ const command = {
 const process = function(req, res) {
   const args = getargs(req.body).params;
 
-  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : Dex.Dex;
+  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
 
   const item = dataSearch(data.items, Data.toID(args.name))?.result;
 
