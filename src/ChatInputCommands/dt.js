@@ -1,12 +1,12 @@
 'use strict';
 
-const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
+const Dex = require('@pkmn/dex');
 
-const { natDexData } = require('natdexdata');
 const dataSearch = require('datasearch');
-const { getargs } = require('discord-getarg');
+const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const natDexData = require('natdexdata');
 const { completeAll } = require('pkmn-complete');
 
 const dt = {

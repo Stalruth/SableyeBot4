@@ -1,13 +1,13 @@
 'use strict';
 
-const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
+const Dex = require('@pkmn/dex');
 
-const { natDexData } = require('natDexData');
 const toArray = require('dexdata-toarray');
-const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
-const paginate = require('paginate');
 const buildEmbed = require('embed-builder');
+const natDexData = require('natdexdata');
+const paginate = require('paginate');
+const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 
 async function getPage(req, res) {
 

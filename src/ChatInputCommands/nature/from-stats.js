@@ -1,9 +1,9 @@
 'use strict';
 
-let Dex = require('@pkmn/dex');
 let Data = require('@pkmn/data');
+let Dex = require('@pkmn/dex');
 
-const { getargs } = require('discord-getarg');
+const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 
 const stats = [

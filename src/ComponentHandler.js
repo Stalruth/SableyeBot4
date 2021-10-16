@@ -18,5 +18,5 @@ function onComponentInteraction(req, res) {
   }
 }
 
-module.exports = { onComponentInteraction };
+module.exports = onComponentInteraction;
 

@@ -1,16 +1,16 @@
 'use strict';
 
-const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
+const Dex = require('@pkmn/dex');
 
-const { natDexData } = require('natdexdata');
-const toArray = require('dexdata-toarray');
-const { getargs } = require('discord-getarg');
-const paginate = require('paginate');
-const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
-const buildEmbed = require('embed-builder');
-const { completeAbility, completeFilterType, completeMove, completeType } = require('pkmn-complete');
 const dataSearch = require('datasearch');
+const toArray = require('dexdata-toarray');
+const getargs = require('discord-getarg');
+const buildEmbed = require('embed-builder');
+const natDexData = require('natdexdata');
+const paginate = require('paginate');
+const { completeAbility, completeFilterType, completeMove, completeType } = require('pkmn-complete');
+const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 
 const command = {
   description: 'Get all Pokémon fitting the given conditions.',

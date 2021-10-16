@@ -1,9 +1,9 @@
 'use strict';
 
-const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
+const Dex = require('@pkmn/dex');
 
-const { getargs } = require('discord-getarg');
+const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const colours = require('pkmn-colours');
 

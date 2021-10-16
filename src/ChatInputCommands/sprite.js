@@ -1,13 +1,13 @@
 'use strict';
 
-const Img = require('@pkmn/img');
-const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
+const Dex = require('@pkmn/dex');
+const Img = require('@pkmn/img');
 
-const { natDexData } = require('natdexdata');
 const dataSearch = require('datasearch');
-const { getargs } = require('discord-getarg');
+const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const natDexData = require('natdexdata');
 const { completePokemon } = require('pkmn-complete');
 
 const command = {

@@ -1,14 +1,14 @@
 'use strict';
 
-const Dex = require('@pkmn/dex');
 const Data = require('@pkmn/data');
+const Dex = require('@pkmn/dex');
 
 const dataSearch = require('datasearch');
-const { getargs } = require('discord-getarg');
-const { damageTaken } = require('typecheck');
+const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const colours = require('pkmn-colours');
 const { completeType } = require('pkmn-complete');
+const damageTaken = require('typecheck');
 
 const command = {
   description: 'Returns the resistances and weaknesses of a Pokémon with the given types.',

@@ -1,15 +1,15 @@
 'use strict';
 
-const Dex = require('@pkmn/dex');
-const Data = require('@pkmn/data');
 const dataSearch = require('datasearch');
+const Data = require('@pkmn/data');
+const Dex = require('@pkmn/dex');
 
-const { natDexData } = require('natdexdata');
-const { damageTaken } = require('typecheck');
-const { getargs } = require('discord-getarg');
+const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const natDexData = require('natdexdata');
 const colours = require('pkmn-colours');
 const { completePokemon } = require('pkmn-complete');
+const damageTaken = require('typecheck');
 
 const command = {
   description: 'Returns the given Pokémon\'s weaknesses and resistances.',

@@ -1,6 +1,6 @@
 'use strict';
 
-const { getargs } = require('discord-getarg');
+const getargs = require('discord-getarg');
 
 const commands = [];
 const processes = {};
@@ -16,20 +16,20 @@ const addCommand = async function(name, module) {
   }
 };
 
-addCommand('nature', require('./ChatInputCommands/nature.js'));
-addCommand('hiddenpower', require('./ChatInputCommands/hiddenpower.js'));
 addCommand('about', require('./ChatInputCommands/about.js'));
 addCommand('ability', require('./ChatInputCommands/ability.js'));
-addCommand('move', require('./ChatInputCommands/move.js'));
-addCommand('item', require('./ChatInputCommands/item.js'));
-addCommand('pokemon', require('./ChatInputCommands/pokemon.js'));
+addCommand('coverage', require('./ChatInputCommands/coverage.js'));
 addCommand('dt', require('./ChatInputCommands/dt.js'));
 addCommand('event', require('./ChatInputCommands/event.js'));
-addCommand('sprite', require('./ChatInputCommands/sprite.js'));
-addCommand('coverage', require('./ChatInputCommands/coverage.js'));
-addCommand('learn', require('./ChatInputCommands/learn.js'));
-addCommand('weakness', require('./ChatInputCommands/weakness.js'));
 addCommand('filter', require('./ChatInputCommands/filter.js'));
+addCommand('hiddenpower', require('./ChatInputCommands/hiddenpower.js'));
+addCommand('item', require('./ChatInputCommands/item.js'));
+addCommand('learn', require('./ChatInputCommands/learn.js'));
+addCommand('move', require('./ChatInputCommands/move.js'));
+addCommand('nature', require('./ChatInputCommands/nature.js'));
+addCommand('pokemon', require('./ChatInputCommands/pokemon.js'));
+addCommand('sprite', require('./ChatInputCommands/sprite.js'));
+addCommand('weakness', require('./ChatInputCommands/weakness.js'));
 
 function onApplicationCommand(req, res) {
   const info = getargs(req.body);
