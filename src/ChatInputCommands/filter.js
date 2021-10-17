@@ -219,12 +219,13 @@ const process = async function(req, res) {
 
   const data = !!args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
   const filters = [];
+  const isVgc = args.mode === 'vgc';
 
   if(args.abilities) {
     const abilities = args.abilities.split(',');
     for(const ability of abilities) {
       try {
-        const filter = filterFactory['ability'](data, ability, args.mode === 'vgc');
+        const filter = filterFactory['ability'](data, ability, isVgc);
         filters.push(filter);
       } catch {
         res.json({
@@ -247,7 +248,7 @@ const process = async function(req, res) {
     const types = args.types.split(',');
     for(const type of types) {
       try {
-        const filter = filterFactory['type'](data, type.trimStart(), args.mode === 'vgc');
+        const filter = filterFactory['type'](data, type.trimStart(), isVgc);
         filters.push(filter);
       } catch {
         res.json({
@@ -270,7 +271,7 @@ const process = async function(req, res) {
     const moves = args.moves.split(',');
     for(const move of moves) {
       try {
-        const filter = filterFactory['move'](data, move, args.move === 'vgc');
+        const filter = filterFactory['move'](data, move, isVgc);
         filters.push(filter);
       } catch {
         res.json({
@@ -292,7 +293,7 @@ const process = async function(req, res) {
   for (const stat of ['hp','atk','def','spa','spd','spe','bst']) {
     if(args[stat]) {
       try {
-        const filter = filterFactory[stat](data, args[stat], args.move === 'vgc');
+        const filter = filterFactory[stat](data, args[stat], isVgc);
         filters.push(filter);
       } catch(e) {
         res.json({
@@ -313,7 +314,7 @@ const process = async function(req, res) {
 
   if(args['weight-kg']) {
     try {
-      const filter = filterFactory['weightkg'](data, args['weight-kg'], args.move === 'vgc');
+      const filter = filterFactory['weightkg'](data, args['weight-kg'], isVgc);
       filters.push(filter);
     } catch(e) {
       res.json({
@@ -335,7 +336,7 @@ const process = async function(req, res) {
     const types = args.weaknesses.split(',');
     for(const type of types) {
       try {
-        const filter = filterFactory['weakness'](data, type, args.move === 'vgc');
+        const filter = filterFactory['weakness'](data, type, isVgc);
         filters.push(filter);
       } catch {
         res.json({
@@ -358,7 +359,7 @@ const process = async function(req, res) {
     const types = args.resists.split(',');
     for(const type of types) {
       try {
-        const filter = filterFactory['resist'](data, type, args.move === 'vgc');
+        const filter = filterFactory['resist'](data, type, isVgc);
         filters.push(filter);
       } catch {
         res.json({
@@ -378,7 +379,7 @@ const process = async function(req, res) {
   }
 
   if(args['egg-group']) {
-    filters.push(filterFactory['egggroup'](data, args['egg-group'], args.move === 'vgc'));
+    filters.push(filterFactory['egggroup'](data, args['egg-group'], isVgc));
   }
 
   if(filters.length === 0) {
@@ -397,8 +398,6 @@ const process = async function(req, res) {
   }
 
   const threshold = args.threshold ?? filters.length;
-  
-  console.log(filters);
 
   const results = await applyFilters(toArray(data.species), filters, threshold);
 

@@ -6,11 +6,10 @@ const Dex = require('@pkmn/dex');
 const dataSearch = require('datasearch');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const decodeSource = require('learnsetutils');
 const natDexData = require('natdexdata');
 const colours = require('pkmn-colours');
 const { completePokemon, completeMove } = require('pkmn-complete');
-
-const {getChainLearnset, moveAvailable, getMoves, decodeLearnString} = require('learnsetutils');
 
 const command = {
   description: 'Return the number of events a Pokemon has or the details of a specific event.',
@@ -88,7 +87,7 @@ const command = {
 const process = async function(req, res) {
   const args = getargs(req.body).params;
 
-  const genCheck = moveAvailable(args.gen, args.mode === 'vgc');
+  const vgcNotes = [,,,,,'Pentagon','Plus','Galar'];
 
   const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
 
@@ -109,68 +108,96 @@ const process = async function(req, res) {
     return;
   }
 
-  const learnsetChain = await getChainLearnset(data, pokemon);
+  const learnables = await data.learnsets.learnable(pokemon.id, args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined);
 
   let title = '';
   let description = '';
 
   if(!args.move) {
-    title = `${pokemon['name']}'s moveset:\n`;
-    const moveset = new Set();
-    getMoves(data, learnsetChain, genCheck).forEach((el)=>{moveset.add(el)});
-    description += [...moveset].sort().join(', ');
-  } else {
-    const move = dataSearch(data.moves, Data.toID(args.move))?.result;
+    res.json({
+      type: 4,
+      data: {
+        embeds: [buildEmbed({
+          title: `${pokemon['name']}'s moveset:\n`,
+          description: (Object.keys(learnables)
+            .map(id=>data.moves.get(id)?.name)
+            .filter(el=>!!el)
+            .sort()
+            .join(', ')),
+          color: colours.types[Data.toID(pokemon.types[0])]
+        })],
+      },
+    });
+    return;
+  }
 
-    if(!move) {
+  const move = dataSearch(data.moves, Data.toID(args.move))?.result;
+
+  if(!move) {
+    res.json({
+      type: 4,
+      data: {
+        embeds: [buildEmbed({
+          title: "Error",
+          description: `Could not find a move named ${args.move} in Generation ${args.gen ?? Dex.Dex.gen}`,
+          color: 0xCC0000,
+        })],
+        flags: 1 << 6,
+      },
+    });
+    return;
+  }
+
+  if(!learnables[move.id]) {
+    res.json({
+      type: 4,
+      data: {
+        embeds: [buildEmbed({
+          description: `${pokemon.name} does not learn ${move.name} in Generation ${data.num}.`,
+          color: colours.types[Data.toID(pokemon.types[0])],
+        })],
+      },
+    });
+    return
+  }
+
+  const latestSourceGen = learnables[move.id][0][0];
+  if(Number(latestSourceGen) !== data.num) {
+    res.json({
+      type: 4,
+      data: {
+        embeds: [buildEmbed({
+          description: `${pokemon.name} learns ${move.name} when transferred from Generation ${latestSourceGen}`,
+          color: colours.types[Data.toID(pokemon.types[0])],
+        })],
+      },
+    });
+    return;
+  }
+
+  let currentSpecies = pokemon;
+  while(true) {
+    const sources = (await data.learnsets.get(currentSpecies.id) ?? await data.learnsets.get(currentSpecies.baseSpecies))['learnset'][move.id];
+    if(sources?.[0]?.[0] === latestSourceGen) {
+      const latestSources = sources.filter(el=>el[0]===latestSourceGen);
       res.json({
         type: 4,
         data: {
           embeds: [buildEmbed({
-            title: "Error",
-            description: `Could not find a move named ${args.move} in Generation ${args.gen ?? Dex.Dex.gen}`,
-            color: 0xCC0000,
+            title: `${pokemon.name} does learn ${move.name}`,
+            description: `As ${currentSpecies.name}:\n` +
+                latestSources.map(decodeSource)
+                .map(el=>`- ${el}`)
+                .join('\n'),
+            color: colours.types[Data.toID(pokemon.types[0])],
           })],
-          flags: 1 << 6,
         },
       });
       return;
     }
-
-    const results = [];
-    learnsetChain.forEach((learnset) => {
-      const result = {
-        name: learnset['name'],
-      };
-      result['methods'] = (learnset['learnset'][move.id] ?? []).filter(genCheck);
-      results.push(result);
-    });
-
-    if(results.reduce((acc, cur) => {
-      return acc + cur.methods.length;
-    }, 0) === 0) {
-      description = `${pokemon['name']} does not learn ${move['name']} in Generation ${args.gen ?? Dex.Dex.gen}.`
-    } else {
-      const isCurrentGen = (el) => {return el[0] == args.gen};
-      const currentGenResults = results.map((stage) => {
-        return {
-          name: stage['name'],
-          methods: stage.methods.filter(isCurrentGen),
-        };
-      });
-
-      description = `${pokemon['name']} can learn ${move['name']} in`;
-
-      if(currentGenResults.reduce((acc, stage)=>acc + stage.methods.length, 0) === 0) {
-        description += ` another generation.`;
-      } else {
-        description += `:\nGen ${args.gen}:`;
-        currentGenResults.forEach((stage) => {
-          if(stage.methods.length !== 0) {
-            description += `\n- ${stage['name']}: ${stage.methods.map(decodeLearnString).join(', ')}`;
-          }
-        });
-      }
+    currentSpecies = data.species.get(currentSpecies.prevo ?? '');
+    if(!currentSpecies) {
+      break;
     }
   }
 
@@ -178,10 +205,11 @@ const process = async function(req, res) {
     type: 4,
     data: {
       embeds: [buildEmbed({
-        title,
-        description,
-        color: colours.types[Data.toID(pokemon.types[0])]
+        title: "Something went wrong!",
+        description: "Please let the developer know what command you ran to cause this message [here](https://github.com/Stalruth/SableyeBot4/issues/new)",
+        color: 0xCC0000,
       })],
+      flags: 1 << 6,
     },
   });
 };
