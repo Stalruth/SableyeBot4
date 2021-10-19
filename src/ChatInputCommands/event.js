@@ -28,13 +28,13 @@ const command = {
   ],
 };
 
-const process = async function(req, res) {
-  const args = getargs(req.body).params;
+const process = async function(interaction) {
+  const args = getargs(interaction).params;
 
   const pokemon = dataSearch(natDexData.species, Data.toID(args.name))?.result;
 
   if(!pokemon) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -44,8 +44,7 @@ const process = async function(req, res) {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
   const learnset = await natDexData.learnsets.get(pokemon['id']);
@@ -58,7 +57,7 @@ const process = async function(req, res) {
       description = `\nInclude an Event ID for more information (1-${learnset['eventData'].length})`;
     }
   } else if (args.event < 1 || args.event > learnset['eventData'].length) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -68,8 +67,7 @@ const process = async function(req, res) {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   } else {
     const eventData = learnset['eventData'][args.event - 1];
     title += `${pokemon['name']} (Event #${args.event})\n`;
@@ -98,7 +96,7 @@ const process = async function(req, res) {
     });
   }
 
-  res.json({
+  return {
     type: 4,
     data: {
       embeds: [buildEmbed({
@@ -107,17 +105,17 @@ const process = async function(req, res) {
         color: colours.types[Data.toID(pokemon.types[0])]
       })],
     },
-  });
+  };
 };
 
-function autocomplete(req, res) {
-  const args = getargs(req.body).params;
-  res.json({
+function autocomplete(interaction) {
+  const args = getargs(interaction).params;
+  return {
     type: 8,
     data: {
       choices: completePokemon(args['name']),
     },
-  });
+  };
 }
 
 module.exports = {command, process, autocomplete};

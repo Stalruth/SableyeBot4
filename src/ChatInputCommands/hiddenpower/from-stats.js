@@ -80,8 +80,8 @@ const command = {
   ],
 }
 
-const process = (req, res) => {
-  const args = getargs(req.body).params;
+const process = (interaction) => {
+  const args = getargs(interaction).params;
   args.gen ??= 7;
 
   const types = new Data.Generations(Dex.Dex).get(args.gen).types;
@@ -95,7 +95,7 @@ const process = (req, res) => {
   });
 
   if(problems.length > 0) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -105,13 +105,12 @@ const process = (req, res) => {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
   const result = types.getHiddenPower(args);
 
-  res.json({
+  return {
     type: 4,
     data: {
       embeds: [buildEmbed({
@@ -119,7 +118,7 @@ const process = (req, res) => {
         color: colours.types[Data.toID(result['type'])]
       })],
     },
-  });
+  };
 }
 
 module.exports = {command, process}

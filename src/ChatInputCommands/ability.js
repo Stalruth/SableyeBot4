@@ -61,15 +61,14 @@ const command = {
   ],
 };
 
-const process = function(req, res) {
-  const args = getargs(req.body).params;
-
+const process = function(interaction) {
+  const args = getargs(interaction).params;
   const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
 
   const ability = dataSearch(data.abilities, Data.toID(args.name))?.result;
 
   if(!ability) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -79,11 +78,10 @@ const process = function(req, res) {
         })],
         flags: 1 << 6,
       }
-    });
-    return;
+    };
   }
 
-  res.json({
+  return {
     type: 4,
     data: {
       embeds: [buildEmbed({
@@ -91,17 +89,17 @@ const process = function(req, res) {
         description: ability['desc'],
       })],
     }
-  });
+  };
 };
 
-function autocomplete(req, res) {
-  const args = getargs(req.body).params;
-  res.json({
+function autocomplete(interaction) {
+  const args = getargs(interaction).params;
+  return {
     type: 8,
     data: {
       choices: completeAbility(Data.toID(args['name'])),
     },
-  });
+  };
 }
 
 module.exports = {command, process, autocomplete};

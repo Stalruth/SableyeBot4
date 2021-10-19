@@ -64,15 +64,15 @@ const command = {
   ],
 }
 
-const process = (req, res) => {
-  const args = getargs(req.body).params;
+const process = (interaction) => {
+  const args = getargs(interaction).params;
   args.gen ??= 7;
 
   const types = new Data.Generations(Dex.Dex).get(args.gen).types;
   const type = types.get(args.type);
 
   if(['normal','fairy'].includes(type['id'])) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -82,8 +82,7 @@ const process = (req, res) => {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
   const stats = {...{
@@ -97,7 +96,7 @@ const process = (req, res) => {
   }, ...(args.gen == 2 ? type.HPdvs : type.HPivs)};
 
   const title = `Hidden Power ${type['name']}`;
-  res.json({
+  return {
     type: 4,
     data: {
       embeds: [buildEmbed({
@@ -150,7 +149,7 @@ const process = (req, res) => {
         color: colours.types[Data.toID(type['name'])]
       })],
     },
-  });
+  };
 }
 
 module.exports = {command, process}

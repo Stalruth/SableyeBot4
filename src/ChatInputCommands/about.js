@@ -6,8 +6,8 @@ const command = {
   description: 'About SableyeBot',
 };
 
-const process = function(req, res) {
-  res.json({
+const process = function(interaction) {
+  return {
     type: 4,
     data: {
       embeds: [buildEmbed({
@@ -30,7 +30,7 @@ const process = function(req, res) {
         ],
       })],
     },
-  });
+  };
 };
 
 module.exports = {command, process};

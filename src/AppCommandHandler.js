@@ -31,36 +31,36 @@ addCommand('pokemon', require('./ChatInputCommands/pokemon.js'));
 addCommand('sprite', require('./ChatInputCommands/sprite.js'));
 addCommand('weakness', require('./ChatInputCommands/weakness.js'));
 
-function onApplicationCommand(req, res) {
+async function onApplicationCommand(req, res) {
   const info = getargs(req.body);
   const command = [req.body.data?.name, ...info.subcommand];
 
   console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), info.params);
   try {
     if(command.length === 1) {
-      processes[command[0]](req, res);
+      res.json(await processes[command[0]](req.body));
     } else if(command.length === 2) {
-      processes[command[0]][command[1]](req, res);
+      res.json(await processes[command[0]][command[1]](req.body));
     } else {
-      processes[command[0]][command[1]][command[2]](req, res);
+      res.json(await processes[command[0]][command[1]][command[2]](req.body));
     }
   } catch (e) {
     throw e;
   }
 }
 
-function onAutocomplete(req, res) {
+async function onAutocomplete(req, res) {
   const info = getargs(req.body);
   const command = [req.body.data?.name, ...info.subcommand];
 
   console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), info.params, info.focused);
   try {
     if(command.length === 1) {
-      autocompletes[command[0]](req, res);
+      res.json(await autocompletes[command[0]](req.body));
     } else if(command.length === 2) {
-      autocompletes[command[0]][command[1]](req, res);
+      res.json(await autocompletes[command[0]][command[1]](req.body));
     } else {
-      autocompletes[command[0]][command[1]][command[2]](req, res);
+      res.json(await autocompletes[command[0]][command[1]][command[2]](req.body));
     }
   } catch(e) {
     res.json({

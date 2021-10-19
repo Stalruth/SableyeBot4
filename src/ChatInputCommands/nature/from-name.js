@@ -32,8 +32,8 @@ const command = {
   ],
 }
 
-const process = (req, res) => {
-  const args = getargs(req.body).params;
+const process = (interaction) => {
+  const args = getargs(interaction).params;
 
   // Uh oh sisters! hardcoding!
   const neutralNatures = {
@@ -60,7 +60,7 @@ const process = (req, res) => {
     },
   ];
 
-  res.json({
+  return {
     type: 4,
     data: {
       embeds: [buildEmbed({
@@ -68,7 +68,7 @@ const process = (req, res) => {
         fields,
       })],
     },
-  });
+  };
 }
 
 module.exports = {command, process}

@@ -74,8 +74,8 @@ const command = {
   ],
 };
 
-const process = function(req, res) {
-  const args = getargs(req.body).params;
+async function process(interaction) {
+  const args = getargs(interaction).params;
 
   const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
 
@@ -103,7 +103,7 @@ const process = function(req, res) {
   });
 
   if(mostAccurate === null) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -113,21 +113,20 @@ const process = function(req, res) {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
-  dt[mostAccurate](req, res);
+  return await dt[mostAccurate](interaction);
 };
 
-function autocomplete(req, res) {
-  const args = getargs(req.body).params;
-  res.json({
+function autocomplete(interaction) {
+  const args = getargs(interaction).params;
+  return {
     type: 8,
     data: {
       choices: completeAll(args['name']),
     },
-  });
+  };
 }
 
 module.exports = {command, process, autocomplete};

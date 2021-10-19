@@ -63,15 +63,15 @@ const command = {
   ],
 }
 
-const process = (req, res) => {
-  const args = getargs(req.body).params;
+const process = (interaction) => {
+  const args = getargs(interaction).params;
 
   const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
 
   const pokemon = dataSearch(data.species, Data.toID(args.pokemon))?.result;
 
   if(!pokemon) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -81,8 +81,7 @@ const process = (req, res) => {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
   const title = `${pokemon['name']} [${pokemon['types'].join('/')}]`;
@@ -106,7 +105,7 @@ const process = (req, res) => {
     description += `\n${i}: ${eff[i].join(', ')}`;
   }
 
-  res.json({
+  return {
     type: 4,
     data: {
       embeds: [buildEmbed({
@@ -115,17 +114,17 @@ const process = (req, res) => {
         color: colours.types[Data.toID(pokemon.types[0])]
       })]
     },
-  });
+  };
 }
 
-function autocomplete(req, res) {
-  const args = getargs(req.body).params;
-  res.json({
+function autocomplete(interaction) {
+  const args = getargs(interaction).params;
+  return {
     type: 8,
     data: {
       choices: completePokemon(args['pokemon']),
     },
-  });
+  };
 }
 
 module.exports = {command, process, autocomplete};

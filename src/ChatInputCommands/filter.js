@@ -214,8 +214,8 @@ const command = {
   ],
 };
 
-const process = async function(req, res) {
-  const args = getargs(req.body).params;
+const process = async function(interaction) {
+  const args = getargs(interaction).params;
 
   const data = !!args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
   const filters = [];
@@ -228,7 +228,7 @@ const process = async function(req, res) {
         const filter = filterFactory['ability'](data, ability, isVgc);
         filters.push(filter);
       } catch {
-        res.json({
+        return {
           type: 4,
           data: {
             embeds: [buildEmbed({
@@ -238,8 +238,7 @@ const process = async function(req, res) {
             })],
             flags: 1 << 6,
           },
-        });
-        return;
+        };
       }
     }
   }
@@ -251,7 +250,7 @@ const process = async function(req, res) {
         const filter = filterFactory['type'](data, type.trimStart(), isVgc);
         filters.push(filter);
       } catch {
-        res.json({
+        return {
           type: 4,
           data: {
             embeds: [buildEmbed({
@@ -261,8 +260,7 @@ const process = async function(req, res) {
             })],
             flags: 1 << 6,
           },
-        });
-        return;
+        };
       }
     }
   }
@@ -274,7 +272,7 @@ const process = async function(req, res) {
         const filter = filterFactory['move'](data, move, isVgc);
         filters.push(filter);
       } catch {
-        res.json({
+        return {
           type: 4,
           data: {
             embeds: [buildEmbed({
@@ -284,8 +282,7 @@ const process = async function(req, res) {
             })],
             flags: 1 << 6,
           },
-        });
-        return;
+        };
       }
     }
   }
@@ -296,7 +293,7 @@ const process = async function(req, res) {
         const filter = filterFactory[stat](data, args[stat], isVgc);
         filters.push(filter);
       } catch(e) {
-        res.json({
+        return {
           type: 4,
           data: {
             embeds: [buildEmbed({
@@ -306,8 +303,7 @@ const process = async function(req, res) {
             })],
             flags: 1 << 6,
           },
-        });
-        return;
+        };
       }
     }
   }
@@ -317,7 +313,7 @@ const process = async function(req, res) {
       const filter = filterFactory['weightkg'](data, args['weight-kg'], isVgc);
       filters.push(filter);
     } catch(e) {
-      res.json({
+      return {
         type: 4,
         data: {
           embeds: [buildEmbed({
@@ -327,8 +323,7 @@ const process = async function(req, res) {
           })],
           flags: 1 << 6,
         },
-      });
-      return;
+      };
     }
   }
 
@@ -339,7 +334,7 @@ const process = async function(req, res) {
         const filter = filterFactory['weakness'](data, type, isVgc);
         filters.push(filter);
       } catch {
-        res.json({
+        return {
           type: 4,
           data: {
             embeds: [buildEmbed({
@@ -349,8 +344,7 @@ const process = async function(req, res) {
             })],
             flags: 1 << 6,
           },
-        });
-        return;
+        };
       }
     }
   }
@@ -362,7 +356,7 @@ const process = async function(req, res) {
         const filter = filterFactory['resist'](data, type, isVgc);
         filters.push(filter);
       } catch {
-        res.json({
+        return {
           type: 4,
           data: {
             embeds: [buildEmbed({
@@ -372,8 +366,7 @@ const process = async function(req, res) {
             })],
             flags: 1 << 6,
           },
-        });
-        return;
+        };
       }
     }
   }
@@ -383,7 +376,7 @@ const process = async function(req, res) {
   }
 
   if(filters.length === 0) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -393,8 +386,7 @@ const process = async function(req, res) {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
   const threshold = args.threshold ?? filters.length;
@@ -410,7 +402,7 @@ const process = async function(req, res) {
   const names = pages[0];
   const page = pages.length === 1 ? '' : `Page 1 of ${pages.length}\n`;
 
-  res.json({
+  return {
     type: 4,
     data: {
       embeds: [buildEmbed({
@@ -438,11 +430,11 @@ const process = async function(req, res) {
         }
       ]),
     },
-  });
+  };
 };
 
-function autocomplete(req, res) {
-  const {params: args, focused} = getargs(req.body);
+function autocomplete(interaction) {
+  const {params: args, focused} = getargs(interaction);
 
   const autoArg = args[focused];
   const completers = {
@@ -467,7 +459,7 @@ function autocomplete(req, res) {
     });
   const current = items.pop();
   const resolved = items.map((e) => {
-    const item = dataSearch(Dex.Dex[searches[focused]], e)?.result;
+    const item = dataSearch(natDexData[searches[focused]], e)?.result;
     if(!item) {
       return null;
     }
@@ -479,13 +471,12 @@ function autocomplete(req, res) {
   });
 
   if(resolved.some(e=>!e)) {
-    res.json({
+    return {
       type: 8,
       data: {
         choices: [],
       },
-    });
-    return;
+    };
   }
 
   const prefix = resolved.reduce((acc,cur) => {
@@ -495,7 +486,7 @@ function autocomplete(req, res) {
     };
   }, {name:'',value:''});
 
-  res.json({
+  return {
     type: 8,
     data: {
       choices: completers[focused](current)
@@ -506,7 +497,7 @@ function autocomplete(req, res) {
         };
       }),
     },
-  });
+  };
 }
 
 module.exports = {command, process, autocomplete};

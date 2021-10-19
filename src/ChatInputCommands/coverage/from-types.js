@@ -6,6 +6,7 @@ const Dex = require('@pkmn/dex');
 const dataSearch = require('datasearch');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
+const natDexData = require('natdexdata');
 const colours = require('pkmn-colours');
 const { completeType } = require('pkmn-complete');
 const damageTaken = require('typecheck');
@@ -62,8 +63,8 @@ const command = {
   ],
 }
 
-const process = (req, res) => {
-  const args = getargs(req.body).params;
+const process = (interaction) => {
+  const args = getargs(interaction).params;
   args.gen ??= Dex.Dex.gen;
 
   const data = new Data.Generations(Dex.Dex).get(args.gen);
@@ -84,7 +85,7 @@ const process = (req, res) => {
       }
     }
 
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -94,8 +95,7 @@ const process = (req, res) => {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
   const title = `${types.join(', ')}`;
@@ -120,7 +120,7 @@ const process = (req, res) => {
     description += `\n${i}x: ${eff[i].join(', ')}`;
   }
 
-  res.json({
+  return {
     type: 4,
     data: {
       embeds: [buildEmbed({
@@ -129,17 +129,17 @@ const process = (req, res) => {
         color: colours.types[Data.toID(types[0])]
       })],
     },
-  });
+  };
 }
 
-function autocomplete(req, res) {
-  const args = getargs(req.body).params;
+function autocomplete(interaction) {
+  const args = getargs(interaction).params;
 
   const types = args.types.split(',')
       .slice(0,4)
       .map(Data.toID);
   const current = types.pop();
-  const resolved = types.map(e=>dataSearch(Dex.Dex.types, e)?.result);
+  const resolved = types.map(e=>dataSearch(natDexData.types, e)?.result);
 
   if(resolved.some(e=>!e)) {
     res.json({
@@ -158,7 +158,7 @@ function autocomplete(req, res) {
     };
   }, {name:'',value:''});
 
-  res.json({
+  return {
     type: 8,
     data: {
       choices: completeType(current)
@@ -170,7 +170,7 @@ function autocomplete(req, res) {
           };
         }),
     },
-  });
+  };
 }
 
 module.exports = {command, process, autocomplete}

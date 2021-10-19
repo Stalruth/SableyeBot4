@@ -84,8 +84,8 @@ const command = {
   ],
 };
 
-const process = async function(req, res) {
-  const args = getargs(req.body).params;
+const process = async function(interaction) {
+  const args = getargs(interaction).params;
 
   const vgcNotes = [,,,,,'Pentagon','Plus','Galar'];
 
@@ -94,7 +94,7 @@ const process = async function(req, res) {
   const pokemon = dataSearch(data.species, Data.toID(args.name))?.result;
 
   if(!pokemon) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -104,8 +104,7 @@ const process = async function(req, res) {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
   const learnables = await data.learnsets.learnable(pokemon.id, args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined);
@@ -114,7 +113,7 @@ const process = async function(req, res) {
   let description = '';
 
   if(!args.move) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -127,14 +126,13 @@ const process = async function(req, res) {
           color: colours.types[Data.toID(pokemon.types[0])]
         })],
       },
-    });
-    return;
+    };
   }
 
   const move = dataSearch(data.moves, Data.toID(args.move))?.result;
 
   if(!move) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -144,12 +142,11 @@ const process = async function(req, res) {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
   if(!learnables[move.id]) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -157,13 +154,12 @@ const process = async function(req, res) {
           color: colours.types[Data.toID(pokemon.types[0])],
         })],
       },
-    });
-    return
+    };
   }
 
   const latestSourceGen = learnables[move.id][0][0];
   if(Number(latestSourceGen) !== data.num) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -171,8 +167,7 @@ const process = async function(req, res) {
           color: colours.types[Data.toID(pokemon.types[0])],
         })],
       },
-    });
-    return;
+    };
   }
 
   let currentSpecies = pokemon;
@@ -180,7 +175,7 @@ const process = async function(req, res) {
     const sources = (await data.learnsets.get(currentSpecies.id) ?? await data.learnsets.get(currentSpecies.baseSpecies))['learnset'][move.id];
     if(sources?.[0]?.[0] === latestSourceGen) {
       const latestSources = sources.filter(el=>el[0]===latestSourceGen);
-      res.json({
+      return {
         type: 4,
         data: {
           embeds: [buildEmbed({
@@ -192,8 +187,7 @@ const process = async function(req, res) {
             color: colours.types[Data.toID(pokemon.types[0])],
           })],
         },
-      });
-      return;
+      };
     }
     currentSpecies = data.species.get(currentSpecies.prevo ?? '');
     if(!currentSpecies) {
@@ -201,7 +195,7 @@ const process = async function(req, res) {
     }
   }
 
-  res.json({
+  return {
     type: 4,
     data: {
       embeds: [buildEmbed({
@@ -211,17 +205,17 @@ const process = async function(req, res) {
       })],
       flags: 1 << 6,
     },
-  });
+  };
 };
 
-function autocomplete(req, res) {
-  const {params, focused} = getargs(req.body);
-  res.json({
+function autocomplete(interaction) {
+  const {params, focused} = getargs(interaction);
+  return {
     type: 8,
     data: {
       choices: focused === 'name' ? completePokemon(params['name']) : completeMove(params['move']),
     },
-  });
+  };
 }
 
 module.exports = {command, process, autocomplete};

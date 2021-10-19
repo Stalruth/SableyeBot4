@@ -74,8 +74,8 @@ const command = {
   ]
 };
 
-const process = function(req, res) {
-  const args = getargs(req.body).params;
+const process = function(interaction) {
+  const args = getargs(interaction).params;
   args.gen ??= 'ani';
   
   const gen = args.afd ? 'gen5' : args.gen;
@@ -83,7 +83,7 @@ const process = function(req, res) {
   const pokemon = dataSearch(natDexData.species, Data.toID(args.pokemon))?.result;
 
   if(!pokemon) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -93,8 +93,7 @@ const process = function(req, res) {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
   const options = {};
@@ -111,7 +110,7 @@ const process = function(req, res) {
   const spriteUrl = Img.Sprites.getPokemon(pokemon['id'], options).url;
   
   if(spriteUrl.endsWith('0.png')) {
-    res.json({
+    return {
       type: 4,
       data: {
         embeds: [buildEmbed({
@@ -121,26 +120,25 @@ const process = function(req, res) {
         })],
         flags: 1 << 6,
       },
-    });
-    return;
+    };
   }
 
-  res.json({
+  return {
     type: 4,
     data: {
       content: args.afd ? spriteUrl.replace('gen5', 'afd') : spriteUrl,
     },
-  });
+  };
 };
 
-function autocomplete(req, res) {
-  const args = getargs(req.body).params;
-  res.json({
+function autocomplete(interaction) {
+  const args = getargs(interaction).params;
+  return {
     type: 8,
     data: {
       choices: completePokemon(args['pokemon']),
     },
-  });
+  };
 }
 
 module.exports = {command, process, autocomplete};
