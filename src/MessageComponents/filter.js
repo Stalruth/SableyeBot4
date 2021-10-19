@@ -9,18 +9,17 @@ const natDexData = require('natdexdata');
 const paginate = require('paginate');
 const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 
-async function getPage(req, res) {
+async function getPage(interaction) {
 
-  if(req.body.member.user.id !== req.body.message.interaction.user.id) {
-    res.json({
+  if(interaction.member.user.id !== interaction.message.interaction.user.id) {
+    return {
       type: 6
-    });
-    return;
+    };
   }
 
-  const lines = req.body.message.content.split('\n');
+  const lines = interaction.message.content.split('\n');
 
-  const idData = req.body.data.custom_id.split('|');
+  const idData = interaction.data.custom_id.split('|');
   const packedFilters = idData.slice(1);
   const commandData = idData[0].split('_');
 
@@ -38,10 +37,9 @@ async function getPage(req, res) {
   }
 
   if(!pageNumber || isNaN(pageNumber)) {
-    res.json({
+    return {
       type: 6,
-    });
-    return;
+    };
   }
 
   const results = await applyFilters(toArray(data.species), filters, threshold)
@@ -55,7 +53,7 @@ async function getPage(req, res) {
   const names = pages[pageNumber - 1];
   const page = `Page ${pageNumber} of ${pages.length}\n`;
 
-  res.json({
+  return {
     type: 7,
     data: {
       embeds: [buildEmbed({
@@ -84,7 +82,7 @@ async function getPage(req, res) {
         }
       ],
     },
-  });
+  };
 }
 
 module.exports = getPage;
