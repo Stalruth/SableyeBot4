@@ -18,77 +18,13 @@ const command = {
     {
       name: 'abilities',
       type: 3,
-      description: 'Comma delimited list of Abilities.',
-      autocomplete: true,
-    },
-    {
-      name: 'types',
-      type: 3,
-      description: 'Comma delimited list of types. Prefix a type with `!` to negate.',
-      autocomplete: true,
-    },
-    {
-      name: 'moves',
-      type: 3,
-      description: 'Comma delimited list of moves.',
-      autocomplete: true,
-    },
-    {
-      name: 'hp',
-      type: 3,
-      description: "Base HP, supports `<STAT`, `>STAT`, `STAT-STAT`",
-    },
-    {
-      name: 'atk',
-      type: 3,
-      description: "Base Attack, supports `<STAT`, `>STAT`, `STAT-STAT`",
-    },
-    {
-      name: 'def',
-      type: 3,
-      description: "Base Defence, supports `<STAT`, `>STAT`, `STAT-STAT`",
-    },
-    {
-      name: 'spa',
-      type: 3,
-      description: "Base Special Attack, supports `<STAT`, `>STAT`, `STAT-STAT`",
-    },
-    {
-      name: 'spd',
-      type: 3,
-      description: "Base Special Defence, supports `<STAT`, `>STAT`, `STAT-STAT`",
-    },
-    {
-      name: 'spe',
-      type: 3,
-      description: "Base Speed, supports `<STAT`, `>STAT`, `STAT-STAT`",
-    },
-    {
-      name: 'bst',
-      type: 3,
-      description: "Base Stat Total, supports `<STAT`, `>STAT`, `STAT-STAT`",
-    },
-    {
-      name: 'weight-kg',
-      type: 3,
-      description: "Weight in kg, supports `<STAT`, `>STAT`, `STAT-STAT`",
-    },
-    {
-      name: 'weaknesses',
-      type: 3,
-      description: "Comma delimited list of Weaknesses.",
-      autocomplete: true,
-    },
-    {
-      name: 'resists',
-      type: 3,
-      description: "Comma delimited list of Resistances.",
+      description: 'Comma delimited list of Abilities the Pokémon must have.',
       autocomplete: true,
     },
     {
       name: 'egg-group',
       type: 3,
-      description: 'Egg Group the Pokémon is in.',
+      description: 'Egg Group the Pokémon must be in.',
       choices: [
         {
           name: 'Amorphous',
@@ -153,9 +89,73 @@ const command = {
       ],
     },
     {
-      name: 'threshold',
-      type: 4,
-      description: 'Amount of filters that must match. Comma-separated fields count one for each item.',
+      name: 'evolves',
+      type: 5,
+      description: 'Has (or does not have) an evolution.',
+    },
+    {
+      name: 'moves',
+      type: 3,
+      description: 'Comma delimited list of moves.',
+      autocomplete: true,
+    },
+    {
+      name: 'resists',
+      type: 3,
+      description: "Comma delimited list of Resistances.",
+      autocomplete: true,
+    },
+    {
+      name: 'types',
+      type: 3,
+      description: 'Comma delimited list of types. Prefix a type with `!` to negate.',
+      autocomplete: true,
+    },
+    {
+      name: 'weaknesses',
+      type: 3,
+      description: "Comma delimited list of Weaknesses.",
+      autocomplete: true,
+    },
+    {
+      name: 'weight-kg',
+      type: 3,
+      description: "Weight in kg, supports `<STAT`, `>STAT`, `STAT-STAT`",
+    },
+    {
+      name: 'hp',
+      type: 3,
+      description: "Base HP, supports `<STAT`, `>STAT`, `STAT-STAT`",
+    },
+    {
+      name: 'atk',
+      type: 3,
+      description: "Base Attack, supports `<STAT`, `>STAT`, `STAT-STAT`",
+    },
+    {
+      name: 'def',
+      type: 3,
+      description: "Base Defence, supports `<STAT`, `>STAT`, `STAT-STAT`",
+    },
+    {
+      name: 'spa',
+      type: 3,
+      description: "Base Special Attack, supports `<STAT`, `>STAT`, `STAT-STAT`",
+    },
+    {
+      name: 'spd',
+      type: 3,
+      description: "Base Special Defence, supports `<STAT`, `>STAT`, `STAT-STAT`",
+    },
+    {
+      name: 'spe',
+      type: 3,
+      description: "Base Speed, supports `<STAT`, `>STAT`, `STAT-STAT`",
+    },
+    {
+      name: 'bst',
+      type: 3,
+      description: "Base Stat Total, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
       name: 'gen',
@@ -210,6 +210,11 @@ const command = {
           value: 'default',
         },
       ],
+    },
+    {
+      name: 'threshold',
+      type: 4,
+      description: 'Amount of filters that must match. Comma-separated fields count one for each item.',
     },
   ],
 };
@@ -373,6 +378,10 @@ const process = async function(interaction) {
 
   if(args['egg-group']) {
     filters.push(filterFactory['egggroup'](data, args['egg-group'], isVgc));
+  }
+
+  if(args['evolves'] !== undefined) {
+    filters.push(filterFactory['evolves'](data, args['evolves'], isVgc));
   }
 
   if(filters.length === 0) {
