@@ -2,18 +2,9 @@
 
 Competitive Pokémon Discord Bot, rewritten from the ground up.
 
-This software is in alpha, and just like an alpha male may be unstable.
+This software is in beta and may have some issues.
+
 Proceed with caution.
-
-## Privacy
-
-dude i haven't even implemented logging yet maybe chill tf out
-
-SableyeBot4 doesn't currently retain any data in the course of its
-usage.
-
-This will probably change, primarily for the purposes of logging
-executed commands (with no context as to who executed the command).
 
 ## Installation
 `discord.js@13.0.0` (and therefore SableyeBot 4) requires NodeJS v16.6.
@@ -23,13 +14,26 @@ Follow these steps to run your own local copy:
 1. Clone this repository.
 2. Rename `example.env` to `.env` and fill out the fields needed.
 3. Run `npm i` to install dependencies.
-4. Run `npm run start` and you're off to the races!
+4. Set environment variables, check `example.env` for guidance.
+5. Run `npm run update-commands` to update command definitions with Discord.
+6. Run `npm run start` and you're off to the races!
+7. You should also use `ngrok` or simlar to get this working in a test
+   environment that isn't directly exposed to the internet.
 
 And not nearly as soul crushing as SabelyeBot 3!
 
+## Some further detail
+
+Of the dependencies only `express` and `tweetnacl` are actually used
+for the bot's backbone.  All the other packages are used in command
+handling.
+
+`dotenv` is used to make testing easier and `node-fetch` is used in the
+`update-commands` script.
+
 ## Issues
 
-Alpha software has bugs.  Fact of life.  If you find a bug, please
+Beta software has bugs.  Fact of life.  If you find a bug, please
 include the following in your [complaint][hatemail]:
 
 - A description of the bug (What should have happened! What did happen!)
