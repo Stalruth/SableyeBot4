@@ -172,16 +172,16 @@ const process = async function(interaction) {
 
   let currentSpecies = pokemon;
   while(true) {
-    const sources = (await data.learnsets.get(currentSpecies.id) ?? await data.learnsets.get(currentSpecies.baseSpecies))['learnset'][move.id];
-    if(sources?.[0]?.[0] === latestSourceGen) {
-      const latestSources = sources.filter(el=>el[0]===latestSourceGen);
+    const sources = (await data.learnsets.get(currentSpecies.id) ?? await data.learnsets.get(currentSpecies.baseSpecies))['learnset'][move.id] ?? [];
+    const filteredSources = sources.filter(el => el[0] === latestSourceGen);
+    if(filteredSources.length > 0) {
       return {
         type: 4,
         data: {
           embeds: [buildEmbed({
             title: `${pokemon.name} does learn ${move.name}`,
             description: `As ${currentSpecies.name}:\n` +
-                latestSources.map(decodeSource)
+                filteredSources.map(decodeSource)
                 .map(el=>`- ${el}`)
                 .join('\n'),
             color: colours.types[Data.toID(pokemon.types[0])],
