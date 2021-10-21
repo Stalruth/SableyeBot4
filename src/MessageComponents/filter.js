@@ -59,21 +59,28 @@ async function getPage(interaction) {
     return rhs.baseStats[sortKey] - lhs.baseStats[sortKey];
   });
 
-  const filterDescriptions = filters.map(el=>`- ${el['description']}`).join('\n');
-  const genDescription = !isNaN(gen) ? `Using Gen ${gen}\n` : '';
-  const thresholdDescription = threshold !== filters.length ? ` (${threshold} must match)` : '';
-  const modeDescription = isVgc ? `VGC Mode enabled - Transfer moves excluded.\n` : '';
-  const responsePrefix = `${genDescription}${modeDescription}Filters${thresholdDescription}:\n${filterDescriptions}\n- - -\nResults (${results.length}):\n`;
-  const pages = paginate(results.map((el)=>{return el.name}), 1950 - responsePrefix.length);
-  const names = pages[pageNumber - 1];
-  const page = `Page ${pageNumber} of ${pages.length}\n`;
+  const pages = paginate(results.map((el)=>{return el.name}), 1000);
+  const fields = interaction.message.embeds[0].fields.map(field => {
+    if(field.name.startsWith('Results')) {
+      return {
+        name: `Results (${results.length})`,
+        value: pages[pageNumber - 1],
+      };
+    }
+    if(field.name === 'Page') {
+      return {
+        name: 'Page',
+        value: `${pageNumber} of ${pages.length}`,
+      };
+    }
+    return field;
+  });
 
   return {
     type: 7,
     data: {
       embeds: [buildEmbed({
-        title: `Results: ${page}`,
-        description: responsePrefix + names,
+        fields: fields,
       })],
       components: [
         {

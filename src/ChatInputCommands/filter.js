@@ -452,21 +452,62 @@ const process = async function(interaction) {
     return rhs.baseStats[sortKey] - lhs.baseStats[sortKey];
   });
 
-  const filterDescriptions = filters.map(el=>`- ${el['description']}`).join('\n');
-  const genDescription = !!args.gen ? `Using Gen ${args.gen}\n` : '';
-  const thresholdDescription = threshold !== filters.length ? ` (${threshold} must match)` : '';
-  const modeDescription = args.mode === 'vgc' ? `VGC Mode enabled - Transfer moves excluded.\n` : '';
-  const responsePrefix = `${genDescription}${modeDescription}Filters${thresholdDescription}:\n${filterDescriptions}\n- - -\nResults (${results.length}):\n`;
-  const pages = paginate(results.map((el)=>{return el.name}), 1950 - responsePrefix.length);
-  const names = pages[0];
-  const page = pages.length === 1 ? '' : `Page 1 of ${pages.length}\n`;
+  const pages = paginate(results.map((el)=>{return el.name}), 1000);
+  const fields = [
+    {
+      name: 'Filters',
+      value: filters.map(el=>`- ${el['description']}`).join('\n'),
+    },
+    {
+      name: `Results (${results.length})`,
+      value: pages[0],
+    },
+    {
+      name: 'Generation',
+      value: args.gen ?? 'All Gens',
+      inline: true,
+    },
+    {
+      name: 'Transferred Pokémon',
+      value: args.mode === 'vgc' ? 'Excluded' : 'Included',
+      inline: true,
+    },
+  ];
+  if(threshold !== filters.length) {
+    fields.push({
+      name: 'Threshold',
+      value: `At least ${threshold} filter${threshold === 1 ? '' : 's'} must match`,
+      inline: true,
+    });
+  }
+  if(sortKey !== 'nil') {
+    const names= {
+      'hp': 'Hit Points',
+      'atk': 'Attack',
+      'def': 'Defence',
+      'spa': 'Special Attack',
+      'spd': 'Special Defence',
+      'spe': 'Speed',
+      'bst': 'Base Stat Total',
+    };
+    fields.push({
+      name: 'Sorted by (High to Low)',
+      value: names[sortKey],
+      inline: true,
+    });
+  }
+  if(pages.length > 1) {
+    fields.push({
+      name: 'Page',
+      value: `1 of ${pages.length}`,
+    });
+  }
 
   return {
     type: 4,
     data: {
       embeds: [buildEmbed({
-        title: `Results: ${page}`,
-        description: responsePrefix + names,
+        fields: fields,
       })],
       components: (pages.length === 1 ? undefined : [
         {
