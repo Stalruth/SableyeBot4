@@ -28,6 +28,7 @@ async function getPage(interaction) {
   const data = !isNaN(gen) ? new Data.Generations(Dex.Dex).get(gen) : natDexData;
   const threshold = Number(commandData[3] ?? packedFilters.length);
   const isVgc = commandData[4] === 'V';
+  const sortKey = commandData[5] ?? 'nil';
 
   const filters = [];
 
@@ -42,7 +43,21 @@ async function getPage(interaction) {
     };
   }
 
-  const results = await applyFilters(toArray(data.species), filters, threshold)
+  const results = (await applyFilters(toArray(data.species), filters, threshold)).sort((lhs, rhs) => {
+    if(sortKey === 'nil') {
+      return 0;
+    }
+    if(sortKey === 'bst') {
+      let lhsTotal = 0;
+      let rhsTotal = 0;
+      ['hp','atk','def','spa','spd','spe'].forEach(el => {
+        lhsTotal += lhs.baseStats[el];
+        rhsTotal += rhs.baseStats[el];
+      });
+      return rhsTotal - lhsTotal;
+    }
+    return rhs.baseStats[sortKey] - lhs.baseStats[sortKey];
+  });
 
   const filterDescriptions = filters.map(el=>`- ${el['description']}`).join('\n');
   const genDescription = !isNaN(gen) ? `Using Gen ${gen}\n` : '';
@@ -66,14 +81,14 @@ async function getPage(interaction) {
           components: [
             {
               type: 2,
-              custom_id: pageNumber === 1 ? '-' : `filter_p${pageNumber-1}_${gen}_${threshold}${isVgc?'_V':''}${packFilters(filters)}`,
+              custom_id: pageNumber === 1 ? '-' : `filter_p${pageNumber-1}_${gen}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
               disabled: pageNumber === 1,
               style: 2,
               label: 'Previous',
             },
             {
               type: 2,
-              custom_id: pageNumber === pages.length ? '-' : `filter_p${pageNumber+1}_${gen}_${threshold}${isVgc?'_V':''}${packFilters(filters)}`,
+              custom_id: pageNumber === pages.length ? '-' : `filter_p${pageNumber+1}_${gen}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
               disabled: pageNumber === pages.length,
               style: 2,
               label: 'Next',

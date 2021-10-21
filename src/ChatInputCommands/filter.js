@@ -212,6 +212,41 @@ const command = {
       ],
     },
     {
+      name: 'sort',
+      type: 3,
+      description: 'Sort results by the given key (High to Low)',
+      choices: [
+        {
+          name: 'HP',
+          value: 'hp',
+        },
+        {
+          name: 'Attack',
+          value: 'atk',
+        },
+        {
+          name: 'Defence',
+          value: 'def',
+        },
+        {
+          name: 'Special Attack',
+          value: 'spa',
+        },
+        {
+          name: 'Special Defence',
+          value: 'spd',
+        },
+        {
+          name: 'Speed',
+          value: 'spe',
+        },
+        {
+          name: 'Base Stat Total',
+          value: 'bst',
+        },
+      ],
+    },
+    {
       name: 'threshold',
       type: 4,
       description: 'Amount of filters that must match. Comma-separated fields count one for each item.',
@@ -400,7 +435,22 @@ const process = async function(interaction) {
 
   const threshold = args.threshold ?? filters.length;
 
-  const results = await applyFilters(toArray(data.species), filters, threshold);
+  const sortKey = args['sort'] ?? 'nil';
+  const results = (await applyFilters(toArray(data.species), filters, threshold)).sort((lhs, rhs) => {
+    if(sortKey === 'nil') {
+      return 0;
+    }
+    if(sortKey === 'bst') {
+      let lhsTotal = 0;
+      let rhsTotal = 0;
+      ['hp','atk','def','spa','spd','spe'].forEach(el => {
+        lhsTotal += lhs.baseStats[el];
+        rhsTotal += rhs.baseStats[el];
+      });
+      return rhsTotal - lhsTotal;
+    }
+    return rhs.baseStats[sortKey] - lhs.baseStats[sortKey];
+  });
 
   const filterDescriptions = filters.map(el=>`- ${el['description']}`).join('\n');
   const genDescription = !!args.gen ? `Using Gen ${args.gen}\n` : '';
@@ -431,7 +481,7 @@ const process = async function(interaction) {
             },
             {
               type: 2,
-              custom_id:`filter_p2_${args.gen ?? 'NaN'}_${threshold}${args.mode === 'vgc' ?'_V':''}${packFilters(filters)}`,
+              custom_id:`filter_p2_${args.gen ?? 'NaN'}_${threshold}_${args.mode === 'vgc' ?'V':'S'}_${sortKey}${packFilters(filters)}`,
               style: 2,
               label: 'Next',
             },
