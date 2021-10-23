@@ -180,10 +180,14 @@ const process = async function(interaction) {
         data: {
           embeds: [buildEmbed({
             title: `${pokemon.name} does learn ${move.name}`,
-            description: `As ${currentSpecies.name}:\n` +
-                filteredSources.map(decodeSource)
-                .map(el=>`- ${el}`)
-                .join('\n'),
+            fields: [
+              {
+                name: `As ${currentSpecies.name}`,
+                value: filteredSources.map(decodeSource)
+                  .map(el=>`- ${el}`)
+                  .join('\n'),
+              },
+            ],
             color: colours.types[Data.toID(pokemon.types[0])],
           })],
         },
