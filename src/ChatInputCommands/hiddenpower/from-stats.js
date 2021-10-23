@@ -114,7 +114,18 @@ const process = (interaction) => {
     type: 4,
     data: {
       embeds: [buildEmbed({
-        description: `Type: ${result['type']}; Power: ${result['power']}`,
+        fields : [
+          {
+            name: 'Type',
+            value: result['type'],
+            inline: true,
+          },
+          {
+            name: 'Power',
+            value: result['power'],
+            inline: true,
+          },
+        ],
         color: colours.types[Data.toID(result['type'])]
       })],
     },
