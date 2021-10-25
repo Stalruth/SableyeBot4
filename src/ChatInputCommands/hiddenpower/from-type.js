@@ -1,5 +1,6 @@
 'use strict';
 
+const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
@@ -73,14 +74,13 @@ const process = (interaction) => {
 
   if(['normal','fairy'].includes(type['id'])) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
-          title: 'Error',
+          title: `Hidden Power ${type['name']}`,
           description: `There is no way to get a ${type['name']}-Type Hidden Power.`,
-          color: 0xCC0000,
+          color: colours.types[Data.toID(type['name'])],
         })],
-        flags: 1 << 6,
       },
     };
   }
@@ -97,7 +97,7 @@ const process = (interaction) => {
 
   const title = `Hidden Power ${type['name']}`;
   return {
-    type: 4,
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
         title,

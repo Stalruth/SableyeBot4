@@ -1,5 +1,6 @@
 'use strict';
 
+const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
@@ -96,14 +97,14 @@ const process = (interaction) => {
 
   if(problems.length > 0) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           title: 'Error',
           description: `IVs are restricted between 0 and 31.\nThe following IVs are out of range:\n - ${problems.join('\n - ')}`,
           color: 0xCC0000,
         })],
-        flags: 1 << 6,
+        flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
   }
@@ -111,7 +112,7 @@ const process = (interaction) => {
   const result = types.getHiddenPower(args);
 
   return {
-    type: 4,
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
         fields : [

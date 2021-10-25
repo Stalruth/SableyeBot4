@@ -1,5 +1,6 @@
 'use strict';
 
+const { InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
@@ -61,7 +62,7 @@ const process = (interaction) => {
   ];
 
   return {
-    type: 4,
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
         title,

@@ -1,5 +1,6 @@
 'use strict';
 
+const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
@@ -35,14 +36,14 @@ const process = async function(interaction) {
 
   if(!pokemon) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           title: "Error",
           description: `Could not find a Pokémon named ${args.name}.`,
           color: 0xCC0000,
         })],
-        flags: 1 << 6,
+        flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
   }
@@ -59,14 +60,14 @@ const process = async function(interaction) {
     }
   } else if (args.event < 1 || args.event > learnset['eventData'].length) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           title: "Error",
-          description: `${pokemon.name} only has ${learnset.eventData.length} events.`,
+          description: `${pokemon.name} only has ${learnset.eventData.length} event${learnset.eventData.length !== 1 ? 's' : ''}.`,
           color: 0xCC0000,
         })],
-        flags: 1 << 6,
+        flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
   } else {
@@ -145,7 +146,7 @@ const process = async function(interaction) {
   }
 
   return {
-    type: 4,
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
         title,
@@ -160,7 +161,7 @@ const process = async function(interaction) {
 function autocomplete(interaction) {
   const args = getargs(interaction).params;
   return {
-    type: 8,
+    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {
       choices: completePokemon(args['name']),
     },

@@ -1,5 +1,6 @@
 'use strict';
 
+const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
@@ -269,14 +270,14 @@ const process = async function(interaction) {
         filters.push(filter);
       } catch {
         return {
-          type: 4,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [buildEmbed({
               title: "Error",
               description: `The ability ${ability} could not be found${args.gen ? ` in Generation ${args.gen}` : ''}.`,
               color: 0xCC0000,
             })],
-            flags: 1 << 6,
+            flags: InteractionResponseFlags.EPHEMERAL,
           },
         };
       }
@@ -291,14 +292,14 @@ const process = async function(interaction) {
         filters.push(filter);
       } catch {
         return {
-          type: 4,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [buildEmbed({
               title: "Error",
               description: `The type ${type} could not be found${args.gen ? ` in Generation ${args.gen}` : ''}.`,
               color: 0xCC0000,
             })],
-            flags: 1 << 6,
+            flags: InteractionResponseFlags.EPHEMERAL,
           },
         };
       }
@@ -313,14 +314,14 @@ const process = async function(interaction) {
         filters.push(filter);
       } catch {
         return {
-          type: 4,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [buildEmbed({
               title: "Error",
               description: `The move ${move} could not be found${args.gen ? ` in Generation ${args.gen}` : ''}.`,
               color: 0xCC0000,
             })],
-            flags: 1 << 6,
+            flags: InteractionResponseFlags.EPHEMERAL,
           },
         };
       }
@@ -334,14 +335,14 @@ const process = async function(interaction) {
         filters.push(filter);
       } catch(e) {
         return {
-          type: 4,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [buildEmbed({
               title: "Error",
               description: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
               color: 0xCC0000,
             })],
-            flags: 1 << 6,
+            flags: InteractionResponseFlags.EPHEMERAL,
           },
         };
       }
@@ -354,14 +355,14 @@ const process = async function(interaction) {
       filters.push(filter);
     } catch(e) {
       return {
-        type: 4,
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           embeds: [buildEmbed({
             title: "Error",
             description: `The query ${args['weight-kg']} is not valid for the 'weight-kg' argument.`,
             color: 0xCC0000,
           })],
-          flags: 1 << 6,
+          flags: InteractionResponseFlags.EPHEMERAL,
         },
       };
     }
@@ -375,14 +376,14 @@ const process = async function(interaction) {
         filters.push(filter);
       } catch {
         return {
-          type: 4,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [buildEmbed({
               title: "Error",
               description: `The type ${type} could not be found${args.gen ? ` in Generation ${args.gen}` : ''}.`,
               color: 0xCC0000,
             })],
-            flags: 1 << 6,
+            flags: InteractionResponseFlags.EPHEMERAL,
           },
         };
       }
@@ -397,14 +398,14 @@ const process = async function(interaction) {
         filters.push(filter);
       } catch {
         return {
-          type: 4,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [buildEmbed({
               title: "Error",
               description: `The type ${type} could not be found${args.gen ? ` in Generation ${args.gen}` : ''}.`,
               color: 0xCC0000,
             })],
-            flags: 1 << 6,
+            flags: InteractionResponseFlags.EPHEMERAL,
           },
         };
       }
@@ -421,14 +422,14 @@ const process = async function(interaction) {
 
   if(filters.length === 0) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           title: "Error",
           description: "You haven't added any filters.",
           color: 0xCC0000,
         })],
-        flags: 1 << 6,
+        flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
   }
@@ -504,7 +505,7 @@ const process = async function(interaction) {
   }
 
   return {
-    type: 4,
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
         fields: fields,
@@ -572,7 +573,7 @@ function autocomplete(interaction) {
 
   if(resolved.some(e=>!e)) {
     return {
-      type: 8,
+      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
       data: {
         choices: [],
       },
@@ -587,7 +588,7 @@ function autocomplete(interaction) {
   }, {name:'',value:''});
 
   return {
-    type: 8,
+    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {
       choices: completers[focused](current)
       .map(e=>{

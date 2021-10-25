@@ -1,5 +1,6 @@
 'use strict';
 
+const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
@@ -86,14 +87,14 @@ const process = (interaction) => {
     }
 
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           title: "Error",
           description: `Could not find Types named ${nonTypes.join(',')}${args.gen ? ` in Generation ${args.gen}` : ''}.`,
           color: 0xCC0000,
         })],
-        flags: 1 << 6,
+        flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
   }
@@ -121,7 +122,7 @@ const process = (interaction) => {
   }
 
   return {
-    type: 4,
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
         title,
@@ -159,7 +160,7 @@ function autocomplete(interaction) {
   }, {name:'',value:''});
 
   return {
-    type: 8,
+    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {
       choices: completeType(current)
         .filter(e=>!resolved.some(r=>e.value===r.id))

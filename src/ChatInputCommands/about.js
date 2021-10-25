@@ -1,5 +1,7 @@
 'use strict';
 
+const { InteractionResponseType } = require('discord-interactions');
+
 const buildEmbed = require('embed-builder');
 
 const command = {
@@ -8,7 +10,7 @@ const command = {
 
 const process = function(interaction) {
   return {
-    type: 4,
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
         title: 'About SableyeBot',

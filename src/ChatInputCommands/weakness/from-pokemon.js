@@ -1,9 +1,10 @@
 'use strict';
 
-const dataSearch = require('datasearch');
+const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
+const dataSearch = require('datasearch');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const natDexData = require('natdexdata');
@@ -72,14 +73,14 @@ const process = (interaction) => {
 
   if(!pokemon) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           title: "Error",
           description: `Could not find a Pokémon named ${args.pokemon}${args.gen ? ` in Generation ${args.gen}` : ''}.`,
           color: 0xCC0000,
         })],
-        flags: 1 << 6,
+        flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
   }
@@ -106,7 +107,7 @@ const process = (interaction) => {
   }
 
   return {
-    type: 4,
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
         title,
@@ -120,7 +121,7 @@ const process = (interaction) => {
 function autocomplete(interaction) {
   const args = getargs(interaction).params;
   return {
-    type: 8,
+    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {
       choices: completePokemon(args['pokemon']),
     },

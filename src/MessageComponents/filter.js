@@ -1,5 +1,6 @@
 'use strict';
 
+const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
@@ -12,14 +13,14 @@ const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 async function getPage(interaction) {
   if(interaction.member.user.id !== interaction.message.interaction.user.id) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           title: "Error",
           description: 'Only the person who ran the command may change the page it displays.',
           color: 0xCC0000,
         })],
-        flags: 1 << 6,
+        flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
   }
@@ -46,7 +47,7 @@ async function getPage(interaction) {
 
   if(!pageNumber || isNaN(pageNumber)) {
     return {
-      type: 6,
+      type: InteractionResponseType.DEFERRED_UPDATE_MESSAGE,
     };
   }
 
@@ -84,7 +85,7 @@ async function getPage(interaction) {
   });
 
   return {
-    type: 7,
+    type: InteractionResponseType.UPDATE_MESSAGE,
     data: {
       embeds: [buildEmbed({
         fields: fields,

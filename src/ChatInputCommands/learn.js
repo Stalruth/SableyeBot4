@@ -1,5 +1,6 @@
 'use strict';
 
+const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
@@ -95,14 +96,14 @@ const process = async function(interaction) {
 
   if(!pokemon) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           title: "Error",
           description: `Could not find a Pokémon named ${args.name}${args.gen ? ` in Generation ${args.gen}` : ''}.`,
           color: 0xCC0000,
         })],
-        flags: 1 << 6,
+        flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
   }
@@ -114,7 +115,7 @@ const process = async function(interaction) {
 
   if(!args.move) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           title: `${pokemon['name']}'s moveset:\n`,
@@ -133,21 +134,21 @@ const process = async function(interaction) {
 
   if(!move) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           title: "Error",
           description: `Could not find a move named ${args.move}${args.gen ? ` in Generation ${args.gen}` : ''}.`,
           color: 0xCC0000,
         })],
-        flags: 1 << 6,
+        flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
   }
 
   if(!learnables[move.id]) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           description: `${pokemon.name} does not learn ${move.name} in Generation ${data.num}.`,
@@ -160,7 +161,7 @@ const process = async function(interaction) {
   const latestSourceGen = learnables[move.id][0][0];
   if(Number(latestSourceGen) !== data.num) {
     return {
-      type: 4,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
           description: `${pokemon.name} learns ${move.name} when transferred from Generation ${latestSourceGen}`,
@@ -176,7 +177,7 @@ const process = async function(interaction) {
     const filteredSources = sources.filter(el => el[0] === latestSourceGen);
     if(filteredSources.length > 0) {
       return {
-        type: 4,
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           embeds: [buildEmbed({
             title: `${pokemon.name} does learn ${move.name}`,
@@ -200,14 +201,14 @@ const process = async function(interaction) {
   }
 
   return {
-    type: 4,
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
         title: "Something went wrong!",
         description: "Please let the developer know what command you ran to cause this message [here](https://github.com/Stalruth/SableyeBot4/issues/new)",
         color: 0xCC0000,
       })],
-      flags: 1 << 6,
+      flags: InteractionResponseFlags.EPHEMERAL,
     },
   };
 };
@@ -215,7 +216,7 @@ const process = async function(interaction) {
 function autocomplete(interaction) {
   const {params, focused} = getargs(interaction);
   return {
-    type: 8,
+    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {
       choices: focused === 'name' ? completePokemon(params['name']) : completeMove(params['move']),
     },
