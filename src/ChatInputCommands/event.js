@@ -39,7 +39,7 @@ const process = async function(interaction) {
       data: {
         embeds: [buildEmbed({
           title: "Error",
-          description: `Could not find a Pokémon named ${args.name} in Generation ${Dex.Dex.gen}.`,
+          description: `Could not find a Pokémon named ${args.name}.`,
           color: 0xCC0000,
         })],
         flags: 1 << 6,

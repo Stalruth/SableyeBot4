@@ -73,7 +73,7 @@ const process = function(interaction) {
       data: {
         embeds: [buildEmbed({
           title: "Error",
-          description: `Could not find an ability named ${args.name} in Generation ${args.gen ?? Dex.Dex.gen}.`,
+          description: `Could not find an ability named ${args.name}${args.gen ? ` in Generation ${args.gen}` : ''}.`,
           color: 0xCC0000,
         })],
         flags: 1 << 6,

@@ -273,7 +273,7 @@ const process = async function(interaction) {
           data: {
             embeds: [buildEmbed({
               title: "Error",
-              description: `The ability ${ability} could not be found in Generation ${args.gen ?? Dex.Dex.gen}.`,
+              description: `The ability ${ability} could not be found${args.gen ? ` in Generation ${args.gen}` : ''}.`,
               color: 0xCC0000,
             })],
             flags: 1 << 6,
@@ -295,7 +295,7 @@ const process = async function(interaction) {
           data: {
             embeds: [buildEmbed({
               title: "Error",
-              description: `The type ${type} could not be found in Generation ${args.gen ?? Dex.Dex.gen}.`,
+              description: `The type ${type} could not be found${args.gen ? ` in Generation ${args.gen}` : ''}.`,
               color: 0xCC0000,
             })],
             flags: 1 << 6,
@@ -317,7 +317,7 @@ const process = async function(interaction) {
           data: {
             embeds: [buildEmbed({
               title: "Error",
-              description: `The move ${move} could not be found in Generation ${args.gen ?? Dex.Dex.gen}.`,
+              description: `The move ${move} could not be found${args.gen ? ` in Generation ${args.gen}` : ''}.`,
               color: 0xCC0000,
             })],
             flags: 1 << 6,
@@ -379,7 +379,7 @@ const process = async function(interaction) {
           data: {
             embeds: [buildEmbed({
               title: "Error",
-              description: `The type ${type} could not be found in Generation ${args.gen ?? Dex.Dex.gen}.`,
+              description: `The type ${type} could not be found${args.gen ? ` in Generation ${args.gen}` : ''}.`,
               color: 0xCC0000,
             })],
             flags: 1 << 6,
@@ -401,7 +401,7 @@ const process = async function(interaction) {
           data: {
             embeds: [buildEmbed({
               title: "Error",
-              description: `The type ${type} could not be found in Generation ${args.gen ?? Dex.Dex.gen}.`,
+              description: `The type ${type} could not be found${args.gen ? ` in Generation ${args.gen}` : ''}.`,
               color: 0xCC0000,
             })],
             flags: 1 << 6,
