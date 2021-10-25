@@ -10,10 +10,17 @@ const paginate = require('paginate');
 const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 
 async function getPage(interaction) {
-
   if(interaction.member.user.id !== interaction.message.interaction.user.id) {
     return {
-      type: 6
+      type: 4,
+      data: {
+        embeds: [buildEmbed({
+          title: "Error",
+          description: 'Only the person who ran the command may change the page it displays.',
+          color: 0xCC0000,
+        })],
+        flags: 1 << 6,
+      },
     };
   }
 
