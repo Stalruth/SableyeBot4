@@ -461,7 +461,7 @@ const process = async function(interaction) {
     },
     {
       name: `Results (${results.length})`,
-      value: pages[0],
+      value: pages[0].length ? pages[0] : 'No results found.',
     },
     {
       name: 'Generation',
