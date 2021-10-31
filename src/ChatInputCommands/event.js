@@ -24,7 +24,8 @@ const command = {
     {
       name: 'event',
       type: 4,
-      description: 'ID of the event.',
+      description: 'ID of the event, starting at 1.',
+      min_value: 1,
     },
   ],
 };

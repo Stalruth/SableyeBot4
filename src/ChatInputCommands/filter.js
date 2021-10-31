@@ -251,6 +251,7 @@ const command = {
       name: 'threshold',
       type: 4,
       description: 'Amount of filters that must match. Comma-separated fields count one for each item.',
+      min_value: 1,
     },
   ],
 };
