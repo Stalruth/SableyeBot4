@@ -5,7 +5,6 @@ const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 const Img = require('@pkmn/img');
 
-const dataSearch = require('datasearch');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const natDexData = require('natdexdata');
@@ -81,9 +80,9 @@ const process = function(interaction) {
   
   const gen = args.afd ? 'gen5' : args.gen;
 
-  const pokemon = dataSearch(natDexData.species, Data.toID(args.pokemon))?.result;
+  const pokemon = natDexData.species.get(Data.toID(args.pokemon));
 
-  if(!pokemon) {
+  if(!pokemon?.exists) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {

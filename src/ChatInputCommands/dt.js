@@ -4,18 +4,17 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
-const dataSearch = require('datasearch');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const natDexData = require('natdexdata');
 const { completeAll } = require('pkmn-complete');
 
 const dt = {
-  ability: require('./ability.js').process,
-  item: require('./item.js').process,
-  move: require('./move.js').process,
-  nature: require('./nature/from-name.js').process,
-  pokemon: require('./pokemon.js').process,
+  Ability: require('./ability.js').process,
+  Item: require('./item.js').process,
+  Move: require('./move.js').process,
+  Nature: require('./nature/from-name.js').process,
+  Pokemon: require('./pokemon.js').process,
 };
 
 const command = {
@@ -80,30 +79,15 @@ async function process(interaction) {
 
   const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
 
-  const distance = {
-    ability: dataSearch(data.abilities, Data.toID(args.name)),
-    item: dataSearch(data.items, Data.toID(args.name)),
-    move: dataSearch(data.moves, Data.toID(args.name)),
-    nature: dataSearch(data.natures, Data.toID(args.name)),
-    pokemon: dataSearch(data.species, Data.toID(args.name)),
-  };
+  const result = [
+    data.abilities.get(Data.toID(args.name)),
+    data.items.get(Data.toID(args.name)),
+    data.moves.get(Data.toID(args.name)),
+    data.natures.get(Data.toID(args.name)),
+    data.species.get(Data.toID(args.name)),
+  ].filter(e=>!!e)[0];
 
-  let mostAccurate = null;
-  ['pokemon','move','ability','item','nature'].forEach((el) => {
-    if(distance[el] === null) {
-      return;
-    }
-    if(mostAccurate === null) {
-      mostAccurate = el;
-      return;
-    }
-    if(distance[el].distance < distance[mostAccurate].distance) {
-      mostAccurate = el;
-      return;
-    }
-  });
-
-  if(mostAccurate === null) {
+  if(!result) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
@@ -117,7 +101,7 @@ async function process(interaction) {
     };
   }
 
-  return await dt[mostAccurate](interaction);
+  return await dt[result.effectType](interaction);
 };
 
 function autocomplete(interaction) {

@@ -4,7 +4,6 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
-const dataSearch = require('datasearch');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const natDexData = require('natdexdata');
@@ -72,9 +71,9 @@ const process = function(interaction) {
 
   const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
 
-  const item = dataSearch(data.items, Data.toID(args.name))?.result;
+  const item = data.items.get(Data.toID(args.name));
 
-  if(!item) {
+  if(!item?.exists) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {embeds: [buildEmbed({

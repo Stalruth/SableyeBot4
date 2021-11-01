@@ -4,7 +4,6 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
-const dataSearch = require('datasearch');
 const toArray = require('dexdata-toarray');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
@@ -561,7 +560,7 @@ function autocomplete(interaction) {
     });
   const current = items.pop();
   const resolved = items.map((e) => {
-    const item = dataSearch(natDexData[searches[focused]], e)?.result;
+    const item = natDexData[searches[focused]].get(e);
     if(!item) {
       return null;
     }

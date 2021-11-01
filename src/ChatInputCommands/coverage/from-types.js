@@ -4,7 +4,6 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
-const dataSearch = require('datasearch');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const natDexData = require('natdexdata');
@@ -73,12 +72,12 @@ const process = (interaction) => {
   const types = [...new Set(args.types
       .split(',')
       .map((el) => {
-        return dataSearch(data.types, Data.toID(el))?.result?.name;
+        return data.types.get(Data.toID(el))?.name;
       })
       .slice(0,4)
   )];
 
-  if(types.some((el) => {return !el;})) {
+  if(types.some(el=>!el)) {
     const nonTypes = [];
     for(const i in types) {
       if(!types[i]) {
@@ -140,7 +139,7 @@ function autocomplete(interaction) {
       .slice(0,4)
       .map(Data.toID);
   const current = types.pop();
-  const resolved = types.map(e=>dataSearch(natDexData.types, e)?.result);
+  const resolved = types.map(e=>natDexData.types.get(e));
 
   if(resolved.some(e=>!e)) {
     res.json({

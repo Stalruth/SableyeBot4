@@ -4,7 +4,6 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const Data = require('@pkmn/data');
 const Dex = require('@pkmn/dex');
 
-const dataSearch = require('datasearch');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const natDexData = require('natdexdata');
@@ -33,7 +32,7 @@ const command = {
 const process = async function(interaction) {
   const args = getargs(interaction).params;
 
-  const pokemon = dataSearch(natDexData.species, Data.toID(args.name))?.result;
+  const pokemon = natDexData.species.get(Data.toID(args.name));
 
   if(!pokemon) {
     return {
