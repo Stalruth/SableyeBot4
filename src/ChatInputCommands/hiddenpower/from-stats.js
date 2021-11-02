@@ -108,20 +108,6 @@ const process = (interaction) => {
     }
   });
 
-  if(problems.length > 0) {
-    return {
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [buildEmbed({
-          title: 'Error',
-          description: `IVs are restricted between 0 and 31.\nThe following IVs are out of range:\n - ${problems.join('\n - ')}`,
-          color: 0xCC0000,
-        })],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
-    };
-  }
-
   const result = types.getHiddenPower(args);
 
   return {
