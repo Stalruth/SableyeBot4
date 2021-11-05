@@ -2,43 +2,46 @@
 
 Competitive Pokémon Discord Bot, rewritten from the ground up.
 
-This software is in beta and may have some issues.
+This software is in omega, which like an omega means it exists to serve the
+alpha.  If it does not do this, [let me know][hatemail].
 
 Proceed with caution.
 
 ## Installation
-`discord.js@13.0.0` (and therefore SableyeBot 4) requires NodeJS v16.6.
+SableyeBot v4 requires NodeJS v16.
 
 Follow these steps to run your own local copy:
 
 1. Clone this repository.
 2. Rename `example.env` to `.env` and fill out the fields needed.
-3. Run `npm i` to install dependencies.
-4. Set environment variables, check `example.env` for guidance.
-5. Run `npm run update-commands` to update command definitions with Discord.
-6. Run `npm run start` and you're off to the races!
-7. You should also use `ngrok` or simlar to get this working in a test
-   environment that isn't directly exposed to the internet.
+3. Set up a Firebase environment. (`npm i -g firebase-tools`)
+4. Run `npm i` to install dependencies.
+5. Set environment variables, check `example.env` for guidance.
+6. Set up the `.runtimeconfig.json` based on `example.runtimeconfig.json`.
+7. Run `npm run update-commands` to update command definitions with Discord.
+8. Run `firebase emulators:start` to run the bot from the dev machine.
+    - You should use `ngrok` or simlar to get this working in a test
+      environment that isn't directly exposed to the internet.
+9. Run `firebase deploy --only functions` to deploy it to The Cloud(TM).
 
 And not nearly as soul crushing as SabelyeBot 3!
 
 ## Some further detail
 
-Of the dependencies only `express` and `tweetnacl` are actually used
-for the bot's backbone.  All the other packages are used in command
-handling.
+Of the dependencies only `discord-interactions-js`, `express`, and `firebase`
+are actually used for the bot's backbone.  All the other packages are used in
+command handling.
 
-`dotenv` is used to make testing easier and `node-fetch` is used in the
-`update-commands` script.
+`dotenv` and `node-fetch` are used in the `update-commands` script.
 
 ## Issues
 
 Beta software has bugs.  Fact of life.  If you find a bug, please
 include the following in your [complaint][hatemail]:
 
-- A description of the bug (What should have happened! What did happen!)
-- Reproduction steps (This usually means paste out the commands you
-  used, including arguments)
+- A description of the bug (What should have happened? What did happen?)
+- Reproduction steps (This usually means pasting out the commands you used,
+  including arguments)
 - Screenshots/Pastes of output, GIFs if necessary.
 - Bot version (`/about` has this info)
 - Any other additional information you think might be useful.
@@ -55,7 +58,7 @@ I'll fuss over the specifics myself.
 * [PokemonShowdown][2] (by @Zarel/@smogon), the initial source of our
   data.
 * [Modular Pokémon Showdown][3] (by @pkmn), which puts PS into an
-  easily dependable format.
+  easily queried format.
 * [SableyeBot3][4] (by @JsKingBoo), the direct predecessor to this bot.
 
 ## Licensing

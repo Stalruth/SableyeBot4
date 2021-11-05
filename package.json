@@ -1,12 +1,12 @@
 {
   "name": "sableyebot4",
-  "version": "4.0.0-beta",
+  "version": "4.0.0-omega",
   "description": "Competitive Pokemon Discord Bot",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
-    "debug": "node -r dotenv/config src/index.js",
+    "debug": "firebase emulators:start --only functions",
     "update-commands": "node -r dotenv/config src/updateCommands.js"
   },
   "author": "Stuart Rutheford",
@@ -15,8 +15,21 @@
     "@pkmn/data": "^0.4.13",
     "@pkmn/dex": "^0.4.13",
     "@pkmn/img": "^0.1.9",
+    "dexdata-toarray": "file:src/modules/dexdata-toarray",
+    "discord-express": "file:src/modules/discord-express",
+    "discord-getarg": "file:src/modules/discord-getarg",
     "discord-interactions": "^2.4.1",
+    "embed-builder": "file:src/modules/embed-builder",
     "express": "^4.17.1",
+    "firebase-admin": "^10.0.0",
+    "firebase-functions": "^3.16.0",
+    "learnsetutils": "file:src/modules/learnsetutils",
+    "natdexdata": "file:src/modules/natdexdata",
+    "paginate": "file:src/modules/paginate",
+    "pkmn-colours": "file:src/modules/pkmn-colours",
+    "pkmn-complete": "file:src/modules/pkmn-complete",
+    "pokemon-filters": "file:src/modules/pokemon-filters",
+    "typecheck": "file:src/modules/typecheck",
     "word-graphs": "^0.2.1"
   },
   "devDependencies": {
@@ -24,6 +37,6 @@
     "node-fetch": "^2.6.1"
   },
   "engines": {
-    "node": ">16.7.0"
+    "node": "16"
   }
 }

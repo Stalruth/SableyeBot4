@@ -1,4 +1,4 @@
-Accurate as of 09:00 25-Sep-2021
+Accurate as of 15:30 05-Nov-2021
 
 # Sableye Bot Privacy Policy
 
@@ -103,6 +103,10 @@ of commands and the popularity of different paramters:
 
     Parameters passed to the command, their values, and any Subcommand invoked.
 
+## Where this data is stored
+
+The Application runs on Firebase Functions, and all information logged is stored
+in these execution logs.
 
 ## Personal Information
 
