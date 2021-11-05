@@ -53,21 +53,19 @@ about styling - as long as your code is prettier than a dumpster fire
 I'll fuss over the specifics myself.
 
 ## Credits
-* [unlucky4ever's RuneCord][1] (by @unlucky4ever), which SableyeBot4
-  traces its lineage to.
-* [PokemonShowdown][2] (by @Zarel/@smogon), the initial source of our
+* [PokemonShowdown][1] (by @Zarel/@smogon), the initial source of our
   data.
-* [Modular Pokémon Showdown][3] (by @pkmn), which puts PS into an
+* [Modular Pokémon Showdown][2] (by @pkmn), which puts PS into an
   easily queried format.
-* [SableyeBot3][4] (by @JsKingBoo), the direct predecessor to this bot.
+* [SableyeBot3][3] (by @JsKingBoo), the direct predecessor to this bot.
 
 ## Licensing
 
-MIT License.
+[MIT License][LICENSE]
 
 [hatemail]: https://github.com/Stalruth/SableyeBot4/issues/new
-[1]: https://github.com/unlucky4ever/RuneCord
-[2]: https://github.com/Zarel/Pokemon-Showdown
-[3]: https://github.com/pkmn/ps
-[4]: https://github.com/JsKingBoo/SableyeBot3
+[LICENSE]: /LICENSE
+[1]: https://github.com/Zarel/Pokemon-Showdown
+[2]: https://github.com/pkmn/ps
+[3]: https://github.com/JsKingBoo/SableyeBot3
 

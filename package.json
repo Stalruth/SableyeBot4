@@ -5,6 +5,11 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build-docs:md": "eleventy",
+    "build-docs:static": "cp -r static _site",
+    "serve-docs:md": "eleventy --serve",
+    "build-docs": "npm-run-all build-docs:static build-docs:md",
+    "serve-docs": "npm-run-all build-docs:static serve-docs:md",
     "start": "node src/index.js",
     "debug": "firebase emulators:start --only functions",
     "update-commands": "node -r dotenv/config src/updateCommands.js"
@@ -12,6 +17,7 @@
   "author": "Stuart Rutheford",
   "license": "ISC",
   "dependencies": {
+    "@11ty/eleventy": "^0.12.1",
     "@pkmn/data": "^0.4.13",
     "@pkmn/dex": "^0.4.13",
     "@pkmn/img": "^0.1.9",
@@ -34,7 +40,8 @@
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "npm-run-all": "^4.1.5"
   },
   "engines": {
     "node": "16"
