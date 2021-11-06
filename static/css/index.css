@@ -4,9 +4,7 @@ body {
   min-height: 100vh;
 }
 
-#main {
-  max-width: var(--width-content);
-  margin: auto;
+main {
   flex-grow: 1;
 }
 
@@ -16,14 +14,14 @@ nav {
   color: #f7f7f7;
 }
 
+nav img {
+  display: inline-block;
+  margin: 0 0 0 1rem;
+}
+
 nav ul {
   margin: 1rem 0.5rem;
   flex-grow: 1;
-}
-
-nav img {
-  margin: 0 0 0 1rem;
-  display: inline-block;
 }
 
 nav a {
