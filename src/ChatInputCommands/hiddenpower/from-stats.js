@@ -100,14 +100,6 @@ const process = (interaction) => {
 
   const types = new Data.Generations(Dex.Dex).get(args.gen).types;
 
-  const problems = [];
-
-  ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach((el) => {
-    if(args[el] < 0 || args[el] > 31) {
-      problems.push(el);
-    }
-  });
-
   const result = types.getHiddenPower(args);
 
   return {
