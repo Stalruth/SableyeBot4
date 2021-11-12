@@ -1,21 +1,18 @@
 'use strict';
 
-const commands = [];
+const processes = {};
+const autocompletes = {};
 
-function addComponent(pattern, process) {
-  commands.push({pattern, process});
-}
+const addComponent = async function(name, process) {
+  processes[name] = process;
+};
 
-addComponent(/^filter_/, require('./MessageComponents/filter.js'));
+addComponent('filter', require('./MessageComponents/filter.js'));
 
 async function onComponentInteraction(req, res) {
-  console.log(req.body.type, req.body.id, req.body.data.custom_id);
-  for(const command of commands) {
-    if(req.body.data.custom_id.match(command.pattern)) {
-      res.json(await command.process(req.body));
-      return;
-    }
-  }
+  console.log(req.body.type, req.body.id, req.body.message.interaction.name, req.body.data.custom_id);
+  res.json(await processes[req.body.message.interaction.name](req.body));
+  return;
 }
 
 module.exports = onComponentInteraction;

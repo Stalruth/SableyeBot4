@@ -523,7 +523,7 @@ const process = async function(interaction) {
             },
             {
               type: 2,
-              custom_id:`filter_p2_${args.gen ?? 'NaN'}_${threshold}_${args.mode === 'vgc' ?'V':'S'}_${sortKey}${packFilters(filters)}`,
+              custom_id:`_p2_${args.gen ?? 'NaN'}_${threshold}_${args.mode === 'vgc' ?'V':''}_${sortKey}${packFilters(filters)}`,
               style: 2,
               label: 'Next',
             },

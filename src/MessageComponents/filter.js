@@ -96,14 +96,14 @@ async function getPage(interaction) {
           components: [
             {
               type: 2,
-              custom_id: pageNumber === 1 ? '-' : `filter_p${pageNumber-1}_${gen}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
+              custom_id: pageNumber === 1 ? '-' : `_p${pageNumber-1}_${gen}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
               disabled: pageNumber === 1,
               style: 2,
               label: 'Previous',
             },
             {
               type: 2,
-              custom_id: pageNumber === pages.length ? '-' : `filter_p${pageNumber+1}_${gen}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
+              custom_id: pageNumber === pages.length ? '-' : `_p${pageNumber+1}_${gen}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
               disabled: pageNumber === pages.length,
               style: 2,
               label: 'Next',
