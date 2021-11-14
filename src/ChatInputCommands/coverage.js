@@ -1,28 +1,247 @@
-const fromStab = require('./coverage/from-stab.js');
-const fromTypes = require('./coverage/from-types.js');
+'use strict';
+
+const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
+const Data = require('@pkmn/data');
+const Dex = require('@pkmn/dex');
+
+const getargs = require('discord-getarg');
+const buildEmbed = require('embed-builder');
+const natDexData = require('natdexdata');
+const colours = require('pkmn-colours');
+const { completePokemon, completeType } = require('pkmn-complete');
+const damageTaken = require('typecheck');
 
 const command = {
-  description: 'Returns type coverage based on a Pokémon STAB or types.',
+  description: 'Returns type coverage based on a Pokémons STAB and/or types.',
   options: [
-    Object.assign({
-      name: 'from-stab',
-      type: 1,
-    }, fromStab.command),
-    Object.assign({
-      name: 'from-types',
-      type: 1,
-    }, fromTypes.command),
+    {
+      name: 'pokemon',
+      type: 3,
+      description: 'Pokemon to evaluate the STABs of',
+      required: false,
+      autocomplete: true,
+    },
+    {
+      name: 'types',
+      type: 3,
+      description: 'Pokemon to evaluate the STABs of',
+      required: false,
+      autocomplete: true,
+    },
+    {
+      name: 'gen',
+      type: 4,
+      description: 'The Generation used in calculation',
+      choices: [
+        {
+          name: 'RBY',
+          value: 1,
+        },
+        {
+          name: 'GSC',
+          value: 2,
+        },
+        {
+          name: 'RSE',
+          value: 3,
+        },
+        {
+          name: 'DPPt/HGSS',
+          value: 4,
+        },
+        {
+          name: 'BW/BW2',
+          value: 5,
+        },
+        {
+          name: 'XY/ORAS',
+          value: 6,
+        },
+        {
+          name: 'SM/USM',
+          value: 7,
+        },
+        {
+          name: 'SwSh',
+          value: 8,
+        },
+      ]
+    },
   ],
 };
 
-const process = {
-  'from-stab': fromStab.process,
-  'from-types': fromTypes.process,
+const process = (interaction) => {
+  const args = getargs(interaction).params;
+
+  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
+
+  if(!args.pokemon && !args.types) {
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        embeds: [buildEmbed({
+          title: 'Error',
+          description: 'Please provide a Pokémon and/or at least one Type.',
+          color: 0xCC0000,
+        })],
+        flags: InteractionResponseFlags.EPHEMERAL,
+      },
+    };
+  }
+
+  const titleInfo = {
+    pokemon: false,
+    types: [],
+  };
+
+  const types = []
+
+  if(args.pokemon) {
+    const pokemon = data.species.get(Data.toID(args.pokemon));
+
+    if(!pokemon?.exists) {
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          embeds: [buildEmbed({
+            title: 'Error',
+            description: `Pokémon ${args.pokemon} does not exist in the given generation.`,
+            color: 0xCC0000,
+          })],
+          flags: InteractionResponseFlags.EPHEMERAL,
+        },
+      };
+    }
+
+    titleInfo.pokemon = {
+      name: pokemon.name,
+      types: pokemon.types,
+    };
+
+    pokemon.types.forEach((el) => {types.push(el)});
+  }
+
+  if(args.types) {
+    const sanitisedTypes = args.types
+        .split(',')
+        .map(el=>data.types.get(Data.toID(el))?.name);
+
+    if(sanitisedTypes.some(el=>!el)) {
+      const nonTypes = sanitisedTypes.map((el,a,i) => {
+        if(el) { return undefined; }
+        return args.types.split(',')[i];
+      }).filter(el=>!!el);
+
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          embeds: [buildEmbed({
+            title: 'Error',
+            description: `The type(s) ${nonTypes.join(', ')} do not exist in the given generation.`,
+            color: 0xCC0000,
+          })],
+          flags: InteractionResponseFlags.EPHEMERAL,
+        },
+      };
+    }
+
+    titleInfo.types = [...new Set(sanitisedTypes)];
+    types.push(...titleInfo.types);
+  }
+
+  const title = (titleInfo.pokemon ? `${titleInfo.pokemon.name} [${titleInfo.pokemon.types.join('/')}] ` : '') + `${titleInfo.types.join(', ')}`;
+
+  const eff = {
+    '0': [],
+    '0.5': [],
+    '1': [],
+    '2': [],
+  };
+
+  for(const dType of data.types) {
+    const mult = types.reduce((acc, aType) => {
+      return Math.max(acc, damageTaken(data, [dType.id], aType));
+    }, 0);
+    eff[`${mult}`].push(dType.name);
+  }
+
+  let description = '';
+  for(const i of ['0', '0.5', '1', '2']) {
+    if(eff[i].length === 0) { continue; }
+    description += `\n${i}x: ${eff[i].join(', ')}`;
+  }
+
+  return {
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+    data: {
+      embeds: [buildEmbed({
+        title,
+        description,
+        color: colours.types[Data.toID(types[0])]
+      })],
+    },
+  };
+
 };
 
-const autocomplete = {
-  'from-stab': fromStab.autocomplete,
-  'from-types': fromTypes.autocomplete,
+function autocomplete(interaction) {
+  const {params, focused} = getargs(interaction);
+
+  if(focused === 'pokemon') {
+    return {
+      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+      data: {
+        choices: completePokemon(params['pokemon']),
+      },
+    };
+  }
+
+  if(focused === 'types') {
+    let typesGiven = 0;
+    if(params.pokemon) {
+      const pokemon = natDexData.species.get(Data.toID(params.pokemon));
+      if(pokemon?.exists) {
+        typesGiven = pokemon.types.length;
+      }
+    }
+
+    const types = params.types.split(',')
+      .slice(0,4 - typesGiven)
+      .map(Data.toID);
+    const current = types.pop();
+    const resolved = types.map(e=>natDexData.types.get(e));
+
+    if(resolved.some(e=>!e)) {
+      res.json({
+        type: 8,
+        data: {
+          choices: [],
+        },
+      });
+      return;
+    }
+
+    const prefix = resolved.reduce((acc,cur) => {
+      return {
+        name: `${acc.name}${cur.name}, `,
+        value: `${acc.value}${cur.id},`,
+      };
+    }, {name:'',value:''});
+
+    return {
+      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+      data: {
+        choices: completeType(current)
+        .filter(e=>!resolved.some(r=>e.value===r.id))
+        .map(e=>{
+          return {
+            name: `${prefix.name}${e.name}`,
+            value: `${prefix.value}${e.value}`,
+          };
+        }),
+      },
+    };
+  }
 }
 
 module.exports = {command, process, autocomplete};
