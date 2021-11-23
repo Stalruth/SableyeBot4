@@ -178,9 +178,9 @@ const filterFactory = {
           return fastMoves.natdex[move.id][pokemon.id];
         }
         if(isVgc) {
-          return fastMoves[restrictions[data.gen]][move.id][pokemon.id];
+          return fastMoves[restrictions[data.num]][move.id][pokemon.id];
         }
-        return fastMoves[data.gen][move.id][pokemon.id];
+        return fastMoves[data.num][move.id][pokemon.id];
       },
       packed: move['id'],
     };
