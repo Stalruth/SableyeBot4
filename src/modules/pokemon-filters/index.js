@@ -1,6 +1,7 @@
 const Data = require('@pkmn/data');
 
 const damageTaken = require('typecheck');
+const fastMoves = require('fast-moves');
 
 function getStat(pokemon, stat) {
   if(stat === 'weightkg') {
@@ -69,7 +70,7 @@ function statFilterFactory(stat) {
         predicate: (pokemon) => {
           return getStat(pokemon, stat) === Number(query);
         },
-        pack,
+        query,
       };
     }
     if(query.indexOf('-') !== -1) {
@@ -81,7 +82,7 @@ function statFilterFactory(stat) {
           predicate: (pokemon) => {
             return getStat(pokemon, stat) >= range[0] && getStat(pokemon, stat) <= range[1];
           },
-          pack,
+          query,
         };
       }
     }
@@ -95,7 +96,7 @@ function statFilterFactory(stat) {
           predicate: (pokemon) => {
             return getStat(pokemon, stat) > compValue;
           },
-          pack,
+          query,
         };
       }
       if(operator === '<') {
@@ -105,7 +106,7 @@ function statFilterFactory(stat) {
           predicate: (pokemon) => {
             return getStat(pokemon, stat) < compValue;
           },
-          pack,
+          query,
         };
       }
       throw query;
@@ -127,7 +128,7 @@ const filterFactory = {
       predicate: (pokemon) => {
         return ['0','1','H'].some(slot=>pokemon['abilities'][slot] === ability['name'])
       },
-      pack: () => ability['id'],
+      packed: ability['id'],
     };
   },
   type: (data, typeId, isVgc) => {
@@ -143,7 +144,7 @@ const filterFactory = {
         predicate: (pokemon) => {
           return !(pokemon['types'].some(el=>el===type['name']));
         },
-        pack: () => `!${type['id']}`,
+        packed: `!${type['id']}`,
       };
     } else {
       return {
@@ -152,11 +153,11 @@ const filterFactory = {
         predicate: (pokemon) => {
           return pokemon['types'].some(el=>el===type['name']);
         },
-        pack: () => type['id'],
+        packed: type['id'],
       };
     }
   },
-  move: (data, moveId, vgc) => {
+  move: (data, moveId, isVgc) => {
     const move = data.moves.get(Data.toID(moveId));
     if(!move) {
       throw moveId;
@@ -173,10 +174,15 @@ const filterFactory = {
       id: 'move',
       description: `Has the move ${move['name']}`,
       predicate: async (pokemon) => {
-        return await data.learnsets.canLearn(pokemon.id, move.id,
-            vgc ? restrictions[data.num] : undefined);
+        if(data.national) {
+          return fastMoves.natdex[move.id][pokemon.id];
+        }
+        if(isVgc) {
+          return fastMoves[restrictions[data.gen]][move.id][pokemon.id];
+        }
+        return fastMoves[data.gen][move.id][pokemon.id];
       },
-      pack: () => move['id'],
+      packed: move['id'],
     };
   },
   hp: statFilterFactory('hp'),
@@ -199,7 +205,7 @@ const filterFactory = {
       predicate: (pokemon) => {
         return damageTaken(data, pokemon.types, type.id) > 1;
       },
-      pack: () => type['id'],
+      packed: type['id'],
     };
   },
   resist: (data, typeId, isVgc) => {
@@ -214,7 +220,7 @@ const filterFactory = {
       predicate: (pokemon) => {
         return damageTaken(data, pokemon.types, type.id) < 1;
       },
-      pack: () => type['id']
+      packed: type['id']
     };
   },
   egggroup: (data, eggGroup, isVgc) => {
@@ -224,7 +230,7 @@ const filterFactory = {
       predicate: (pokemon) => {
         return pokemon['eggGroups'].some(e=>e===eggGroup);
       },
-      pack: () => eggGroup,
+      packed: eggGroup,
     };
   },
   evolves: (data, arg, isVgc) => {
@@ -235,7 +241,7 @@ const filterFactory = {
       predicate: (pokemon) => {
         return !!pokemon['evos'] === value;
       },
-      pack: () => value ? 't' : 'f',
+      packed: value ? 't' : 'f',
     };
   },
 };
@@ -254,7 +260,7 @@ async function applyFilters(pokemon, filters, threshold) {
 
 function packFilters(filters) {
   return filters.reduce((acc, cur) => {
-    return `${acc}|${cur.id}:${cur.pack()}`;
+    return `${acc}|${cur.id}:${cur.packed}`;
   }, '');
 }
 

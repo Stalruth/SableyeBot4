@@ -10,6 +10,7 @@ const existedEver = (d) => {
 };
 
 const natDexData = new Data.Generations(Dex.Dex, existedEver).get(8);
+natDexData.national = true;
 
 module.exports = natDexData;
 
