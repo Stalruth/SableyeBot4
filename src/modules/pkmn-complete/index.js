@@ -1,7 +1,6 @@
 'use strict';
 
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
 const WordGraphs = require('word-graphs');
 
 const toArray = require('dexdata-toarray');

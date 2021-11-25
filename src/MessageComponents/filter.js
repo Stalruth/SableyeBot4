@@ -2,7 +2,7 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
+const Sim = require('@pkmn/sim');
 
 const toArray = require('dexdata-toarray');
 const buildEmbed = require('embed-builder');
@@ -33,7 +33,7 @@ async function getPage(interaction) {
 
   const pageNumber = Number(commandData[1].substring(1));
   const gen = Number(commandData[2] ?? 8);
-  const data = !isNaN(gen) ? new Data.Generations(Dex.Dex).get(gen) : natDexData;
+  const data = !isNaN(gen) ? new Data.Generations(Sim.Dex).get(gen) : natDexData;
   const threshold = Number(commandData[3] ?? packedFilters.length);
   const isVgc = commandData[4] === 'V';
   const sortKey = commandData[5] ?? 'nil';

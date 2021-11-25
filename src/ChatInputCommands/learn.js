@@ -2,7 +2,7 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
+const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
@@ -89,7 +89,7 @@ const process = async function(interaction) {
 
   const vgcNotes = [,,,,,'Pentagon','Plus','Galar'];
 
-  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
+  const data = args.gen ? new Data.Generations(Sim.Dex).get(args.gen) : natDexData;
 
   const pokemon = data.species.get(Data.toID(args.name));
 

@@ -2,7 +2,7 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
+const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
@@ -67,7 +67,7 @@ const process = (interaction) => {
   const args = getargs(interaction).params;
   args.gen ??= 8;
 
-  const data = new Data.Generations(Dex.Dex).get(args.gen);
+  const data = new Data.Generations(Sim.Dex).get(args.gen);
 
   const types = [...new Set(args.types
       .split(',')

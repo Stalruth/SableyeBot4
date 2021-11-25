@@ -2,7 +2,6 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');

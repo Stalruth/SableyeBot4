@@ -2,7 +2,7 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
+const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
@@ -98,7 +98,7 @@ const process = (interaction) => {
   const args = getargs(interaction).params;
   args.gen ??= 7;
 
-  const types = new Data.Generations(Dex.Dex).get(args.gen).types;
+  const types = new Data.Generations(Sim.Dex).get(args.gen).types;
 
   const result = types.getHiddenPower(args);
 

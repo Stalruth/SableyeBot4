@@ -19,8 +19,8 @@
   "dependencies": {
     "@11ty/eleventy": "^0.12.1",
     "@pkmn/data": "^0.4.13",
-    "@pkmn/dex": "^0.4.13",
     "@pkmn/img": "^0.1.9",
+    "@pkmn/sim": "^0.4.24",
     "dexdata-toarray": "file:src/modules/dexdata-toarray",
     "discord-express": "file:src/modules/discord-express",
     "discord-getarg": "file:src/modules/discord-getarg",

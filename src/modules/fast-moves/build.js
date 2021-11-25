@@ -2,7 +2,7 @@
 
 'use strict';
 
-const Dex = require('@pkmn/dex');
+const Sim = require('@pkmn/sim');
 const Data = require('@pkmn/data');
 
 const natDexData = require('natdexdata');
@@ -30,7 +30,7 @@ const vgc = {
 };
 
 [1,2,3,4,5,6,7,8].forEach(async (gen) => {
-  const data = new Data.Generations(Dex.Dex).get(gen);
+  const data = new Data.Generations(Sim.Dex).get(gen);
   console.time(gen);
   generations[gen] = await getMoveMap(data);
   if(vgc[gen]) {

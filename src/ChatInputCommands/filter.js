@@ -2,7 +2,7 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
+const Sim = require('@pkmn/sim');
 
 const toArray = require('dexdata-toarray');
 const getargs = require('discord-getarg');
@@ -263,7 +263,7 @@ const command = {
 const process = async function(interaction) {
   const args = getargs(interaction).params;
 
-  const data = !!args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
+  const data = !!args.gen ? new Data.Generations(Sim.Dex).get(args.gen) : natDexData;
   const filters = [];
   const isVgc = args.mode === 'vgc';
 

@@ -2,13 +2,13 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
+const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const colours = require('pkmn-colours');
 
-const types = new Data.Generations(Dex.Dex).get(7).types;
+const types = new Data.Generations(Sim.Dex).get(7).types;
 
 const listTypes = function(typeList) {
   const result = [];
@@ -69,7 +69,7 @@ const process = (interaction) => {
   const args = getargs(interaction).params;
   args.gen ??= 7;
 
-  const types = new Data.Generations(Dex.Dex).get(args.gen).types;
+  const types = new Data.Generations(Sim.Dex).get(args.gen).types;
   const type = types.get(args.type);
 
   if(['normal','fairy'].includes(type['id'])) {

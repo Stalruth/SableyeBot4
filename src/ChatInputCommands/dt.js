@@ -2,7 +2,7 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
+const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
@@ -77,7 +77,7 @@ const command = {
 async function process(interaction) {
   const args = getargs(interaction).params;
 
-  const data = args.gen ? new Data.Generations(Dex.Dex).get(args.gen) : natDexData;
+  const data = args.gen ? new Data.Generations(Sim.Dex).get(args.gen) : natDexData;
 
   const result = [
     data.abilities.get(Data.toID(args.name)),

@@ -2,12 +2,12 @@
 
 const { InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
+const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 
-const natures = new Data.Generations(Dex.Dex).get(8).natures;
+const natures = new Data.Generations(Sim.Dex).get(8).natures;
 
 const listNatures = (natureList) => {
   const result = [];

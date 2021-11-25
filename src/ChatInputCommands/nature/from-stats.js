@@ -2,7 +2,7 @@
 
 const { InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Dex = require('@pkmn/dex');
+const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
@@ -53,7 +53,7 @@ const command = {
 const process = (interaction) => {
   const args = getargs(interaction).params;
 
-  const gen = new Data.Generations(Dex.Dex).get(8);
+  const gen = new Data.Generations(Sim.Dex).get(8);
   
   // Uh oh sisters! hardcoding!
   const neutralNatures = {
