@@ -244,6 +244,17 @@ const filterFactory = {
       packed: value ? 't' : 'f',
     };
   },
+  hasevolved: (data, arg, isVgc) => {
+    const value = ['t', true].includes(arg);
+    return {
+      id: 'hasevolved',
+      description: `${value ? 'Has' : 'Does not have'} a pre-evolution.`,
+      predicate: (pokemon) => {
+        return !!pokemon['prevo'] === value;
+      },
+      packed: value ? 't' : 'f',
+    };
+  }
 };
 
 async function applyFilters(pokemon, filters, threshold) {

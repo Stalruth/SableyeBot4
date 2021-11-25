@@ -94,6 +94,11 @@ const command = {
       description: 'Has (or does not have) an evolution.',
     },
     {
+      name: 'has-evolved',
+      type: 5,
+      description: 'Has (or does not have) a pre-evolution',
+    },
+    {
       name: 'moves',
       type: 3,
       description: 'Comma delimited list of moves.',
@@ -416,8 +421,12 @@ const process = async function(interaction) {
     filters.push(filterFactory['egggroup'](data, args['egg-group'], isVgc));
   }
 
-  if(args['evolves'] !== undefined) {
+  if(args.evolves !== undefined) {
     filters.push(filterFactory['evolves'](data, args['evolves'], isVgc));
+  }
+  
+  if(args['has-evolved'] !== undefined) {
+    filters.push(filterFactory['hasevolved'](data, args['has-evolved'], isVgc));
   }
 
   if(filters.length === 0) {
