@@ -4,12 +4,8 @@ const damageTaken = require('typecheck');
 const fastMoves = require('fast-moves');
 
 function getStat(pokemon, stat) {
-  if(stat === 'weightkg') {
+  if(['bst', 'heightm', 'weightkg'].includes(stat)) {
     return pokemon[stat];
-  }
-  if(stat === 'bst') {
-    const s = pokemon['baseStats'];
-    return s.hp + s.atk + s.def + s.spa + s.spd + s.spe;
   } else {
     return pokemon['baseStats'][stat];
   }
@@ -56,6 +52,11 @@ const statData = {
     article: 'a',
     suffix: 'stat ',
   },
+  heightm: {
+    fullName: 'Height',
+    article: 'a',
+    suffix: 'stat ',
+  },
 };
 
 function statFilterFactory(stat) {
@@ -70,7 +71,7 @@ function statFilterFactory(stat) {
         predicate: (pokemon) => {
           return getStat(pokemon, stat) === Number(query);
         },
-        query,
+        packed: query,
       };
     }
     if(query.indexOf('-') !== -1) {
@@ -82,7 +83,7 @@ function statFilterFactory(stat) {
           predicate: (pokemon) => {
             return getStat(pokemon, stat) >= range[0] && getStat(pokemon, stat) <= range[1];
           },
-          query,
+          packed: query,
         };
       }
     }
@@ -96,7 +97,7 @@ function statFilterFactory(stat) {
           predicate: (pokemon) => {
             return getStat(pokemon, stat) > compValue;
           },
-          query,
+          packed: query,
         };
       }
       if(operator === '<') {
@@ -106,7 +107,7 @@ function statFilterFactory(stat) {
           predicate: (pokemon) => {
             return getStat(pokemon, stat) < compValue;
           },
-          query,
+          packed: query,
         };
       }
       throw query;
@@ -193,6 +194,7 @@ const filterFactory = {
   spe: statFilterFactory('spe'),
   bst: statFilterFactory('bst'),
   weightkg: statFilterFactory('weightkg'),
+  heightm: statFilterFactory('heightm'),
   weakness: (data, typeId, isVgc) => {
     const type = data.types.get(Data.toID(typeId));
     if(!type) {

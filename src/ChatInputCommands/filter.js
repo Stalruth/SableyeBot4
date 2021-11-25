@@ -128,6 +128,11 @@ const command = {
       description: "Weight in kg, supports `<STAT`, `>STAT`, `STAT-STAT`",
     },
     {
+      name: 'height-m',
+      type: 3,
+      description: "Height in metres, supports `<STAT`, `>STAT`, `STAT-STAT`",
+    },
+    {
       name: 'hp',
       type: 3,
       description: "Base HP, supports `<STAT`, `>STAT`, `STAT-STAT`",
@@ -365,6 +370,25 @@ const process = async function(interaction) {
           embeds: [buildEmbed({
             title: "Error",
             description: `The query ${args['weight-kg']} is not valid for the 'weight-kg' argument.`,
+            color: 0xCC0000,
+          })],
+          flags: InteractionResponseFlags.EPHEMERAL,
+        },
+      };
+    }
+  }
+
+  if(args['height-m']) {
+    try {
+      const filter = filterFactory['heightm'](data, args['height-m'], isVgc);
+      filters.push(filter);
+    } catch(e) {
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          embeds: [buildEmbed({
+            title: "Error",
+            description: `The query ${args['height-m']} is not valid for the 'height-m' argument.`,
             color: 0xCC0000,
           })],
           flags: InteractionResponseFlags.EPHEMERAL,
