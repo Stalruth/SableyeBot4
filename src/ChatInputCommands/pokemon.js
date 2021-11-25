@@ -127,7 +127,7 @@ const process = function(interaction) {
 
   if(args.verbose) {
     description += `\nIntroduced: Generation ${pokemon['gen']}`;
-    description += `\nWeight: ${pokemon['weightkg']}kg (${lowKickPower(pokemon['weightkg'])} BP)`;
+    description += `\nWeight: ${pokemon['weightkg']}kg (${lowKickPower(pokemon['weightkg'])} BP); Height: ${pokemon['heightm']}m`;
   }
 
   if(pokemon['baseSpecies'] !== pokemon['name']) {
