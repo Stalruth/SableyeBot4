@@ -24,7 +24,7 @@ const types = {
 const stats = {
   hp: 0xff0000,
   atk: 0xf08030,
-  def: 0xf830d0,
+  def: 0xf8d030,
   spa: 0x6890f0,
   spd: 0x78C850,
   spe: 0xf85888,

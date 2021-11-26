@@ -4,6 +4,7 @@ const { InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Sim = require('@pkmn/sim');
 
+const colours = require('pkmn-colours');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 
@@ -64,16 +65,24 @@ const process = (interaction) => {
     spe: 'Serious',
   };
   
+  const fullNames = {
+    'atk': 'Attack',
+    'def': 'Defence',
+    'spa': 'Special Attack',
+    'spd': 'Special Defence',
+    'spe': 'Speed',
+  };
+  
   let title = '';
   let fields = [
     {
       name: 'Boosted',
-      value: args.boosted.toUpperCase(),
+      value: fullNames[args.boosted],
       inline: true,
     },
     {
       name: 'Lowered',
-      value: args.lowered.toUpperCase(),
+      value: fullNames[args.lowered],
       inline: true,
     }
   ]
@@ -95,6 +104,7 @@ const process = (interaction) => {
       embeds: [buildEmbed({
         title,
         fields,
+        color: colours.stats[args.boosted],
       })],
     },
   };

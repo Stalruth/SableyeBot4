@@ -4,6 +4,7 @@ const { InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Sim = require('@pkmn/sim');
 
+const colours = require('pkmn-colours');
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 
@@ -38,11 +39,19 @@ const process = (interaction) => {
 
   // Uh oh sisters! hardcoding!
   const neutralNatures = {
-    'Hardy': 'ATK',
-    'Docile': 'DEF',
-    'Bashful': 'SPA',
-    'Quirky': 'SPD',
-    'Serious': 'SPE',
+    'Hardy': 'atk',
+    'Docile': 'def',
+    'Bashful': 'spa',
+    'Quirky': 'spd',
+    'Serious': 'spe',
+  };
+  
+  const fullNames = {
+    'atk': 'Attack',
+    'def': 'Defence',
+    'spa': 'Special Attack',
+    'spd': 'Special Defence',
+    'spe': 'Speed',
   };
 
   const nature = natures.get(args.name);
@@ -51,12 +60,12 @@ const process = (interaction) => {
   const fields = [
     {
       name: 'Boosted',
-      value: nature['plus'] ? nature['plus'].toUpperCase() : neutralNatures[nature.name],
+      value: fullNames[nature['plus'] ? nature['plus'] : neutralNatures[nature.name]],
       inline: true,
     },
     {
       name: 'Lowered',
-      value: nature['minus'] ? nature['minus'].toUpperCase() : neutralNatures[nature.name],
+      value: fullNames[nature['minus'] ? nature['minus'] : neutralNatures[nature.name]],
       inline: true,
     },
   ];
@@ -67,6 +76,7 @@ const process = (interaction) => {
       embeds: [buildEmbed({
         title,
         fields,
+        color: colours.stats[nature.plus],
       })],
     },
   };
