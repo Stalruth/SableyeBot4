@@ -1,5 +1,6 @@
 'use strict';
 
+const Sim = require('@pkmn/sim');
 const Data = require('@pkmn/data');
 const WordGraphs = require('word-graphs');
 
@@ -23,6 +24,13 @@ const graphs = {
       });
 });
 
+graphs['sprites'] = new WordGraphs.MinimalWordGraph();
+Sim.Dex.species.all()
+              .filter(el=>!['Custom','CAP'].includes(el.isNonstandard))
+              .map(el=>el.id)
+              .sort()
+              .forEach(el=>graphs['sprites'].add(el));
+
 function complete(type) {
   function completeEntity(id) {
     return graphs[type].startsWith(Data.toID(id)).slice(0,25).map((e,i) => {
@@ -41,6 +49,15 @@ function completeFilterType(id) {
     return {
       name: `${negate}${natDexData.types.get(e).name}`,
       value: `${negate}${e}`,
+    };
+  });
+}
+
+function completeSprite(id) {
+  return graphs['sprites'].startsWith(Data.toID(id)).slice(0,25).map((e,i)=>{
+    return {
+      name: Sim.Dex.species.get(e).name,
+      value: e,
     };
   });
 }
@@ -68,6 +85,7 @@ module.exports = {
   completePokemon: complete('species'),
   completeType: complete('types'),
   completeFilterType,
+  completeSprite,
   completeAll,
 };
 

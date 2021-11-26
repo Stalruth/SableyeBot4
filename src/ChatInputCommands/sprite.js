@@ -3,11 +3,12 @@
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Img = require('@pkmn/img');
+const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const natDexData = require('natdexdata');
-const { completePokemon } = require('pkmn-complete');
+const { completeSprite } = require('pkmn-complete');
 
 const command = {
   description: 'Link to the Pokemon Showdown Damage Calculator.',
@@ -76,12 +77,12 @@ const command = {
 const process = function(interaction) {
   const args = getargs(interaction).params;
   args.gen ??= 'ani';
-  
+
   const gen = args.afd ? 'gen5' : args.gen;
 
-  const pokemon = natDexData.species.get(Data.toID(args.pokemon));
+  const pokemon = Sim.Dex.species.get(Data.toID(args.pokemon));
 
-  if(!pokemon?.exists) {
+  if(!pokemon?.exists || ['Custom','CAP'].includes([pokemon.isNonstandard])) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
@@ -107,7 +108,7 @@ const process = function(interaction) {
     options['gender'] = 'F';
   }
   const spriteUrl = Img.Sprites.getPokemon(pokemon['id'], options).url;
-  
+
   if(spriteUrl.endsWith('0.png')) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -132,10 +133,11 @@ const process = function(interaction) {
 
 function autocomplete(interaction) {
   const args = getargs(interaction).params;
+  console.log(completeSprite(args['pokemon']));
   return {
     type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {
-      choices: completePokemon(args['pokemon']),
+      choices: completeSprite(args['pokemon']),
     },
   };
 }
