@@ -1,7 +1,7 @@
 {
-  "name": "natdexdata",
+  "name": "gen-db",
   "version": "1.0.0",
-  "description": "Pokémon National Dex Data",
+  "description": "Dexes for Pokémon Gens",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

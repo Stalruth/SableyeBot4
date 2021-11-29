@@ -2,11 +2,10 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
-const natDexData = require('natdexdata');
+const gens = require('gen-db');
 const colours = require('pkmn-colours');
 const { completePokemon, completeType } = require('pkmn-complete');
 const damageTaken = require('typecheck');
@@ -30,42 +29,9 @@ const command = {
     },
     {
       name: 'gen',
-      type: 4,
+      type: 3,
       description: 'The Generation used in calculation',
-      choices: [
-        {
-          name: 'RBY',
-          value: 1,
-        },
-        {
-          name: 'GSC',
-          value: 2,
-        },
-        {
-          name: 'RSE',
-          value: 3,
-        },
-        {
-          name: 'DPPt/HGSS',
-          value: 4,
-        },
-        {
-          name: 'BW/BW2',
-          value: 5,
-        },
-        {
-          name: 'XY/ORAS',
-          value: 6,
-        },
-        {
-          name: 'SM/USM',
-          value: 7,
-        },
-        {
-          name: 'SwSh',
-          value: 8,
-        },
-      ]
+      choices: gens.names,
     },
   ],
 };
@@ -73,7 +39,7 @@ const command = {
 const process = (interaction) => {
   const args = getargs(interaction).params;
 
-  const data = args.gen ? new Data.Generations(Sim.Dex).get(args.gen) : natDexData;
+  const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
 
   if(!args.pokemon && !args.types) {
     return {
@@ -199,7 +165,7 @@ function autocomplete(interaction) {
   if(focused === 'types') {
     let typesGiven = 0;
     if(params.pokemon) {
-      const pokemon = natDexData.species.get(Data.toID(params.pokemon));
+      const pokemon = gens.data['gen8natdex'].species.get(Data.toID(params.pokemon));
       if(pokemon?.exists) {
         typesGiven = pokemon.types.length;
       }
@@ -209,7 +175,7 @@ function autocomplete(interaction) {
       .slice(0,4 - typesGiven)
       .map(Data.toID);
     const current = types.pop();
-    const resolved = types.map(e=>natDexData.types.get(e));
+    const resolved = types.map(e=>gens.data['gen8natdex'].types.get(e));
 
     if(resolved.some(e=>!e)) {
       res.json({

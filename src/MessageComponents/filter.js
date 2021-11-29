@@ -2,11 +2,10 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Sim = require('@pkmn/sim');
 
 const toArray = require('dexdata-toarray');
 const buildEmbed = require('embed-builder');
-const natDexData = require('natdexdata');
+const gens = require('gen-db');
 const paginate = require('paginate');
 const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 
@@ -32,8 +31,8 @@ async function getPage(interaction) {
   const commandData = idData[0].split('_');
 
   const pageNumber = Number(commandData[1].substring(1));
-  const gen = Number(commandData[2] ?? 8);
-  const data = !isNaN(gen) ? new Data.Generations(Sim.Dex).get(gen) : natDexData;
+  const gen = commandData[2] ?? 'gen8natdex';
+  const data = gens.data[gen] ?? gens.data[`gen${gen}`] ?? gens.data['gen8natdex'];
   const threshold = Number(commandData[3] ?? packedFilters.length);
   const isVgc = commandData[4] === 'V';
   const sortKey = commandData[5] ?? 'nil';

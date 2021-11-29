@@ -5,7 +5,7 @@ const Data = require('@pkmn/data');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
-const natDexData = require('natdexdata');
+const gens = require('gen-db');
 const colours = require('pkmn-colours');
 const { completePokemon } = require('pkmn-complete');
 
@@ -31,7 +31,7 @@ const command = {
 const process = async function(interaction) {
   const args = getargs(interaction).params;
 
-  const pokemon = natDexData.species.get(Data.toID(args.name));
+  const pokemon = gens.data['gen8natdex'].species.get(Data.toID(args.name));
 
   if(!pokemon) {
     return {
@@ -47,7 +47,7 @@ const process = async function(interaction) {
     };
   }
 
-  const learnset = await natDexData.learnsets.get(pokemon['id']);
+  const learnset = await gens.data['gen8natdex'].learnsets.get(pokemon['id']);
 
   let title = '';
   let description = '';
@@ -140,7 +140,7 @@ const process = async function(interaction) {
 
     fields.push({
       name: 'Moves',
-      value: eventData['moves'].map(el=>natDexData.moves.get(el).name).join(', '),
+      value: eventData['moves'].map(el=>gens.data['gen8natdex'].moves.get(el).name).join(', '),
     });
   }
 

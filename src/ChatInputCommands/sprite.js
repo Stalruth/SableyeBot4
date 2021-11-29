@@ -7,7 +7,6 @@ const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
-const natDexData = require('natdexdata');
 const { completeSprite } = require('pkmn-complete');
 
 const command = {

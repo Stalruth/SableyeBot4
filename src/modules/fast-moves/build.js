@@ -5,7 +5,7 @@
 const Sim = require('@pkmn/sim');
 const Data = require('@pkmn/data');
 
-const natDexData = require('natdexdata');
+const gens = require('gen-db');
 
 const generations = Object.create(null);
 
@@ -29,21 +29,23 @@ const vgc = {
   8: 'Galar',
 };
 
-[1,2,3,4,5,6,7,8].forEach(async (gen) => {
-  const data = new Data.Generations(Sim.Dex).get(gen);
-  console.time(gen);
+[
+  'gen1',
+  'gen2',
+  'gen3',
+  'gen4',
+  'gen5',
+  'gen6',
+  'gen7',
+  'gen8',
+  'gen8bdsp',
+  'gen8natdex'
+].forEach(async (gen) => {
+  const data = gens.data[gen];
   generations[gen] = await getMoveMap(data);
   if(vgc[gen]) {
-    console.log(vgc[gen]);
-    generations[vgc[gen]] = await getMoveMap(data, vgc[gen]);
+    generations[vgc[data.num]] = await getMoveMap(data, vgc[data.num]);
   }
-  console.timeEnd(gen);
 });
-
-(async () => {
-  console.time('natdex');
-  generations['natdex'] = await getMoveMap(natDexData);
-  console.timeEnd('natdex');
-})();
 
 module.exports = generations;

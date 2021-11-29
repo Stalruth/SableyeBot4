@@ -2,12 +2,11 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
-const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const buildEmbed = require('embed-builder');
 const decodeSource = require('learnsetutils');
-const natDexData = require('natdexdata');
+const gens = require('gen-db');
 const colours = require('pkmn-colours');
 const { completePokemon, completeMove } = require('pkmn-complete');
 
@@ -44,42 +43,9 @@ const command = {
     },
     {
       name: 'gen',
-      type: 4,
+      type: 3,
       description: 'The Generation to check against.',
-      choices: [
-        {
-          name: 'RBY',
-          value: 1,
-        },
-        {
-          name: 'GSC',
-          value: 2,
-        },
-        {
-          name: 'RSE',
-          value: 3,
-        },
-        {
-          name: 'DPPt/HGSS',
-          value: 4,
-        },
-        {
-          name: 'BW/BW2',
-          value: 5,
-        },
-        {
-          name: 'XY/ORAS',
-          value: 6,
-        },
-        {
-          name: 'SM/USM',
-          value: 7,
-        },
-        {
-          name: 'SwSh',
-          value: 8,
-        },
-      ]
+      choices: gens.names,
     },
   ],
 };
@@ -89,7 +55,7 @@ const process = async function(interaction) {
 
   const vgcNotes = [,,,,,'Pentagon','Plus','Galar'];
 
-  const data = args.gen ? new Data.Generations(Sim.Dex).get(args.gen) : natDexData;
+  const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
 
   const pokemon = data.species.get(Data.toID(args.name));
 
@@ -99,7 +65,7 @@ const process = async function(interaction) {
       data: {
         embeds: [buildEmbed({
           title: "Error",
-          description: `Could not find a Pokémon named ${args.name}${args.gen ? ` in Generation ${args.gen}` : ''}.`,
+          description: `Could not find a Pokémon named ${args.name} in the given generation.`,
           color: 0xCC0000,
         })],
         flags: InteractionResponseFlags.EPHEMERAL,

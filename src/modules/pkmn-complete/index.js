@@ -5,7 +5,7 @@ const Data = require('@pkmn/data');
 const WordGraphs = require('word-graphs');
 
 const toArray = require('dexdata-toarray');
-const natDexData = require('natdexdata');
+const gens = require('gen-db');
 
 const graphs = {
   all: new WordGraphs.Trie(),
@@ -13,7 +13,7 @@ const graphs = {
 
 ['abilities','moves','items','species','natures','types'].forEach(type=>{
   graphs[type] = new WordGraphs.MinimalWordGraph();
-  toArray(natDexData[type])
+  toArray(gens.data['gen8natdex'][type])
       .map(e=>e.id)
       .sort()
       .forEach(el=>{
@@ -35,7 +35,7 @@ function complete(type) {
   function completeEntity(id) {
     return graphs[type].startsWith(Data.toID(id)).slice(0,25).map((e,i) => {
       return {
-        name: natDexData[type].get(e).name,
+        name: gens.data['gen8natdex'][type].get(e).name,
         value: e,
       };
     });
@@ -47,7 +47,7 @@ function completeFilterType(id) {
   const negate = id.startsWith('!') ? '!' : '';
   return graphs.types.startsWith(Data.toID(id)).slice(0,25).map((e,i) => {
     return {
-      name: `${negate}${natDexData.types.get(e).name}`,
+      name: `${negate}${gens.data['gen8natdex'].types.get(e).name}`,
       value: `${negate}${e}`,
     };
   });
@@ -68,11 +68,11 @@ function completeAll(id) {
       .slice(0,25)
       .map(e => {
         const result = [
-          natDexData.abilities.get(Data.toID(e)),
-          natDexData.items.get(Data.toID(e)),
-          natDexData.moves.get(Data.toID(e)),
-          natDexData.natures.get(Data.toID(e)),
-          natDexData.species.get(Data.toID(e)),
+          gens.data['gen8natdex'].abilities.get(Data.toID(e)),
+          gens.data['gen8natdex'].items.get(Data.toID(e)),
+          gens.data['gen8natdex'].moves.get(Data.toID(e)),
+          gens.data['gen8natdex'].natures.get(Data.toID(e)),
+          gens.data['gen8natdex'].species.get(Data.toID(e)),
         ].filter(el=>!!el)[0];
         return {name: result.name, value: result.id};
       });
