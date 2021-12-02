@@ -32,7 +32,6 @@ const command = {
 
 const process = (interaction) => {
   const args = getargs(interaction).params;
-  args.gen ??= 8;
 
   const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
 
