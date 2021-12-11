@@ -1,6 +1,7 @@
 'use strict';
 const Data = require('@pkmn/data');
 const Sim = require('@pkmn/sim');
+const Mods = require('@pkmn/mods');
 const ModBdsp = require('@pkmn/mods/gen8bdsp');
 
 const existedEver = (d) => {
@@ -66,7 +67,7 @@ const genData = {
   'gen6': new Data.Generations(Sim.Dex).get(6),
   'gen7': new Data.Generations(Sim.Dex).get(7),
   'gen8': new Data.Generations(Sim.Dex).get(8),
-  'gen8bdsp': new Data.Generations(Sim.Dex.mod('gen8bdsp', ModBdsp)).get(8),
+  'gen8bdsp': new Data.Generations(new Mods.ModdedDex(Sim.Dex.mod('gen8bdsp', ModBdsp))).get(8),
   'gen8natdex': new Data.Generations(Sim.Dex, existedEver).get(8),
 }
 

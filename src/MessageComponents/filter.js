@@ -1,7 +1,6 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const Data = require('@pkmn/data');
 
 const toArray = require('dexdata-toarray');
 const buildEmbed = require('embed-builder');
@@ -31,8 +30,7 @@ async function getPage(interaction) {
   const commandData = idData[0].split('_');
 
   const pageNumber = Number(commandData[1].substring(1));
-  const gen = commandData[2] ?? 'gen8natdex';
-  const data = gens.data[gen] ?? gens.data[`gen${gen}`] ?? gens.data['gen8natdex'];
+  const data = commandData[2] ?? 'gen8natdex';
   const threshold = Number(commandData[3] ?? packedFilters.length);
   const isVgc = commandData[4] === 'V';
   const sortKey = commandData[5] ?? 'nil';
@@ -50,7 +48,7 @@ async function getPage(interaction) {
     };
   }
 
-  const results = (await applyFilters(toArray(data.species), filters, threshold)).sort((lhs, rhs) => {
+  const results = (await applyFilters(toArray(gens.data[data].species), filters, threshold)).sort((lhs, rhs) => {
     if(sortKey === 'nil') {
       return 0;
     }
@@ -95,14 +93,14 @@ async function getPage(interaction) {
           components: [
             {
               type: 2,
-              custom_id: pageNumber === 1 ? '-' : `_p${pageNumber-1}_${gen}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
+              custom_id: pageNumber === 1 ? '-' : `_p${pageNumber-1}_${data}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
               disabled: pageNumber === 1,
               style: 2,
               label: 'Previous',
             },
             {
               type: 2,
-              custom_id: pageNumber === pages.length ? '-' : `_p${pageNumber+1}_${gen}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
+              custom_id: pageNumber === pages.length ? '-' : `_p${pageNumber+1}_${data}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
               disabled: pageNumber === pages.length,
               style: 2,
               label: 'Next',

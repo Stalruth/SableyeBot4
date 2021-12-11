@@ -2,12 +2,7 @@
 
 'use strict';
 
-const Sim = require('@pkmn/sim');
-const Data = require('@pkmn/data');
-
 const gens = require('gen-db');
-
-const generations = Object.create(null);
 
 async function getMoveMap(data, restriction) {
   const moves = Object.create(null);
@@ -24,28 +19,40 @@ async function getMoveMap(data, restriction) {
 }
 
 const vgc = {
-  6: 'Pentagon',
-  7: 'Clover',
-  8: 'Galar',
+  'gen6': 'Pentagon',
+  'gen7': 'Clover',
+  'gen8': 'Galar',
 };
 
-[
-  'gen1',
-  'gen2',
-  'gen3',
-  'gen4',
-  'gen5',
-  'gen6',
-  'gen7',
-  'gen8',
-  'gen8bdsp',
-  'gen8natdex'
-].forEach(async (gen) => {
-  const data = gens.data[gen];
-  generations[gen] = await getMoveMap(data);
-  if(vgc[gen]) {
-    generations[vgc[data.num]] = await getMoveMap(data, vgc[data.num]);
-  }
-});
+async function main() {
+  const generations = Object.create(null);
 
-module.exports = generations;
+  const mapFunctions = [
+    'gen1',
+    'gen2',
+    'gen3',
+    'gen4',
+    'gen5',
+    'gen6',
+    'gen7',
+    'gen8',
+    'gen8bdsp',
+    'gen8natdex'
+  ].map((gen) => {
+    const results = [];
+    const data = gens.data[gen];
+    results.push(async function() {generations[gen] = await getMoveMap(data)});
+    if(vgc[gen]) {
+      results.push(async function() {generations[vgc[gen]] = await getMoveMap(data, vgc[data.num])});
+    }
+    return results;
+  }).flat()
+  .map(e=>e());
+  
+  await Promise.allSettled(mapFunctions);
+  console.log(mapFunctions);
+  return generations;
+}
+
+module.exports = main;
+

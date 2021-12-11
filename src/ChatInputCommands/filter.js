@@ -234,7 +234,7 @@ const command = {
 const process = async function(interaction) {
   const args = getargs(interaction).params;
 
-  const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
+  const data = args.gen ? args.gen : 'gen8natdex';
   const filters = [];
   const isVgc = args.mode === 'vgc';
 
@@ -436,7 +436,7 @@ const process = async function(interaction) {
   const threshold = args.threshold ?? filters.length;
 
   const sortKey = args['sort'] ?? 'nil';
-  const results = (await applyFilters(toArray(data.species), filters, threshold)).sort((lhs, rhs) => {
+  const results = (await applyFilters(toArray(gens.data[data].species), filters, threshold)).sort((lhs, rhs) => {
     if(sortKey === 'nil') {
       return 0;
     }
@@ -522,7 +522,7 @@ const process = async function(interaction) {
             },
             {
               type: 2,
-              custom_id:`_p2_${args.gen ?? 'NaN'}_${threshold}_${args.mode === 'vgc' ?'V':''}_${sortKey}${packFilters(filters)}`,
+              custom_id:`_p2_${data}_${threshold}_${args.mode === 'vgc' ?'V':''}_${sortKey}${packFilters(filters)}`,
               style: 2,
               label: 'Next',
             },

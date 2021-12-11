@@ -1,7 +1,10 @@
 const Data = require('@pkmn/data');
 
+const genDb = require('gen-db');
 const damageTaken = require('typecheck');
 const fastMoves = require('fast-moves');
+
+const genData = genDb.data;
 
 function getStat(pokemon, stat) {
   if(['bst', 'heightm', 'weightkg'].includes(stat)) {
@@ -60,7 +63,7 @@ const statData = {
 };
 
 function statFilterFactory(stat) {
-  return (data, query, isVgc) => {
+  return (dataSet, query, isVgc) => {
     function pack() {
       return `${query}`;
     }
@@ -117,8 +120,9 @@ function statFilterFactory(stat) {
 }
 
 const filterFactory = {
-  ability: (data, abilityId, isVgc) => {
-    const ability = data.abilities.get(Data.toID(abilityId));
+  ability: (dataSet, abilityId, isVgc) => {
+    console.log(dataSet);
+    const ability = genData[dataSet].abilities.get(Data.toID(abilityId));
     if(!ability?.exists) {
       throw abilityId;
     }
@@ -132,8 +136,8 @@ const filterFactory = {
       packed: ability['id'],
     };
   },
-  type: (data, typeId, isVgc) => {
-    const type = data.types.get(Data.toID(typeId));
+  type: (dataSet, typeId, isVgc) => {
+    const type = genData[dataSet].types.get(Data.toID(typeId));
     if(!type?.exists) {
       throw typeId;
     }
@@ -158,7 +162,8 @@ const filterFactory = {
       };
     }
   },
-  move: (data, moveId, isVgc) => {
+  move: (dataSet, moveId, isVgc) => {
+    const data = genData[dataSet];
     const move = data.moves.get(Data.toID(moveId));
     if(!move) {
       throw moveId;
@@ -175,13 +180,8 @@ const filterFactory = {
       id: 'move',
       description: `Has the move ${move['name']}`,
       predicate: async (pokemon) => {
-        if(data.national) {
-          return fastMoves.natdex[move.id][pokemon.id];
-        }
-        if(isVgc) {
-          return fastMoves[restrictions[data.num]][move.id][pokemon.id];
-        }
-        return fastMoves[data.num][move.id][pokemon.id];
+        const modId = isVgc ? restrictions[data.num] : dataSet;
+        return fastMoves[modId][move.id][pokemon.id];
       },
       packed: move['id'],
     };
@@ -195,8 +195,8 @@ const filterFactory = {
   bst: statFilterFactory('bst'),
   weightkg: statFilterFactory('weightkg'),
   heightm: statFilterFactory('heightm'),
-  weakness: (data, typeId, isVgc) => {
-    const type = data.types.get(Data.toID(typeId));
+  weakness: (dataSet, typeId, isVgc) => {
+    const type = genData[dataSet].types.get(Data.toID(typeId));
     if(!type) {
       throw typeId;
     }
@@ -205,13 +205,13 @@ const filterFactory = {
       id: 'weakness',
       description: `Is weak to ${type.name}`,
       predicate: (pokemon) => {
-        return damageTaken(data, pokemon.types, type.id) > 1;
+        return damageTaken(genData[dataSet], pokemon.types, type.id) > 1;
       },
       packed: type['id'],
     };
   },
-  resist: (data, typeId, isVgc) => {
-    const type = data.types.get(Data.toID(typeId));
+  resist: (dataSet, typeId, isVgc) => {
+    const type = genData[dataSet].types.get(Data.toID(typeId));
     if(!type) {
       throw typeId;
     }
@@ -220,12 +220,12 @@ const filterFactory = {
       id: 'resist',
       description: `Resists ${type.name}`,
       predicate: (pokemon) => {
-        return damageTaken(data, pokemon.types, type.id) < 1;
+        return damageTaken(genData[dataSet], pokemon.types, type.id) < 1;
       },
       packed: type['id']
     };
   },
-  egggroup: (data, eggGroup, isVgc) => {
+  egggroup: (dataSet, eggGroup, isVgc) => {
     return {
       id: 'egggroup',
       description: `Is in the ${eggGroup} egg group`,
@@ -235,7 +235,7 @@ const filterFactory = {
       packed: eggGroup,
     };
   },
-  evolves: (data, arg, isVgc) => {
+  evolves: (dataSet, arg, isVgc) => {
     const value = ['t', true].includes(arg);
     return {
       id: 'evolves',
@@ -246,7 +246,7 @@ const filterFactory = {
       packed: value ? 't' : 'f',
     };
   },
-  hasevolved: (data, arg, isVgc) => {
+  hasevolved: (dataSet, arg, isVgc) => {
     const value = ['t', true].includes(arg);
     return {
       id: 'hasevolved',
