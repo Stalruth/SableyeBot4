@@ -2,7 +2,7 @@
 
 const fetch = require('node-fetch');
 
-const { getCommands } = require('./AppCommandHandler.js');
+const { getCommandDefinitions } = require('./AppCommandHandler.js');
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const APP_ID = process.env.APP_ID;
@@ -15,7 +15,7 @@ const options = {
     'Content-Type': 'application/json',
     'User-Agent': 'DiscordBot (github.com/Stalruth/Sableyebot4, 4.x)',
   },
-  body: JSON.stringify(getCommands()),
+  body: JSON.stringify(getCommandDefinitionss()),
 };
 
 async function main() {

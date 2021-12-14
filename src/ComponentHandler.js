@@ -1,17 +1,28 @@
 'use strict';
 
 const processes = {};
-const autocompletes = {};
+const modulePaths = {};
 
-const addComponent = async function(name, process) {
-  processes[name] = process;
+function initComponent(name) {
+  processes[name] = require(modulePaths[name]);
 };
 
-addComponent('filter', require('./MessageComponents/filter.js'));
+function addComponent(name, modulePath) {
+  modulePaths[name] = modulePath;
+};
+
+addComponent('filter', './MessageComponents/filter.js');
 
 async function onComponentInteraction(req, res) {
   console.log(req.body.type, req.body.id, req.body.message.interaction.name, req.body.data.custom_id);
-  res.json(await processes[req.body.message.interaction.name](req.body));
+
+  try {
+    initComponent(req.body.message.interaction.name);
+    res.json(await processes[req.body.message.interaction.name](req.body));
+  } catch (e) {
+    console.error(e);
+  }
+
   return;
 }
 

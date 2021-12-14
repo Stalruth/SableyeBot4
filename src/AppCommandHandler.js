@@ -2,41 +2,53 @@
 
 const getargs = require('discord-getarg');
 
-const commands = [];
+const definitions = [];
 const processes = {};
 const autocompletes = {};
+const modulePaths = {};
 
-const addCommand = async function(name, module) {
-  const {command, process, autocomplete} = module;
+function initCommand(name) {
+  if(processes[name]) {
+    // Command already added.
+    return;
+  }
+  const {command, process, autocomplete} = require(modulePaths[name]);
   command['name'] = name;
-  commands.push(command);
+  definitions.push(command);
   processes[name] = process;
   if(autocomplete) {
     autocompletes[name] = autocomplete;
   }
-};
+}
 
-addCommand('about', require('./ChatInputCommands/about.js'));
-addCommand('ability', require('./ChatInputCommands/ability.js'));
-addCommand('coverage', require('./ChatInputCommands/coverage.js'));
-addCommand('dt', require('./ChatInputCommands/dt.js'));
-addCommand('event', require('./ChatInputCommands/event.js'));
-addCommand('filter', require('./ChatInputCommands/filter.js'));
-addCommand('hiddenpower', require('./ChatInputCommands/hiddenpower.js'));
-addCommand('item', require('./ChatInputCommands/item.js'));
-addCommand('learn', require('./ChatInputCommands/learn.js'));
-addCommand('move', require('./ChatInputCommands/move.js'));
-addCommand('nature', require('./ChatInputCommands/nature.js'));
-addCommand('pokemon', require('./ChatInputCommands/pokemon.js'));
-addCommand('sprite', require('./ChatInputCommands/sprite.js'));
-addCommand('weakness', require('./ChatInputCommands/weakness.js'));
+function addCommand(name, modulePath) {
+  modulePaths[name] = modulePath;
+}
+
+addCommand('about', './ChatInputCommands/about.js');
+addCommand('ability', './ChatInputCommands/ability.js');
+addCommand('coverage', './ChatInputCommands/coverage.js');
+addCommand('dt', './ChatInputCommands/dt.js');
+addCommand('event', './ChatInputCommands/event.js');
+addCommand('filter', './ChatInputCommands/filter.js');
+addCommand('hiddenpower', './ChatInputCommands/hiddenpower.js');
+addCommand('item', './ChatInputCommands/item.js');
+addCommand('learn', './ChatInputCommands/learn.js');
+addCommand('move', './ChatInputCommands/move.js');
+addCommand('nature', './ChatInputCommands/nature.js');
+addCommand('pokemon', './ChatInputCommands/pokemon.js');
+addCommand('sprite', './ChatInputCommands/sprite.js');
+addCommand('weakness', './ChatInputCommands/weakness.js');
 
 async function onApplicationCommand(req, res) {
   const info = getargs(req.body);
   const command = [req.body.data?.name, ...info.subcommand];
 
-  console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), info.params);
   try {
+    initCommand(command[0]);
+
+    console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), JSON.stringify(info.params));
+
     if(command.length === 1) {
       res.json(await processes[command[0]](req.body));
     } else if(command.length === 2) {
@@ -45,7 +57,8 @@ async function onApplicationCommand(req, res) {
       res.json(await processes[command[0]][command[1]][command[2]](req.body));
     }
   } catch (e) {
-    throw e;
+    console.error(e);
+    throw(e)
   }
 }
 
@@ -53,8 +66,11 @@ async function onAutocomplete(req, res) {
   const info = getargs(req.body);
   const command = [req.body.data?.name, ...info.subcommand];
 
-  console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), info.params, info.focused);
   try {
+    initCommand(command[0]);
+
+    console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), JSON.stringify(info.params), info.focused);
+
     if(command.length === 1) {
       res.json(await autocompletes[command[0]](req.body));
     } else if(command.length === 2) {
@@ -75,9 +91,13 @@ async function onAutocomplete(req, res) {
   }
 }
 
-function getCommands() {
-  return commands;
+function getCommandDefinitions() {
+  const commands = Object.keys(moduleLocations);
+  for(i of commands) {
+    initCommand(i);
+  }
+  return definitions;
 }
 
-module.exports = { onApplicationCommand, onAutocomplete, getCommands };
+module.exports = { onApplicationCommand, onAutocomplete, getCommandDefinitions };
 
