@@ -132,7 +132,6 @@ const process = function(interaction) {
 
 function autocomplete(interaction) {
   const args = getargs(interaction).params;
-  console.log(completeSprite(args['pokemon']));
   return {
     type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {

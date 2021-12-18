@@ -121,7 +121,6 @@ function statFilterFactory(stat) {
 
 const filterFactory = {
   ability: (dataSet, abilityId, isVgc) => {
-    console.log(dataSet);
     const ability = genData[dataSet].abilities.get(Data.toID(abilityId));
     if(!ability?.exists) {
       throw abilityId;
