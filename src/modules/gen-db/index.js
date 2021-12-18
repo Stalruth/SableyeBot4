@@ -56,19 +56,55 @@ const genNames = [
 ];
 
 const natDex = new Data.Generations(Sim.Dex, existedEver).get(8);
-natDex.national = true;
+
+function getGen(dex, gen, existsFn) {
+  if(existsFn) {
+    return new Data.Generations(dex, existsFn).get(gen);
+  }
+  return new Data.Generations(dex).get(gen);
+}
 
 const genData = {
-  'gen1': new Data.Generations(Sim.Dex).get(1),
-  'gen2': new Data.Generations(Sim.Dex).get(2),
-  'gen3': new Data.Generations(Sim.Dex).get(3),
-  'gen4': new Data.Generations(Sim.Dex).get(4),
-  'gen5': new Data.Generations(Sim.Dex).get(5),
-  'gen6': new Data.Generations(Sim.Dex).get(6),
-  'gen7': new Data.Generations(Sim.Dex).get(7),
-  'gen8': new Data.Generations(Sim.Dex).get(8),
-  'gen8bdsp': new Data.Generations(new Mods.ModdedDex(Sim.Dex.mod('gen8bdsp', ModBdsp))).get(8),
-  'gen8natdex': new Data.Generations(Sim.Dex, existedEver).get(8),
+  get ['gen1']() {
+    delete genData['gen1'];
+    return genData['gen1'] = getGen(Sim.Dex, 1);
+  },
+  get ['gen2']() {
+    delete genData['gen2'];
+    return genData['gen2'] = getGen(Sim.Dex, 2);
+  },
+  get ['gen3']() {
+    delete genData['gen3'];
+    return genData['gen3'] = getGen(Sim.Dex, 3);
+  },
+  get ['gen4']() {
+    delete genData['gen4'];
+    return genData['gen4'] = getGen(Sim.Dex, 4);
+  },
+  get ['gen5']() {
+    delete genData['gen5'];
+    return genData['gen5'] = getGen(Sim.Dex, 5);
+  },
+  get ['gen6']() {
+    delete genData['gen6'];
+    return genData['gen6'] = getGen(Sim.Dex, 6);
+  },
+  get ['gen7']() {
+    delete genData['gen7'];
+    return genData['gen7'] = getGen(Sim.Dex, 7);
+  },
+  get ['gen8']() {
+    delete genData['gen8'];
+    return genData['gen8'] = getGen(Sim.Dex, 8);
+  },
+  get ['gen8bdsp']() {
+    delete genData['gen8bdsp'];
+    return genData['gen8bdsp'] = getGen(new Mods.ModdedDex(Sim.Dex.mod('gen8bdsp', ModBdsp)), 8);
+  },
+  get ['gen8natdex']() {
+    delete genData['gen8natdex'];
+    return genData['gen8natdex'] = getGen(Sim.Dex, 8, existedEver);
+  },
 }
 
 module.exports = {names: genNames, data: genData};
