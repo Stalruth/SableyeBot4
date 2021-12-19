@@ -61,12 +61,15 @@ const graphs = {
 
 function complete(type) {
   function completeEntity(id) {
-    return graphs[type].startsWith(Data.toID(id)).slice(0,25).map((e,i) => {
-      return {
-        name: gens.data['gen8natdex'][type].get(e).name,
-        value: e,
-      };
-    });
+    return graphs[type]
+        .startsWith(Data.toID(id))
+        .slice(0,10)
+        .map((e,i) => {
+          return {
+            name: gens.data['gen8natdex'][type].get(e).name,
+            value: e,
+          };
+        });
   }
   return completeEntity;
 }
@@ -81,7 +84,6 @@ function completeFilterType(id) {
   const negate = id.startsWith('!') ? '!' : '';
   return graphs.types
       .startsWith(Data.toID(id))
-      .slice(0,25)
       .map((e,i) => {
         return {
           name: `${negate}${gens.data['gen8natdex'].types.get(e).name}`,
@@ -93,7 +95,7 @@ function completeFilterType(id) {
 function completeSprite(id) {
   return graphs.sprites
       .startsWith(Data.toID(id))
-      .slice(0,25)
+      .slice(0,10)
       .map((e,i)=>{
         return {
           name: Sim.Dex.species.get(e).name,
@@ -114,7 +116,7 @@ function completeAll(id) {
     if(lhs.value < rhs.value) return -1;
     if(lhs.value > rhs.value) return 1;
     return 0;
-  }).slice(0,25);
+  }).slice(0,10);
 }
 
 module.exports = {
