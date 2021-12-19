@@ -57,9 +57,7 @@ async function onApplicationCommand(req, res) {
     } else {
       commandProcess = processes[command[0]][command[1]][command[2]];
     }
-    const result = await commandProcess(req.body);
-    console.log(JSON.stringify(result));
-    res.json(result);
+    res.json(await commandProcess(req.body));
   } catch (e) {
     console.error(e);
     throw(e)
