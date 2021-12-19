@@ -496,12 +496,12 @@ const process = async function(interaction) {
       inline: true,
     });
   }
-  if(pages.length > 1) {
-    fields.push({
-      name: 'Page',
-      value: `1 of ${pages.length}`,
-    });
-  }
+
+  const pageList = [...(new Set([
+    1,
+    Math.min(2, pages.length),
+    pages.length
+  ]))]
 
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -512,21 +512,13 @@ const process = async function(interaction) {
       components: (pages.length === 1 ? undefined : [
         {
           type: 1,
-          components: [
-            {
-              type: 2,
-              custom_id: '-',
-              disabled: true,
-              style: 2,
-              label: 'Previous',
-            },
-            {
-              type: 2,
-              custom_id:`_p2_${data}_${threshold}_${args.mode === 'vgc' ?'V':''}_${sortKey}${packFilters(filters)}`,
-              style: 2,
-              label: 'Next',
-            },
-          ],
+          components: pageList.map(page => ({
+            type: 2,
+            custom_id: page === 1 ? '-' : `_p${page}_${data}_${threshold}_${args.mode === 'vgc' ?'V':''}_${sortKey}${packFilters(filters)}`,
+            disabled: page === 1,
+            style: 2,
+            label: `Page ${page}`,
+          }))
         }
       ]),
     },

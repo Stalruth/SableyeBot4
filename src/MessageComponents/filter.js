@@ -72,14 +72,16 @@ async function getPage(interaction) {
         value: pages[pageNumber - 1],
       };
     }
-    if(field.name === 'Page') {
-      return {
-        name: 'Page',
-        value: `${pageNumber} of ${pages.length}`,
-      };
-    }
     return field;
   });
+
+  const pageList = [...(new Set([
+    1,
+    Math.max(pageNumber - 1, 1),
+    pageNumber,
+    Math.min(pageNumber + 1, pages.length),
+    pages.length
+  ]))]
 
   return {
     type: InteractionResponseType.UPDATE_MESSAGE,
@@ -90,22 +92,13 @@ async function getPage(interaction) {
       components: [
         {
           type: 1,
-          components: [
-            {
-              type: 2,
-              custom_id: pageNumber === 1 ? '-' : `_p${pageNumber-1}_${data}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
-              disabled: pageNumber === 1,
-              style: 2,
-              label: 'Previous',
-            },
-            {
-              type: 2,
-              custom_id: pageNumber === pages.length ? '-' : `_p${pageNumber+1}_${data}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
-              disabled: pageNumber === pages.length,
-              style: 2,
-              label: 'Next',
-            },
-          ],
+          components: pageList.map(page => ({
+            type: 2,
+            custom_id: page === pageNumber ? '-' : `_p${page}_${data}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
+            disabled: page === pageNumber,
+            style: 2,
+            label: `Page ${page}`,
+          }))
         }
       ],
     },

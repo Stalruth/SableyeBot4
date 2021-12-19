@@ -49,13 +49,17 @@ async function onApplicationCommand(req, res) {
 
     console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), JSON.stringify(info.params));
 
+    let commandProcess = ()=>({});
     if(command.length === 1) {
-      res.json(await processes[command[0]](req.body));
+      commandProcess = processes[command[0]];
     } else if(command.length === 2) {
-      res.json(await processes[command[0]][command[1]](req.body));
+      commandProcess = processes[command[0]][command[1]];
     } else {
-      res.json(await processes[command[0]][command[1]][command[2]](req.body));
+      commandProcess = processes[command[0]][command[1]][command[2]];
     }
+    const result = await commandProcess(req.body);
+    console.log(JSON.stringify(result));
+    res.json(result);
   } catch (e) {
     console.error(e);
     throw(e)
@@ -71,13 +75,15 @@ async function onAutocomplete(req, res) {
 
     console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), JSON.stringify(info.params), info.focused);
 
+    let autocompleteProcess = () => ({type:8,choices:[info.params[info.focused]]});
     if(command.length === 1) {
-      res.json(await autocompletes[command[0]](req.body));
+      autocompleteProcess = autocompletes[command[0]];
     } else if(command.length === 2) {
-      res.json(await autocompletes[command[0]][command[1]](req.body));
+      autocompleteProcess = autocompletes[command[0]][command[1]];
     } else {
-      res.json(await autocompletes[command[0]][command[1]][command[2]](req.body));
+      autocompleteProcess = autocompletes[command[0]][command[1]][command[2]];
     }
+    res.json(await autocompleteProcess(req.body));
   } catch(e) {
     res.json({
       type: 8,
