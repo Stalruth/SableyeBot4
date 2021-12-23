@@ -1,6 +1,6 @@
 {
   "name": "sableyebot4",
-  "version": "4.0.0-omega",
+  "version": "4.0.0-sigma",
   "description": "Competitive Pokemon Discord Bot",
   "main": "src/index.js",
   "scripts": {
@@ -26,8 +26,6 @@
     "discord-interactions": "^2.4.1",
     "embed-builder": "file:src/modules/embed-builder",
     "fast-moves": "file:src/modules/fast-moves",
-    "firebase-admin": "^10.0.0",
-    "firebase-functions": "^3.16.0",
     "gen-db": "file:src/modules/gen-db",
     "learnsetutils": "file:src/modules/learnsetutils",
     "natdexdata": "file:src/modules/natdexdata",
