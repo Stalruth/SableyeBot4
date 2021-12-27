@@ -96,18 +96,18 @@ function completeSprite(id) {
 
 function completeAll(id) {
   const realId = Data.toID(id);
-  return [...new Set([
+  return [
       ...completeAbility(realId),
       ...completeMove(realId),
       ...completeItem(realId),
       ...completeNature(realId),
       ...completePokemon(realId)
-  ])].sort((lhs, rhs) => {
+  ].sort((lhs, rhs) => {
     if(lhs.value < rhs.value) return -1;
     if(lhs.value > rhs.value) return 1;
     return 0;
   }).filter((el,i,arr)=>{
-    return el.value === arr[i-1]?.value;
+    return el.value !== arr[i-1]?.value;
   }).slice(0,10);
 }
 
