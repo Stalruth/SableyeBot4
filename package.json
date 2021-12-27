@@ -11,7 +11,7 @@
     "build-docs": "npm-run-all build-docs:static build-docs:md",
     "serve-docs": "npm-run-all build-docs:static serve-docs:md",
     "start": "node src/index.js",
-    "debug": "firebase emulators:start --only functions",
+    "debug": "npx functions-framework --target=sableye",
     "update-commands": "node -r dotenv/config src/updateCommands.js"
   },
   "author": "Stuart Rutheford",
