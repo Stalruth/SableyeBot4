@@ -51,7 +51,6 @@ const graphs = {
 
 function complete(type) {
   function completeEntity(id) {
-    console.log('completing ' + type);
     return graphs[type]
         .filter(e=>e.startsWith(id))
         .slice(0,10)
@@ -107,6 +106,8 @@ function completeAll(id) {
     if(lhs.value < rhs.value) return -1;
     if(lhs.value > rhs.value) return 1;
     return 0;
+  }).filter((el,i,arr)=>{
+    return el.value === arr[i-1]?.value;
   }).slice(0,10);
 }
 
