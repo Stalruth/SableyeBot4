@@ -2,20 +2,14 @@
 
 const Sim = require('@pkmn/sim');
 const Data = require('@pkmn/data');
-const WordGraphs = require('word-graphs');
 
 const toArray = require('dexdata-toarray');
 const gens = require('gen-db');
 
 function graphGetter(type) {
-  const graph = new WordGraphs.MinimalWordGraph();
-  toArray(gens.data['gen8natdex'][type])
+  const graph = toArray(gens.data['gen8natdex'][type])
       .map(e=>e.id)
-      .sort()
-      .forEach(el=>{
-        graph.add(el);
-      });
-  graph.makeImmutable();
+      .sort();
   return graph;
 }
 
@@ -47,22 +41,19 @@ const graphs = {
   // this one's built different
   get ['sprites']() {
     delete graphs['sprites'];
-    const graph = new WordGraphs.MinimalWordGraph();
-    Sim.Dex.species.all()
-        .filter(el=>!['Custom','CAP']
-        .includes(el.isNonstandard))
+    const graph = Sim.Dex.species.all()
+        .filter(el=>!['Custom','CAP'].includes(el.isNonstandard))
         .map(el=>el.id)
         .sort()
-        .forEach(el=>graph.add(el));
-    graph.makeImmutable();
     return graphs['sprites'] = graph;
   },
 };
 
 function complete(type) {
   function completeEntity(id) {
+    console.log('completing ' + type);
     return graphs[type]
-        .startsWith(Data.toID(id))
+        .filter(e=>e.startsWith(id))
         .slice(0,10)
         .map((e,i) => {
           return {
@@ -94,7 +85,7 @@ function completeFilterType(id) {
 
 function completeSprite(id) {
   return graphs.sprites
-      .startsWith(Data.toID(id))
+      .filter(e=>e.startsWith(id))
       .slice(0,10)
       .map((e,i)=>{
         return {
@@ -106,13 +97,13 @@ function completeSprite(id) {
 
 function completeAll(id) {
   const realId = Data.toID(id);
-  return [
+  return [...new Set([
       ...completeAbility(realId),
       ...completeMove(realId),
       ...completeItem(realId),
       ...completeNature(realId),
       ...completePokemon(realId)
-  ].sort((lhs, rhs) => {
+  ])].sort((lhs, rhs) => {
     if(lhs.value < rhs.value) return -1;
     if(lhs.value > rhs.value) return 1;
     return 0;

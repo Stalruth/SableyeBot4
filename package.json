@@ -33,8 +33,7 @@
     "pkmn-colours": "file:src/modules/pkmn-colours",
     "pkmn-complete": "file:src/modules/pkmn-complete",
     "pokemon-filters": "file:src/modules/pokemon-filters",
-    "typecheck": "file:src/modules/typecheck",
-    "word-graphs": "^0.2.1"
+    "typecheck": "file:src/modules/typecheck"
   },
   "devDependencies": {
     "@11ty/eleventy": "^0.12.1",
