@@ -1,4 +1,4 @@
-Accurate as of 23:00 23-Dec-2021 Australian Eastern Daylight Time (UTC+11)
+Accurate as of 22:00 28-Dec-2021 Australian Eastern Daylight Time (UTC+11)
 
 # Sableye Bot Privacy Policy
 
@@ -105,7 +105,7 @@ of commands and the popularity of different paramters:
 
 ## Where this data is stored
 
-The Application runs on Google Cloud Platform, and all information logged is
+The Application runs on Firebase Cloud Functions, and all information logged is
 stored in these execution logs.
 
 ## Personal Information

@@ -27,7 +27,7 @@ const process = function(interaction) {
           },
           {
             name: 'Language',
-            value: 'JavaScript (Hosted on [Google Cloud Platform](https://cloud.google.com))',
+            value: 'JavaScript (Hosted on [Firebase Cloud Functions](https://firebase.google.com))',
           },
         ],
       })],

@@ -1,12 +1,13 @@
 'use strict';
 
 const { verifyKey } = require('discord-interactions');
+const functions = require('firebase-functions');
 
 const { onApplicationCommand, onAutocomplete } = require('./AppCommandHandler.js');
 const onComponentInteraction = require('./ComponentHandler.js');
 const onPing = require('./PingHandler.js');
 
-const PUBLIC_KEY = process.env.PUBLIC_KEY;
+const PUBLIC_KEY = functions.config().sableye.public_key;
 
 const handlers = {
   1: onPing,
@@ -15,7 +16,7 @@ const handlers = {
   4: onAutocomplete
 };
 
-exports.sableye = (req, res) => {
+module.exports.sableye = functions.https.onRequest((req, res) => {
   if(!verifyKey(req.rawBody,
       req.header('X-Signature-Ed25519'),
       req.header('X-Signature-Timestamp'),
@@ -25,5 +26,5 @@ exports.sableye = (req, res) => {
   }
 
   handlers[req.body['type']](req, res);
-};
+});
 

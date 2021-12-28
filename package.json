@@ -11,7 +11,7 @@
     "build-docs": "npm-run-all build-docs:static build-docs:md",
     "serve-docs": "npm-run-all build-docs:static serve-docs:md",
     "start": "node src/index.js",
-    "debug": "npx functions-framework --target=sableye",
+    "debug": "firebase emulators:start",
     "update-commands": "node -r dotenv/config src/updateCommands.js"
   },
   "author": "Stuart Rutheford",
@@ -26,6 +26,8 @@
     "discord-interactions": "^2.4.1",
     "embed-builder": "file:src/modules/embed-builder",
     "fast-moves": "file:src/modules/fast-moves",
+    "firebase-admin": "^10.0.1",
+    "firebase-functions": "^3.16.0",
     "gen-db": "file:src/modules/gen-db",
     "learnsetutils": "file:src/modules/learnsetutils",
     "natdexdata": "file:src/modules/natdexdata",
@@ -37,7 +39,6 @@
   },
   "devDependencies": {
     "@11ty/eleventy": "^0.12.1",
-    "@google-cloud/functions-framework": "^2.1.0",
     "dotenv": "^10.0.0",
     "node-fetch": "^2.6.1",
     "npm-run-all": "^4.1.5"
