@@ -52,7 +52,7 @@ const graphs = {
 function complete(type) {
   function completeEntity(id) {
     return graphs[type]
-        .filter(e=>e.startsWith(id))
+        .filter(e=>e.startsWith(Data.toID(id)))
         .slice(0,10)
         .map((e,i) => {
           return {
@@ -73,7 +73,7 @@ const completePokemon = complete('species');
 function completeFilterType(id) {
   const negate = id.startsWith('!') ? '!' : '';
   return graphs.types
-      .startsWith(Data.toID(id))
+      .filter(e=>e.startsWith(Data.toID(id)))
       .map((e,i) => {
         return {
           name: `${negate}${gens.data['gen8natdex'].types.get(e).name}`,
@@ -84,7 +84,7 @@ function completeFilterType(id) {
 
 function completeSprite(id) {
   return graphs.sprites
-      .filter(e=>e.startsWith(id))
+      .filter(e=>e.startsWith(Data.toID(id)))
       .slice(0,10)
       .map((e,i)=>{
         return {
@@ -95,13 +95,12 @@ function completeSprite(id) {
 }
 
 function completeAll(id) {
-  const realId = Data.toID(id);
   return [
-      ...completeAbility(realId),
-      ...completeMove(realId),
-      ...completeItem(realId),
-      ...completeNature(realId),
-      ...completePokemon(realId)
+      ...completeAbility(id),
+      ...completeMove(id),
+      ...completeItem(id),
+      ...completeNature(id),
+      ...completePokemon(id)
   ].sort((lhs, rhs) => {
     if(lhs.value < rhs.value) return -1;
     if(lhs.value > rhs.value) return 1;

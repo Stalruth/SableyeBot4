@@ -63,7 +63,7 @@ function autocomplete(interaction) {
   return {
     type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {
-      choices: completeAbility(Data.toID(args['name'])),
+      choices: completeAbility(args['name']),
     },
   };
 }

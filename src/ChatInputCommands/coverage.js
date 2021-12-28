@@ -16,14 +16,14 @@ const command = {
     {
       name: 'pokemon',
       type: 3,
-      description: 'Pokemon to evaluate the STABs of',
+      description: 'Pokémon to evaluate the STABs of',
       required: false,
       autocomplete: true,
     },
     {
       name: 'types',
       type: 3,
-      description: 'Pokemon to evaluate the STABs of',
+      description: 'Types to evaluate the STABs of',
       required: false,
       autocomplete: true,
     },
