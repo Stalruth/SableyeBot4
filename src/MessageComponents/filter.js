@@ -1,12 +1,9 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
+const admin = require('init-admin');
 
-const toArray = require('dexdata-toarray');
 const buildEmbed = require('embed-builder');
-const gens = require('gen-db');
-const paginate = require('paginate');
-const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 
 async function getPage(interaction) {
   if(interaction.member.user.id !== interaction.message.interaction.user.id) {
@@ -23,52 +20,20 @@ async function getPage(interaction) {
     };
   }
 
-  const lines = interaction.message.content.split('\n');
-
-  const idData = interaction.data.custom_id.split('|');
-  const packedFilters = idData.slice(1);
-  const commandData = idData[0].split('_');
-
-  const pageNumber = Number(commandData[1].substring(1));
-  const data = commandData[2] ?? 'gen8natdex';
-  const threshold = Number(commandData[3] ?? packedFilters.length);
-  const isVgc = commandData[4] === 'V';
-  const sortKey = commandData[5] ?? 'nil';
-
-  const filters = [];
-
-  for(const def of packedFilters) {
-    const [name, value] = def.split(':');
-    filters.push(filterFactory[name](data, value, isVgc));
-  }
-
+  const pageNumber = parseInt(interaction.data.custom_id, 10);
   if(!pageNumber || isNaN(pageNumber)) {
     return {
       type: InteractionResponseType.DEFERRED_UPDATE_MESSAGE,
     };
   }
 
-  const results = (await applyFilters(toArray(gens.data[data].species), filters, threshold)).sort((lhs, rhs) => {
-    if(sortKey === 'nil') {
-      return 0;
-    }
-    if(sortKey === 'bst') {
-      let lhsTotal = 0;
-      let rhsTotal = 0;
-      ['hp','atk','def','spa','spd','spe'].forEach(el => {
-        lhsTotal += lhs.baseStats[el];
-        rhsTotal += rhs.baseStats[el];
-      });
-      return rhsTotal - lhsTotal;
-    }
-    return rhs.baseStats[sortKey] - lhs.baseStats[sortKey];
-  });
+  // get from rtdb
+  const pages = (await admin.database().ref(`/filters/${interaction.message.interaction.id}/pages`).once('value')).val();
 
-  const pages = paginate(results.map((el)=>{return el.name}), 1000);
   const fields = interaction.message.embeds[0].fields.map(field => {
     if(field.name.startsWith('Results')) {
       return {
-        name: `Results (${results.length})`,
+        name: field.name,
         value: pages[pageNumber - 1],
       };
     }
@@ -94,7 +59,7 @@ async function getPage(interaction) {
           type: 1,
           components: pageList.map(page => ({
             type: 2,
-            custom_id: page === pageNumber ? '-' : `_p${page}_${data}_${threshold}_${isVgc?'V':''}_${sortKey}${packFilters(filters)}`,
+            custom_id: page === pageNumber ? '-' : `${page}`,
             disabled: page === pageNumber,
             style: 2,
             label: `Page ${page}`,

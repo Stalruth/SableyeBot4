@@ -1,4 +1,4 @@
-Accurate as of 22:00 28-Dec-2021 Australian Eastern Daylight Time (UTC+11)
+Accurate as of 22:00 30-Dec-2021 Australian Eastern Daylight Time (UTC+11)
 
 # Sableye Bot Privacy Policy
 
@@ -107,6 +107,15 @@ of commands and the popularity of different paramters:
 
 The Application runs on Firebase Cloud Functions, and all information logged is
 stored in these execution logs.
+
+The `/filter` command also stores the following in Firebase Realtime Database
+for up to 15 minutes to facilitate advanced queries:
+
+  - The time the command was used
+
+  - The results of the command
+
+  - The parameters passed to the command
 
 ## Personal Information
 

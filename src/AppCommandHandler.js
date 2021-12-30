@@ -96,8 +96,8 @@ async function onAutocomplete(req, res) {
 }
 
 function getCommandDefinitions() {
-  const commands = Object.keys(moduleLocations);
-  for(i of commands) {
+  const commands = Object.keys(modulePaths);
+  for(const i of commands) {
     initCommand(i);
   }
   return definitions;

@@ -1,15 +1,9 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const Data = require('@pkmn/data');
 
-const toArray = require('dexdata-toarray');
 const getargs = require('discord-getarg');
-const buildEmbed = require('embed-builder');
 const gens = require('gen-db');
-const paginate = require('paginate');
-const { completeAbility, completeFilterType, completeMove, completeType } = require('pkmn-complete');
-const { filterFactory, applyFilters, packFilters } = require('pokemon-filters');
 
 const command = {
   description: 'Get all Pokémon fitting the given conditions.',
@@ -232,19 +226,21 @@ const command = {
 };
 
 const process = async function(interaction) {
+  const admin = require('init-admin');
+  const buildEmbed = require('embed-builder');
+
   const args = getargs(interaction).params;
 
-  const data = args.gen ? args.gen : 'gen8natdex';
+  const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
   const filters = [];
   const isVgc = args.mode === 'vgc';
 
   if(args.abilities) {
     const abilities = args.abilities.split(',');
     for(const ability of abilities) {
-      try {
-        const filter = filterFactory['ability'](data, ability, isVgc);
-        filters.push(filter);
-      } catch {
+      if(data.abilities.get(ability)?.exists) {
+        filters.push({filter: 'ability', query: ability});
+      } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -263,10 +259,9 @@ const process = async function(interaction) {
   if(args.types) {
     const types = args.types.split(',');
     for(const type of types) {
-      try {
-        const filter = filterFactory['type'](data, type.trimStart(), isVgc);
-        filters.push(filter);
-      } catch {
+      if(data.types.get(type)?.exists) {
+        filters.push({filter: 'type', query: type});
+      } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -285,10 +280,9 @@ const process = async function(interaction) {
   if(args.moves) {
     const moves = args.moves.split(',');
     for(const move of moves) {
-      try {
-        const filter = filterFactory['move'](data, move, isVgc);
-        filters.push(filter);
-      } catch {
+      if(data.moves.get(move)?.exists) {
+        filters.push({filter: 'move', query: move});
+      } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -304,12 +298,11 @@ const process = async function(interaction) {
     }
   }
 
-  for (const stat of ['hp','atk','def','spa','spd','spe','bst']) {
+  for (const stat of ['hp','atk','def','spa','spd','spe','bst','weight-kg','height-m']) {
     if(args[stat]) {
-      try {
-        const filter = filterFactory[stat](data, args[stat], isVgc);
-        filters.push(filter);
-      } catch(e) {
+      if(args[stat].match(/^([<>]?\d+|\d+-\d+)$/)) {
+        filters.push({filter: stat, query: args[stat]});
+      } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -325,51 +318,12 @@ const process = async function(interaction) {
     }
   }
 
-  if(args['weight-kg']) {
-    try {
-      const filter = filterFactory['weightkg'](data, args['weight-kg'], isVgc);
-      filters.push(filter);
-    } catch(e) {
-      return {
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          embeds: [buildEmbed({
-            title: "Error",
-            description: `The query ${args['weight-kg']} is not valid for the 'weight-kg' argument.`,
-            color: 0xCC0000,
-          })],
-          flags: InteractionResponseFlags.EPHEMERAL,
-        },
-      };
-    }
-  }
-
-  if(args['height-m']) {
-    try {
-      const filter = filterFactory['heightm'](data, args['height-m'], isVgc);
-      filters.push(filter);
-    } catch(e) {
-      return {
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          embeds: [buildEmbed({
-            title: "Error",
-            description: `The query ${args['height-m']} is not valid for the 'height-m' argument.`,
-            color: 0xCC0000,
-          })],
-          flags: InteractionResponseFlags.EPHEMERAL,
-        },
-      };
-    }
-  }
-
   if(args.weaknesses) {
     const types = args.weaknesses.split(',');
     for(const type of types) {
-      try {
-        const filter = filterFactory['weakness'](data, type, isVgc);
-        filters.push(filter);
-      } catch {
+      if(data.types.get(type)?.exists) {
+        filters.push({filter: 'weakness', query: type});
+      } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -388,10 +342,9 @@ const process = async function(interaction) {
   if(args.resists) {
     const types = args.resists.split(',');
     for(const type of types) {
-      try {
-        const filter = filterFactory['resist'](data, type, isVgc);
-        filters.push(filter);
-      } catch {
+      if(data.types.get(type)?.exists) {
+        filters.push({filter: 'resist', query: type});
+      } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -408,15 +361,15 @@ const process = async function(interaction) {
   }
 
   if(args['egg-group']) {
-    filters.push(filterFactory['egggroup'](data, args['egg-group'], isVgc));
+    filters.push({filter: 'egg-group', query: args['egg-group']});
   }
 
   if(args.evolves !== undefined) {
-    filters.push(filterFactory['evolves'](data, args['evolves'], isVgc));
+    filters.push({filter: 'evolves', query: args['evolves'] ? 't' : 'f'});
   }
-  
+
   if(args['has-evolved'] !== undefined) {
-    filters.push(filterFactory['hasevolved'](data, args['has-evolved'], isVgc));
+    filters.push({filter: 'has-evolved', query: args['has-evolved'] ? 't' : 'f'});
   }
 
   if(filters.length === 0) {
@@ -435,100 +388,40 @@ const process = async function(interaction) {
 
   const threshold = args.threshold ?? filters.length;
 
-  const sortKey = args['sort'] ?? 'nil';
-  const results = (await applyFilters(toArray(gens.data[data].species), filters, threshold)).sort((lhs, rhs) => {
-    if(sortKey === 'nil') {
-      return 0;
-    }
-    if(sortKey === 'bst') {
-      let lhsTotal = 0;
-      let rhsTotal = 0;
-      ['hp','atk','def','spa','spd','spe'].forEach(el => {
-        lhsTotal += lhs.baseStats[el];
-        rhsTotal += rhs.baseStats[el];
-      });
-      return rhsTotal - lhsTotal;
-    }
-    return rhs.baseStats[sortKey] - lhs.baseStats[sortKey];
-  });
+  const sortKey = args['sort'];
 
-  const pages = paginate(results.map((el)=>{return el.name}), 1000);
-  const fields = [
-    {
-      name: 'Filters',
-      value: filters.map(el=>`- ${el['description']}`).join('\n'),
+  const config = {
+    params: {
+      filters,
+      isVgc: isVgc,
+      gen: args.gen ?? 'gen8natdex',
+      threshold,
     },
-    {
-      name: `Results (${results.length})`,
-      value: pages[0].length ? pages[0] : 'No results found.',
-    },
-    {
-      name: 'Generation',
-      value: args.gen ?? 'All Gens',
-      inline: true,
-    },
-    {
-      name: 'Transferred Pokémon',
-      value: args.mode === 'vgc' ? 'Excluded' : 'Included',
-      inline: true,
-    },
-  ];
-  if(threshold !== filters.length) {
-    fields.push({
-      name: 'Threshold',
-      value: `At least ${threshold} filter${threshold === 1 ? '' : 's'} must match`,
-      inline: true,
-    });
-  }
-  if(sortKey !== 'nil') {
-    const names= {
-      'hp': 'Hit Points',
-      'atk': 'Attack',
-      'def': 'Defence',
-      'spa': 'Special Attack',
-      'spd': 'Special Defence',
-      'spe': 'Speed',
-      'bst': 'Base Stat Total',
-    };
-    fields.push({
-      name: 'Sorted by (High to Low)',
-      value: names[sortKey],
-      inline: true,
-    });
+    info: {
+      token: interaction.token,
+      appId: interaction.application_id,
+      timestamp: interaction.id / 4194304 + 1420070400000,
+    }
+  };
+
+  if(sortKey) {
+    config.config.sort = sortKey;
   }
 
-  const pageList = [...(new Set([
-    1,
-    Math.min(2, pages.length),
-    pages.length
-  ]))]
+  const ref = admin.database().ref(`/filters/${interaction.id}`);
+  ref.set(config);
 
   return {
-    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-    data: {
-      embeds: [buildEmbed({
-        fields: fields,
-      })],
-      components: (pages.length === 1 ? undefined : [
-        {
-          type: 1,
-          components: pageList.map(page => ({
-            type: 2,
-            custom_id: page === 1 ? '-' : `_p${page}_${data}_${threshold}_${args.mode === 'vgc' ?'V':''}_${sortKey}${packFilters(filters)}`,
-            disabled: page === 1,
-            style: 2,
-            label: `Page ${page}`,
-          }))
-        }
-      ]),
-    },
+    type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
   };
 };
 
 function autocomplete(interaction) {
-  const {params: args, focused} = getargs(interaction);
+  const { completeAbility, completeFilterType, completeMove, completeType } = require('pkmn-complete');
 
-  const autoArg = args[focused];
+  const {params, focused} = getargs(interaction);
+
+  const autoArg = params[focused];
   const completers = {
     'abilities': completeAbility,
     'types': completeFilterType,
@@ -544,11 +437,7 @@ function autocomplete(interaction) {
     'resists': 'types',
   };
 
-  const items = autoArg.split(',')
-    .map(e => {
-      const negate = e.startsWith('!') ? '!' : '';
-      return `${negate}${Data.toID(e)}`
-    });
+  const items = autoArg.split(',');
   const current = items.pop();
   const resolved = items.map((e) => {
     const item = gens.data['gen8natdex'][searches[focused]].get(e);

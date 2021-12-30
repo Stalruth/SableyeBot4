@@ -7,8 +7,12 @@ const fastMoves = require('fast-moves');
 const genData = genDb.data;
 
 function getStat(pokemon, stat) {
-  if(['bst', 'heightm', 'weightkg'].includes(stat)) {
+  if (stat === 'bst') {
     return pokemon[stat];
+  } else if (stat === 'height-m') {
+    return pokemon['heightm'];
+  } else if (stat === 'weight-kg') {
+    return pokemon['weightkg'];
   } else {
     return pokemon['baseStats'][stat];
   }
@@ -50,13 +54,13 @@ const statData = {
     article: 'a',
     suffix: 'stat ',
   },
-  weightkg: {
-    fullName: 'Weight',
+  'weight-kg': {
+    fullName: 'Weight (kg)',
     article: 'a',
     suffix: 'stat ',
   },
-  heightm: {
-    fullName: 'Height',
+  'height-m': {
+    fullName: 'Height (m)',
     article: 'a',
     suffix: 'stat ',
   },
@@ -192,8 +196,8 @@ const filterFactory = {
   spd: statFilterFactory('spd'),
   spe: statFilterFactory('spe'),
   bst: statFilterFactory('bst'),
-  weightkg: statFilterFactory('weightkg'),
-  heightm: statFilterFactory('heightm'),
+  'weight-kg': statFilterFactory('weight-kg'),
+  'height-m': statFilterFactory('height-m'),
   weakness: (dataSet, typeId, isVgc) => {
     const type = genData[dataSet].types.get(Data.toID(typeId));
     if(!type) {
@@ -224,7 +228,7 @@ const filterFactory = {
       packed: type['id']
     };
   },
-  egggroup: (dataSet, eggGroup, isVgc) => {
+  'egg-group': (dataSet, eggGroup, isVgc) => {
     return {
       id: 'egggroup',
       description: `Is in the ${eggGroup} egg group`,
@@ -245,7 +249,7 @@ const filterFactory = {
       packed: value ? 't' : 'f',
     };
   },
-  hasevolved: (dataSet, arg, isVgc) => {
+  'has-evolved': (dataSet, arg, isVgc) => {
     const value = ['t', true].includes(arg);
     return {
       id: 'hasevolved',

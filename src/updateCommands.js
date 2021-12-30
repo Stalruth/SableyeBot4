@@ -15,7 +15,7 @@ const options = {
     'Content-Type': 'application/json',
     'User-Agent': 'DiscordBot (github.com/Stalruth/Sableyebot4, 4.x)',
   },
-  body: JSON.stringify(getCommandDefinitionss()),
+  body: JSON.stringify(getCommandDefinitions()),
 };
 
 async function main() {
