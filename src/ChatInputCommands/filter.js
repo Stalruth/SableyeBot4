@@ -405,7 +405,7 @@ const process = async function(interaction) {
   };
 
   if(sortKey) {
-    config.config.sort = sortKey;
+    config.params.sort = sortKey;
   }
 
   const ref = admin.database().ref(`/filters/${interaction.id}`);
