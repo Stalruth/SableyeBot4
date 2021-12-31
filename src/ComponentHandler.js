@@ -21,6 +21,7 @@ async function onComponentInteraction(req, res) {
     res.json(await processes[req.body.message.interaction.name](req.body));
   } catch (e) {
     console.error(e);
+    res.sendStatus(500);
   }
 
   return;
