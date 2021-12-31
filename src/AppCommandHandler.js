@@ -26,17 +26,13 @@ function addCommand(name, modulePath) {
 }
 
 addCommand('about', './ChatInputCommands/about.js');
-addCommand('ability', './ChatInputCommands/ability.js');
 addCommand('coverage', './ChatInputCommands/coverage.js');
 addCommand('dt', './ChatInputCommands/dt.js');
 addCommand('event', './ChatInputCommands/event.js');
 addCommand('filter', './ChatInputCommands/filter.js');
 addCommand('hiddenpower', './ChatInputCommands/hiddenpower.js');
-addCommand('item', './ChatInputCommands/item.js');
 addCommand('learn', './ChatInputCommands/learn.js');
-addCommand('move', './ChatInputCommands/move.js');
 addCommand('nature', './ChatInputCommands/nature.js');
-addCommand('pokemon', './ChatInputCommands/pokemon.js');
 addCommand('sprite', './ChatInputCommands/sprite.js');
 addCommand('weakness', './ChatInputCommands/weakness.js');
 

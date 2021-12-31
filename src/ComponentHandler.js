@@ -12,6 +12,7 @@ function addComponent(name, modulePath) {
 };
 
 addComponent('filter', './MessageComponents/filter.js');
+addComponent('dt', './MessageComponents/dt.js');
 
 async function onComponentInteraction(req, res) {
   console.log(req.body.type, req.body.id, req.body.message.interaction.name, req.body.data.custom_id);

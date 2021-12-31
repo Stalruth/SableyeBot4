@@ -24,6 +24,7 @@
     "dexdata-toarray": "file:src/modules/dexdata-toarray",
     "discord-getarg": "file:src/modules/discord-getarg",
     "discord-interactions": "^2.4.1",
+    "dt-utils": "file:src/modules/dt-utils",
     "embed-builder": "file:src/modules/embed-builder",
     "fast-moves": "file:src/modules/fast-moves",
     "firebase-admin": "^10.0.1",
