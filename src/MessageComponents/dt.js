@@ -19,6 +19,8 @@ async function process(interaction) {
     }
   });
 
+  result.components = [];
+
   return {
     type: InteractionResponseType.UPDATE_MESSAGE,
     data: result,
