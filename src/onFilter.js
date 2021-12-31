@@ -1,13 +1,26 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-
-const toArray = require('dexdata-toarray');
-const buildEmbed = require('embed-builder');
-const gens = require('gen-db');
-const paginate = require('paginate');
-const { filterFactory, applyFilters } = require('pokemon-filters');
 const fetch = require('node-fetch');
+
+const buildEmbed = require('embed-builder');
+const { filterFactory, applyFilters } = require('pokemon-filters');
+
+function paginate(array, limit) {
+  const results = [''];
+  array.forEach((el) => {
+    const newItem = results[results.length - 1] === '' ? el : ', ' + el;
+    if(results[results.length - 1].length + newItem.length > limit) {
+      if(el.length > limit) {
+        throw `Item ${el} greater than limit ${limit}`;
+      }
+      results.push(el);
+      return;
+    }
+    results[results.length  -1] += newItem;
+  });
+  return results;
+}
 
 module.exports.onFilter = async (snapshot, context) => {
   const commandData = snapshot.val();
@@ -17,7 +30,7 @@ module.exports.onFilter = async (snapshot, context) => {
   const sortKey = commandData.params.sort;
   const filters = commandData.params.filters.map((f) => filterFactory[f.filter](gen, f.query, isVgc));
 
-  const results = (await applyFilters(toArray(gens.data[gen].species), filters, threshold)).sort((lhs, rhs) => {
+  const results = (await applyFilters(gen, filters, threshold)).sort((lhs, rhs) => {
     if (!sortKey) {
       return 0;
     }

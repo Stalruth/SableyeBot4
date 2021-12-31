@@ -1,8 +1,12 @@
-const Data = require('@pkmn/data');
+'use strict';
+console.time('loadFilters');
 
-const genDb = require('gen-db');
-const damageTaken = require('typecheck');
-const fastMoves = require('fast-moves');
+const Data = require('@pkmn/data');console.timeLog('loadFilters');
+const toArray = require('dexdata-toarray'); console.timeLog('loadFilters');
+const genDb = require('gen-db'); console.timeLog('loadFilters');
+const damageTaken = require('typecheck'); console.timeLog('loadFilters');
+
+console.timeEnd('loadFilters');
 
 const genData = genDb.data;
 
@@ -78,7 +82,6 @@ function statFilterFactory(stat) {
         predicate: (pokemon) => {
           return getStat(pokemon, stat) === Number(query);
         },
-        packed: query,
       };
     }
     if(query.indexOf('-') !== -1) {
@@ -90,7 +93,6 @@ function statFilterFactory(stat) {
           predicate: (pokemon) => {
             return getStat(pokemon, stat) >= range[0] && getStat(pokemon, stat) <= range[1];
           },
-          packed: query,
         };
       }
     }
@@ -104,7 +106,6 @@ function statFilterFactory(stat) {
           predicate: (pokemon) => {
             return getStat(pokemon, stat) > compValue;
           },
-          packed: query,
         };
       }
       if(operator === '<') {
@@ -114,7 +115,6 @@ function statFilterFactory(stat) {
           predicate: (pokemon) => {
             return getStat(pokemon, stat) < compValue;
           },
-          packed: query,
         };
       }
       throw query;
@@ -136,7 +136,6 @@ const filterFactory = {
       predicate: (pokemon) => {
         return ['0','1','H'].some(slot=>pokemon['abilities'][slot] === ability['name'])
       },
-      packed: ability['id'],
     };
   },
   type: (dataSet, typeId, isVgc) => {
@@ -152,7 +151,6 @@ const filterFactory = {
         predicate: (pokemon) => {
           return !(pokemon['types'].some(el=>el===type['name']));
         },
-        packed: `!${type['id']}`,
       };
     } else {
       return {
@@ -161,13 +159,14 @@ const filterFactory = {
         predicate: (pokemon) => {
           return pokemon['types'].some(el=>el===type['name']);
         },
-        packed: type['id'],
       };
     }
   },
   move: (dataSet, moveId, isVgc) => {
+    const fastMoves = require('fast-moves');
+
     const data = genData[dataSet];
-    const move = data.moves.get(Data.toID(moveId));
+    const move = data.moves.get(Data.toID(moveId));  
     if(!move) {
       throw moveId;
     }
@@ -186,7 +185,6 @@ const filterFactory = {
         const modId = isVgc ? restrictions[data.num] : dataSet;
         return fastMoves[modId][move.id][pokemon.id];
       },
-      packed: move['id'],
     };
   },
   hp: statFilterFactory('hp'),
@@ -210,7 +208,6 @@ const filterFactory = {
       predicate: (pokemon) => {
         return damageTaken(genData[dataSet], pokemon.types, type.id) > 1;
       },
-      packed: type['id'],
     };
   },
   resist: (dataSet, typeId, isVgc) => {
@@ -225,7 +222,6 @@ const filterFactory = {
       predicate: (pokemon) => {
         return damageTaken(genData[dataSet], pokemon.types, type.id) < 1;
       },
-      packed: type['id']
     };
   },
   'egg-group': (dataSet, eggGroup, isVgc) => {
@@ -235,7 +231,6 @@ const filterFactory = {
       predicate: (pokemon) => {
         return pokemon['eggGroups'].some(e=>e===eggGroup);
       },
-      packed: eggGroup,
     };
   },
   evolves: (dataSet, arg, isVgc) => {
@@ -246,7 +241,6 @@ const filterFactory = {
       predicate: (pokemon) => {
         return !!pokemon['evos'] === value;
       },
-      packed: value ? 't' : 'f',
     };
   },
   'has-evolved': (dataSet, arg, isVgc) => {
@@ -257,13 +251,12 @@ const filterFactory = {
       predicate: (pokemon) => {
         return !!pokemon['prevo'] === value;
       },
-      packed: value ? 't' : 'f',
     };
   }
 };
 
-async function applyFilters(pokemon, filters, threshold) {
-  return (await Promise.all(pokemon.map(async (candidate) => {
+async function applyFilters(genName, filters, threshold) {
+  return (await Promise.all(toArray(genData[genName].species).map(async (candidate) => {
     let score = 0;
 
     score = (await Promise.all(filters.map(async (filter)=> {
@@ -274,10 +267,4 @@ async function applyFilters(pokemon, filters, threshold) {
   }))).filter(el=>!!el);
 }
 
-function packFilters(filters) {
-  return filters.reduce((acc, cur) => {
-    return `${acc}|${cur.id}:${cur.packed}`;
-  }, '');
-}
-
-module.exports = { filterFactory, applyFilters, packFilters };
+module.exports = { filterFactory, applyFilters };

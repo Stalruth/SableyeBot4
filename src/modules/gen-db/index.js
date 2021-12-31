@@ -1,8 +1,6 @@
 'use strict';
 const Data = require('@pkmn/data');
 const Sim = require('@pkmn/sim');
-const Mods = require('@pkmn/mods');
-const ModBdsp = require('@pkmn/mods/gen8bdsp');
 
 const existedEver = (d) => {
   if (!d.exists) return false;
@@ -98,6 +96,9 @@ const genData = {
     return genData['gen8'] = getGen(Sim.Dex, 8);
   },
   get ['gen8bdsp']() {
+    const Mods = require('@pkmn/mods');
+    const ModBdsp = require('@pkmn/mods/gen8bdsp');
+
     delete genData['gen8bdsp'];
     return genData['gen8bdsp'] = getGen(new Mods.ModdedDex(Sim.Dex.mod('gen8bdsp', ModBdsp)), 8);
   },
