@@ -3,11 +3,10 @@
 const Sim = require('@pkmn/sim');
 const Data = require('@pkmn/data');
 
-const toArray = require('dexdata-toarray');
 const gens = require('gen-db');
 
 function graphGetter(type) {
-  const graph = toArray(gens.data['gen8natdex'][type])
+  const graph = Array.from(gens.data['gen8natdex'][type])
       .map(e=>e.id)
       .sort();
   return graph;

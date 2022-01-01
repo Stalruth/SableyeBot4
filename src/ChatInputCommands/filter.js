@@ -110,6 +110,29 @@ const command = {
       autocomplete: true,
     },
     {
+      name: 'vgc-legality',
+      type: 3,
+      description: "Legendary status of a Pokémon",
+      choices: [
+        {
+          name: 'VGC Legal',
+          value: 'vgc',
+        },
+        {
+          name: 'GS Cup Legal',
+          value: 'gsc',
+        },
+        {
+          name: 'Restricted Legendary',
+          value: 'gsc-restricted',
+        },
+        {
+          name: 'Always Banned',
+          value: 'banned',
+        }
+      ],
+    },
+    {
       name: 'weaknesses',
       type: 3,
       description: "Comma delimited list of Weaknesses.",
@@ -370,6 +393,10 @@ const process = async function(interaction) {
 
   if(args['has-evolved'] !== undefined) {
     filters.push({filter: 'has-evolved', query: args['has-evolved'] ? 't' : 'f'});
+  }
+
+  if(args['vgc-legality'] !== undefined) {
+    filters.push({filter: 'vgc-legality', query: args['vgc-legality']});
   }
 
   if(filters.length === 0) {

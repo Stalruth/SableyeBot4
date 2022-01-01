@@ -1,12 +1,8 @@
 'use strict';
-console.time('loadFilters');
 
-const Data = require('@pkmn/data');console.timeLog('loadFilters');
-const toArray = require('dexdata-toarray'); console.timeLog('loadFilters');
-const genDb = require('gen-db'); console.timeLog('loadFilters');
-const damageTaken = require('typecheck'); console.timeLog('loadFilters');
-
-console.timeEnd('loadFilters');
+const Data = require('@pkmn/data');
+const genDb = require('gen-db');
+const damageTaken = require('typecheck');
 
 const genData = genDb.data;
 
@@ -77,7 +73,6 @@ function statFilterFactory(stat) {
     }
     if(!isNaN(Number(query))) {
       return {
-        id: stat,
         description: `Has ${statData[stat].article} ${statData[stat].fullName} ${statData[stat].suffix}of ${Number(query)}`,
         predicate: (pokemon) => {
           return getStat(pokemon, stat) === Number(query);
@@ -88,7 +83,6 @@ function statFilterFactory(stat) {
       const range = query.split('-').map(e=>Number(e));
       if(range.length === 2 && !range.some(e=>isNaN(e)) && range[0] < range[1]) {
         return {
-          id: stat,
           description: `Has ${statData[stat].article} ${statData[stat].fullName} ${statData[stat].suffix}between ${range[0]} and ${range[1]}`,
           predicate: (pokemon) => {
             return getStat(pokemon, stat) >= range[0] && getStat(pokemon, stat) <= range[1];
@@ -101,7 +95,6 @@ function statFilterFactory(stat) {
       const operator = query[0];
       if(operator === '>') {
         return {
-          id: stat,
           description: `Has ${statData[stat].article} ${statData[stat].fullName} ${statData[stat].suffix}greater than ${compValue}`,
           predicate: (pokemon) => {
             return getStat(pokemon, stat) > compValue;
@@ -110,7 +103,6 @@ function statFilterFactory(stat) {
       }
       if(operator === '<') {
         return {
-          id: stat,
           description: `Has ${statData[stat].article} ${statData[stat].fullName} ${statData[stat].suffix}lower than ${compValue}`,
           predicate: (pokemon) => {
             return getStat(pokemon, stat) < compValue;
@@ -131,7 +123,6 @@ const filterFactory = {
     }
 
     return {
-      id: 'ability',
       description: `Has the ability ${ability['name']}`,
       predicate: (pokemon) => {
         return ['0','1','H'].some(slot=>pokemon['abilities'][slot] === ability['name'])
@@ -146,7 +137,6 @@ const filterFactory = {
 
     if(typeId.startsWith('!')) {
       return {
-        id: 'type',
         description: `Is not ${type['name']}-type`,
         predicate: (pokemon) => {
           return !(pokemon['types'].some(el=>el===type['name']));
@@ -154,7 +144,6 @@ const filterFactory = {
       };
     } else {
       return {
-        id: 'type',
         description: `Is ${type['name']}-type`,
         predicate: (pokemon) => {
           return pokemon['types'].some(el=>el===type['name']);
@@ -179,7 +168,6 @@ const filterFactory = {
 
     return {
       async: true,
-      id: 'move',
       description: `Has the move ${move['name']}`,
       predicate: async (pokemon) => {
         const modId = isVgc ? restrictions[data.num] : dataSet;
@@ -203,7 +191,6 @@ const filterFactory = {
     }
 
     return {
-      id: 'weakness',
       description: `Is weak to ${type.name}`,
       predicate: (pokemon) => {
         return damageTaken(genData[dataSet], pokemon.types, type.id) > 1;
@@ -217,7 +204,6 @@ const filterFactory = {
     }
 
     return {
-      id: 'resist',
       description: `Resists ${type.name}`,
       predicate: (pokemon) => {
         return damageTaken(genData[dataSet], pokemon.types, type.id) < 1;
@@ -226,7 +212,6 @@ const filterFactory = {
   },
   'egg-group': (dataSet, eggGroup, isVgc) => {
     return {
-      id: 'egggroup',
       description: `Is in the ${eggGroup} egg group`,
       predicate: (pokemon) => {
         return pokemon['eggGroups'].some(e=>e===eggGroup);
@@ -236,7 +221,6 @@ const filterFactory = {
   evolves: (dataSet, arg, isVgc) => {
     const value = ['t', true].includes(arg);
     return {
-      id: 'evolves',
       description: `${value ? 'Has' : 'Does not have'} an evolution.`,
       predicate: (pokemon) => {
         return !!pokemon['evos'] === value;
@@ -246,17 +230,39 @@ const filterFactory = {
   'has-evolved': (dataSet, arg, isVgc) => {
     const value = ['t', true].includes(arg);
     return {
-      id: 'hasevolved',
       description: `${value ? 'Has' : 'Does not have'} a pre-evolution.`,
       predicate: (pokemon) => {
         return !!pokemon['prevo'] === value;
       },
     };
-  }
+  },
+  'vgc-legality': (dataSet, arg, isVgc) => {
+    const descriptions = {
+      'vgc': 'legal in most VGC formats',
+      'gsc': 'legal in GS Cup formats',
+      'gsc-restricted': 'restricted to 2 per team in GS Cup formats',
+      'banned': 'always banned in VGC formats',
+    };
+
+    return {
+      description: `Is ${descriptions[arg]}`,
+      predicate: (pokemon) => {
+        if(pokemon.tags[0] === 'Restricted Legendary') {
+          return arg === 'gsc' || arg === 'gsc-restricted';
+        }
+        if(pokemon.tags[0] === 'Mythical') {
+          return arg === 'banned';
+        }
+        else {
+          return arg === 'vgc' || arg === 'gsc';
+        }
+      },
+    }
+  },
 };
 
 async function applyFilters(genName, filters, threshold) {
-  return (await Promise.all(toArray(genData[genName].species).map(async (candidate) => {
+  return (await Promise.all(Array.from(genData[genName].species).map(async (candidate) => {
     let score = 0;
 
     score = (await Promise.all(filters.map(async (filter)=> {
