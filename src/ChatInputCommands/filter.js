@@ -5,6 +5,22 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const getargs = require('discord-getarg');
 const gens = require('gen-db');
 
+function paginate(array, limit) {
+  const results = [''];
+  array.forEach((el) => {
+    const newItem = results[results.length - 1] === '' ? el : ', ' + el;
+    if(results[results.length - 1].length + newItem.length > limit) {
+      if(el.length > limit) {
+        throw `Item ${el} greater than limit ${limit}`;
+      }
+      results.push(el);
+      return;
+    }
+    results[results.length  -1] += newItem;
+  });
+  return results;
+}
+
 const command = {
   description: 'Get all Pokémon fitting the given conditions.',
   options: [
@@ -251,18 +267,20 @@ const command = {
 const process = async function(interaction) {
   const admin = require('init-admin');
   const buildEmbed = require('embed-builder');
+  const { filterFactory, applyFilters } = require('pokemon-filters');
 
   const args = getargs(interaction).params;
 
   const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
-  const filters = [];
+  const filterArgs = [];
+  const gen = args.gen ?? 'gen8natdex';
   const isVgc = args.mode === 'vgc';
 
   if(args.abilities) {
     const abilities = args.abilities.split(',');
     for(const ability of abilities) {
       if(data.abilities.get(ability)?.exists) {
-        filters.push({filter: 'ability', query: ability});
+        filterArgs.push({filter: 'ability', query: ability});
       } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -283,7 +301,7 @@ const process = async function(interaction) {
     const types = args.types.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filters.push({filter: 'type', query: type});
+        filterArgs.push({filter: 'type', query: type});
       } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -304,7 +322,7 @@ const process = async function(interaction) {
     const moves = args.moves.split(',');
     for(const move of moves) {
       if(data.moves.get(move)?.exists) {
-        filters.push({filter: 'move', query: move});
+        filterArgs.push({filter: 'move', query: move});
       } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -324,7 +342,7 @@ const process = async function(interaction) {
   for (const stat of ['hp','atk','def','spa','spd','spe','bst','weight-kg','height-m']) {
     if(args[stat]) {
       if(args[stat].match(/^([<>]?\d+|\d+-\d+)$/)) {
-        filters.push({filter: stat, query: args[stat]});
+        filterArgs.push({filter: stat, query: args[stat]});
       } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -345,7 +363,7 @@ const process = async function(interaction) {
     const types = args.weaknesses.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filters.push({filter: 'weakness', query: type});
+        filterArgs.push({filter: 'weakness', query: type});
       } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -366,7 +384,7 @@ const process = async function(interaction) {
     const types = args.resists.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filters.push({filter: 'resist', query: type});
+        filterArgs.push({filter: 'resist', query: type});
       } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -384,22 +402,22 @@ const process = async function(interaction) {
   }
 
   if(args['egg-group']) {
-    filters.push({filter: 'egg-group', query: args['egg-group']});
+    filterArgs.push({filter: 'egg-group', query: args['egg-group']});
   }
 
   if(args.evolves !== undefined) {
-    filters.push({filter: 'evolves', query: args['evolves'] ? 't' : 'f'});
+    filterArgs.push({filter: 'evolves', query: args['evolves'] ? 't' : 'f'});
   }
 
   if(args['has-evolved'] !== undefined) {
-    filters.push({filter: 'has-evolved', query: args['has-evolved'] ? 't' : 'f'});
+    filterArgs.push({filter: 'has-evolved', query: args['has-evolved'] ? 't' : 'f'});
   }
 
   if(args['vgc-legality'] !== undefined) {
-    filters.push({filter: 'vgc-legality', query: args['vgc-legality']});
+    filterArgs.push({filter: 'vgc-legality', query: args['vgc-legality']});
   }
 
-  if(filters.length === 0) {
+  if(filterArgs.length === 0) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
@@ -413,17 +431,11 @@ const process = async function(interaction) {
     };
   }
 
-  const threshold = args.threshold ?? filters.length;
+  const threshold = args.threshold ?? filterArgs.length;
 
   const sortKey = args['sort'];
 
   const config = {
-    params: {
-      filters,
-      isVgc: isVgc,
-      gen: args.gen ?? 'gen8natdex',
-      threshold,
-    },
     info: {
       token: interaction.token,
       appId: interaction.application_id,
@@ -431,16 +443,98 @@ const process = async function(interaction) {
     }
   };
 
-  if(sortKey) {
-    config.params.sort = sortKey;
+  const filters = filterArgs.map((f) => filterFactory[f.filter](gen, f.query, isVgc));
+
+  const results = (await applyFilters(gen, filters, threshold)).sort((lhs, rhs) => {
+    if (!sortKey) {
+      return 0;
+    }
+    if (sortKey === 'bst') {
+      return rhs.bst - lhs.bst;
+    }
+    return rhs.baseStats[sortKey] - lhs.baseStats[sortKey];
+  });
+
+  const pages = paginate(results.map((el)=>{return el.name}), 1000);
+
+  const fields = [
+    {
+      name: 'Filters',
+      value: filters.map(el=>`- ${el['description']}`).join('\n'),
+    },
+    {
+      name: `Results (${results.length})`,
+      value: pages[0].length ? pages[0] : 'No results found.',
+    },
+    {
+      name: 'Generation',
+      value: gen,
+      inline: true,
+    },
+    {
+      name: 'Transferred Pokémon',
+      value: isVgc ? 'Excluded' : 'Included',
+      inline: true,
+    },
+  ];
+
+  if(threshold !== filters.length) {
+    fields.push({
+      name: 'Threshold',
+      value: `At least ${threshold} filter${threshold === 1 ? '' : 's'} must match`,
+      inline: true,
+    });
   }
 
-  const ref = admin.database().ref(`/filters/${interaction.id}`);
-  ref.set(config);
+  if(sortKey) {
+    const names= {
+      'hp': 'Hit Points',
+      'atk': 'Attack',
+      'def': 'Defence',
+      'spa': 'Special Attack',
+      'spd': 'Special Defence',
+      'spe': 'Speed',
+      'bst': 'Base Stat Total',
+    };
+    fields.push({
+      name: 'Sorted by (High to Low)',
+      value: names[sortKey],
+      inline: true,
+    });
+  }
 
-  return {
-    type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+  const pageList = [...(new Set([
+    1,
+    Math.min(2, pages.length),
+    pages.length
+  ]))];
+
+  const message = {
+    embeds: [buildEmbed({
+      fields: fields,
+    })],
+    components: (pages.length === 1 ? undefined : [
+      {
+        type: 1,
+        components: pageList.map(page => ({
+          type: 2,
+          custom_id: page === 1 ? '-' : `${page}`,
+          disabled: page === 1,
+          style: 2,
+          label: `Page ${page}`,
+        }))
+      }
+    ]),
   };
+  
+  config.pages = pages;
+
+  if(pages.length > 1) {
+    const ref = admin.database().ref(`/filters/${interaction.id}`);
+    await ref.set(config);
+  }
+
+  return message;
 };
 
 function autocomplete(interaction) {
@@ -508,5 +602,5 @@ function autocomplete(interaction) {
   };
 }
 
-module.exports = {command, process, autocomplete};
+module.exports = {command, defer: true, process, autocomplete};
 

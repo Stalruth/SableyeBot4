@@ -17,7 +17,7 @@
     }
   },
   "functions": {
-    "source": "./"
+    "source": "./functions"
   },
   "hosting": {
     "public": "_site",

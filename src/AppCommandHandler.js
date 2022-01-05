@@ -1,21 +1,25 @@
 'use strict';
 
+const { InteractionResponseType } = require('discord-interactions');
 const getargs = require('discord-getarg');
+const fetch = require('node-fetch');
 
 const definitions = [];
 const processes = {};
 const autocompletes = {};
 const modulePaths = {};
+const defers = {};
 
 function initCommand(name) {
   if(processes[name]) {
     // Command already added.
     return;
   }
-  const {command, process, autocomplete} = require(modulePaths[name]);
+  const {command, process, defer, autocomplete} = require(modulePaths[name]);
   command['name'] = name;
   definitions.push(command);
   processes[name] = process;
+  defers[name] = defer;
   if(autocomplete) {
     autocompletes[name] = autocomplete;
   }
@@ -44,16 +48,37 @@ async function onApplicationCommand(req, res) {
     initCommand(command[0]);
 
     console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), JSON.stringify(info.params));
+    console.log(defers);
 
-    let commandProcess = ()=>({});
+    let commandProcess = (async()=>({}))();
+    let defer = false;
     if(command.length === 1) {
-      commandProcess = processes[command[0]];
+      commandProcess = processes[command[0]](req.body);
+      defer = defers[command[0]];
     } else if(command.length === 2) {
-      commandProcess = processes[command[0]][command[1]];
+      commandProcess = processes[command[0]][command[1]](req.body);
+      defer = defers[command[0]]?.[command[1]];
     } else {
-      commandProcess = processes[command[0]][command[1]][command[2]];
+      commandProcess = processes[command[0]][command[1]][command[2]](req.body);
+      defer = defers[command[0]]?.[command[1]]?.[command[2]];
     }
-    res.json(await commandProcess(req.body));
+
+    if(defer) {
+      console.log('deferring');
+      res.json({
+        type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+      });
+      await fetch(`https://discord.com/api/v9/webhooks/${req.body.application_id}/${req.body.token}/messages/@original`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(await commandProcess),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } else {
+      res.json(await commandProcess);
+    }
   } catch (e) {
     console.error(e);
     throw(e)
