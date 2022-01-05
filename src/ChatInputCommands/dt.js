@@ -77,12 +77,14 @@ async function process(interaction) {
         })],
         components: [{
           type: 1,
-          components: results.map(entity => ({
-            type: 2,
-            custom_id: `${entity.effectType}|${entity.id}|${params.gen ?? 'gen8natdex'}|${params.verbose ? 'true' : ''}`,
-            label: entity.effectType,
-            style: 1,
-          })),
+          components: [{
+            type: 3,
+            custom_id: `${results[0].id}|${params.gen ?? 'gen8natdex'}|${params.verbose ? 'true' : ''}`,
+            options: results.map(entity => ({
+              label: entity.effectType,
+              value: entity.effectType,
+            })),
+          }],
         }]
       },
     };
