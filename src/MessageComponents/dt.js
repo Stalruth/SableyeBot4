@@ -18,7 +18,6 @@ async function process(interaction) {
   const result = dt[effectType](effect, gen, verboseArg);
 
   result.components = [];
-  console.log(JSON.stringify(result));
 
   return {
     type: InteractionResponseType.UPDATE_MESSAGE,

@@ -88,11 +88,7 @@ function moveInfo(move, gen, verbose) {
     inline: true
   });
 
-
-  fields.push({
-    name: 'Effect',
-    value: move['desc'] || move['shortDesc']
-  });
+  const description = move['desc'] || move['shortDesc'];
 
   if(move.priority > 0) {
     fields.push({
@@ -115,9 +111,7 @@ function moveInfo(move, gen, verbose) {
     });
   }
 
-  if(Object.keys(move['flags']).length > 0) {
-    fields.push({name: 'Move Flags', value: '\u200b'});
-  }
+  fields.push({name: 'Move Flags', value: '\u200b'});
 
   if(move['flags']['bullet']) {
     fields.push({
@@ -269,6 +263,7 @@ function moveInfo(move, gen, verbose) {
   return {
     embeds: [buildEmbed({
       title,
+      description,
       color: colours.types[toID(move.type)],
       fields
     })],
