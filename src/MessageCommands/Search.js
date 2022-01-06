@@ -63,7 +63,9 @@ const process = function(interaction) {
     const data = getData(genData, id)[0];
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: dt[effectType](data, genData.num, false),
+      data: Object.assign(dt[effectType](data, genData.num, false), {
+        flags: InteractionResponseFlags.EPHEMERAL,
+      }),
     };
   }
 
@@ -89,6 +91,7 @@ const process = function(interaction) {
           options: results.sort(cmp).slice(0,25)
         }]
       }],
+      flags: InteractionResponseFlags.EPHEMERAL,
     },
   };
 };
