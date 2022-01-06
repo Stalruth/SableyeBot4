@@ -3,7 +3,7 @@
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 
 const getargs = require('discord-getarg');
-const { dt } = require('dt-utils');
+const { dt, getData } = require('dt-utils');
 const buildEmbed = require('embed-builder');
 const gens = require('gen-db');
 const { completeAll } = require('pkmn-complete');
@@ -38,13 +38,7 @@ async function process(interaction) {
 
   const data = gens.data[params.gen ? params.gen : 'gen8natdex'];
 
-  const results = [
-    data.abilities.get(params.name),
-    data.items.get(params.name),
-    data.moves.get(params.name),
-    data.natures.get(params.name),
-    data.species.get(params.name),
-  ].filter(e=>!!e);
+  const results = getData(data, params.name);
 
   if(results.length === 0) {
     return {
@@ -63,7 +57,7 @@ async function process(interaction) {
   if(results.length === 1) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: dt[results[0].effectType](args),
+      data: dt[results[0].effectType](results[0], data.num, params.verbose),
     };
   }
 
