@@ -141,80 +141,160 @@ function moveInfo(args) {
     description += `\nIntroduced: Generation ${move['gen']}`;
   }
 
-  if(Object.keys(move['flags']).length > 0) {
-    description += `\n~~`;
-  }
+  let fields = [];
   if(move['flags']['bullet']) {
-    description += `\nArtillery: Does not affect Bulletproof Pokémon.`;
+    fields.push({
+      name: 'Artillery',
+      value: 'Does not affect Bulletproof Pokémon.',
+      inline: true
+    });
   }
-  if(!move['flags']['protect']) {
-    description += `\nProtect: Blocked by Detect, Protect, `;
-    if(move['category'] === 'status') {
-      description += `and Spiky Shield.`;
-    } else {
-      description += `Spiky Shield, and King's Shield.`;
-    }
+  if(move['flags']['protect']) {
+    fields.push({
+      name: 'Protect',
+      value: 'Blocked by Protect-like moves.',
+      inline: true,
+    });
   }
   if(move['flags']['mirror']) {
-    description += `\nMirror: Can be copied by Mirror Move.`;
+    fields.push({
+      name: 'Mirror',
+      value: 'Copied by Mirror Move.',
+      inline: true,
+    });
   }
   if(move['flags']['authentic']) {
-    description += `\nAuthentic: Bypasses a target's substitute.`;
+    fields.push({
+      name: 'Authentic',
+      value: 'Bypasses substitute.',
+      inline: true,
+    });
   }
   if(move['flags']['bite']) {
-    description += `\nBite: Power is boosted by Strong Jaw.`;
+    fields.push({
+      name: 'Bite',
+      value: 'Boosted by Strong Jaw.',
+      inline: true,
+    });
   }
   if(move['flags']['charge']) {
-    description += `\nCharge: This move spends a turn charging before executing.`;
+    fields.push({
+      name: 'Charge',
+      value: 'Has a charging turn.',
+      inline: true,
+    });
   }
   if(move['flags']['contact']) {
-    description += `\nContact: Makes contact.`;
+    fields.push({
+      name: 'Contact',
+      value: 'Makes contact.',
+      inline: true,
+    });
+  } else {
+    fields.push({
+      name: 'Contact',
+      value: 'Does not make contact.',
+      inline: true,
+    });
   }
   if(move['flags']['dance']) {
-    description += `\nDance: Triggers the Dancer Ability.`;
+    fields.push({
+      name: 'Dance',
+      value: 'Triggers Dancer.',
+      inline: true,
+    });
   }
   if(move['flags']['defrost']) {
-    description += `\nDefrost: Thaws the user if completed while frozen`;
+    fields.push({
+      name: 'Defrost',
+      value: 'Thaws the user if frozen.',
+      inline: true,
+    });
   }
   if(move['flags']['distance'] && data.num >= 5 && data.num <= 6) {
-    description += `\nDistance: Can target Pokémon positioned anywhere in a Triple Battle.`;
+    fields.push({
+      name: 'Distance',
+      value: 'Targets any Pokémon in a Triple Battle.',
+      inline: true,
+    });
   }
   if(move['flags']['gravity']) {
-    description += `\nGravity: Cannot be selected or executed under Gravity.`;
+    fields.push({
+      name: 'Gravity',
+      value: 'Cannot be selected under Gravity.',
+      inline: true,
+    });
   }
   if(move['flags']['heal']) {
-    description += `\nHeal: Cannot be selected or executed under Heal Block.`;
+    fields.push({
+      name: 'Heal',
+      value: 'Cannot be selected under Heal Block.',
+      inline: true,
+    });
   }
   if(move['flags']['nonsky'] && data.num === 6) {
-    description += `\nNon-Sky: Cannot be selected or excecuted in a Sky Battle.`;
+    fields.push({
+      name: 'Non-Sky',
+      value: 'Cannot be selected in a Sky Battle.',
+      inline: true,
+    });
   }
   if(move['flags']['powder']) {
-    description += `\nPowder: Does not affect Grass-type Pokémon, Pokémon with the ability Overcoat or the item Safety Goggles`;
+    fields.push({
+      name: 'Powder',
+      value: 'Fails against Grass-types, Overcoat, and Safety Goggles.',
+      inline: true,
+    });
   }
   if(move['flags']['pulse']) {
-    description += `\nPulse: Power is boosted by Mega Launcher`;
+    fields.push({
+      name: 'Pulse',
+      value: 'Boosted by Mega Launcher.',
+      inline: true,
+    });
   }
   if(move['flags']['punch']) {
-    description += `\nPunch: Power is boosted by Iron Fist.`;
+    fields.push({
+      name: 'Punch',
+      value: 'Boosted by Iron Fist.',
+      inline: true,
+    });
   }
   if(move['flags']['recharge']) {
-    description += `\nRecharge: If this move succeeds, the user skips the next turn.`;
+    fields.push({
+      name: 'Recharge',
+      value: 'Has a recharge turn.',
+      inline: true,
+    });
   }
   if(move['flags']['reflectable']) {
-    description += `\nReflectable: Can be reflected by Magic Coat or Magic Bounce`;
+    fields.push({
+      name: 'Reflectable',
+      value: 'Affected by Magic Coat and Magic Bounce.',
+      inline: true,
+    });
   }
   if(move['flags']['snatch']) {
-    description += `\nSnatch: Is affected by Snatch.`;
+    fields.push({
+      name: 'Snatch',
+      value: 'Affected by Snatch.',
+      inline: true,
+    });
   }
   if(move['flags']['sound']) {
-    description += `\nSound: Does not affect Soundproof Pokémon.`;
+    fields.push({
+      name: 'Sound',
+      value: 'Does not affect Soundproof.',
+      inline: true,
+    });
   }
 
   return {
     embeds: [buildEmbed({
       title,
       description,
-      color: colours.types[toID(move.type)]
+      color: colours.types[toID(move.type)],
+      fields
     })],
   };
 }
