@@ -149,10 +149,10 @@ function moveInfo(args) {
       inline: true
     });
   }
-  if(move['flags']['protect']) {
+  if(!move['flags']['protect']) {
     fields.push({
       name: 'Protect',
-      value: 'Blocked by Protect-like moves.',
+      value: 'Bypasses Protect-like moves.',
       inline: true,
     });
   }
