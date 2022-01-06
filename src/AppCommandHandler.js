@@ -48,7 +48,6 @@ async function onApplicationCommand(req, res) {
     initCommand(command[0]);
 
     console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), JSON.stringify(info.params));
-    console.log(defers);
 
     let commandProcess = (async()=>({}))();
     let defer = false;
