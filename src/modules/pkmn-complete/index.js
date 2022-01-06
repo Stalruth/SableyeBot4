@@ -110,6 +110,7 @@ function completeAll(id) {
 }
 
 module.exports = {
+  graphs,
   completeAbility,
   completeMove,
   completeItem,

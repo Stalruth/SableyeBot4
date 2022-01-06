@@ -40,6 +40,8 @@ addCommand('nature', './ChatInputCommands/nature.js');
 addCommand('sprite', './ChatInputCommands/sprite.js');
 addCommand('weakness', './ChatInputCommands/weakness.js');
 
+addCommand('Search', './MessageCommands/Search.js');
+
 async function onApplicationCommand(req, res) {
   const info = getargs(req.body);
   const command = [req.body.data?.name, ...info.subcommand];

@@ -8,8 +8,10 @@ const buildEmbed = require('embed-builder');
 const gens = require('gen-db');
 
 async function process(interaction) {
-  const [ id, gen, verboseArg ] = interaction.data.custom_id.split('|');
-  const effectType = interaction.data.values[0];
+  const [ idOne, gen, verboseArg ] = interaction.data.custom_id.split('|');
+  const [ effectType, idTwo ] = interaction.data.values[0].split('|');
+  
+  const id = idTwo ?? idOne;
 
   const verbose = !!verboseArg;
 
