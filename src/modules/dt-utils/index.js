@@ -102,46 +102,116 @@ function moveInfo(args) {
   }
 
   const title = `${move['name']}`;
-  let description = `Type: ${move['type']}; Category: [${move['category']}]`;
-  description += `\nPower: ${move['basePower']} `;
+  const fields = [];
+  
+  fields.push({
+    name: 'Type',
+    value: move.type,
+    inline: true
+  });
+  fields.push({
+    name: 'Power',
+    value: move.category,
+    inline: true
+  });
+  fields.push({
+    name: 'Power',
+    value: move.basePower,
+    inline: true
+  });
 
   if(data.num === 7) {
     if(move['isZ']) {
-      description += `(Z: ${data.items.get(move['isZ'])['name']})`;
+      fields.push({
+        name: 'Z Crystal',
+        value: data.items.get(move['isZ'])['name'],
+        inline: true
+      });
     } else if (move['zMove']['effect']) {
-      description += `(Z: ${move.zMove.effect})`;
+      fields.push({
+        name: 'Z Move',
+        value: move.zMove.effect,
+        inline: true
+      });
     } else if (move['zMove']['boost']) {
-      const stats = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
       const boosts = [];
-      stats.forEach((el) => {
+      ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach((el) => {
         if(move['zMove']['boost'][el]) {
           boosts.push(el.toUpperCase() + '+' + move['zMove']['boost'][el]);
         }
       });
-      description += `(Z: ${boosts.join(', ')})`;
+      fields.push({
+        name: 'Z Move',
+        value: boosts.join(', '),
+        inline: true
+      });
     } else {
-      description += `(Z: ${move['zMove']['basePower']})`;
+      fields.push({
+        name: 'Z Move',
+        value: move['zMove']['basePower'],
+        inline: true
+      });
     }
   }
 
   if(data.num === 8) {
     if(move.maxMove && move.maxMove.basePower) {
-      description += `(Max Power: ${move['maxMove']['basePower']})`;
+      fields.push({
+        name: 'Max Power',
+        value: move['maxMove']['basePower'],
+        inline: true
+      });
     } else {
-      description += `(Max Guard)`;
+      fields.push({
+        name: 'Max Power',
+        value: '(Max Guard)',
+        inline: true
+      });
     }
   }
 
-  description += `; Accuracy: ${move['accuracy']}; PP: ${move['pp']} (max ${Math.floor(move['pp']*1.6)})`;
-  description += `\n${(move['desc'] || move['shortDesc'])}`;
-  description += `\nPriority: ${(move['priority'] > 0) ? '+' : ''}${move['priority']}`;
+  fields.push({
+    name: 'Accuracy',
+    value: move['accuracy'],
+    inline: true
+  });
+  fields.push({
+    name: 'PP (max)',
+    value: `${move['pp']} (${move['pp'] * 1.6})`,
+    inline: true
+  });
 
-  if(params.verbose) {
-    description += `\nTarget: ${move['target']}`;
-    description += `\nIntroduced: Generation ${move['gen']}`;
+
+  fields.push({
+    name: 'Effect',
+    value: move['desc'] || move['shortDesc']
+  });
+
+  if(move.priority > 0) {
+    fields.push({
+      name: 'Priority',
+      value: move['priority'],
+      inline: true
+    });
   }
 
-  let fields = [];
+  if(params.verbose) {
+    fields.push({
+      name: 'Targets',
+      value: move['target'],
+      inline: true
+    });
+    fields.push({
+      name: 'Introduced',
+      value: move['gen'],
+      inline: true
+    });
+  }
+
+  if(Object.keys(move['flags']).length > 0) {
+    fields.push({name: 'Move Flags', value: '\u200b'});
+  }
+
   if(move['flags']['bullet']) {
     fields.push({
       name: 'Artillery',
@@ -292,7 +362,6 @@ function moveInfo(args) {
   return {
     embeds: [buildEmbed({
       title,
-      description,
       color: colours.types[toID(move.type)],
       fields
     })],
