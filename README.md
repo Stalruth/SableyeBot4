@@ -9,6 +9,7 @@ of how to be a functioning member of society. If it starts being especially bad,
 Proceed with caution.
 
 ## Installation
+
 SableyeBot v4 requires NodeJS v16.
 
 Follow these steps to run your own local copy:
@@ -17,27 +18,19 @@ Follow these steps to run your own local copy:
 2. Rename `example.env` to `.env` and fill out the fields needed.
 3. Set up a local Firebase environment (`npm i -g firebase-tools`)
 4. Run `npm i` to install dependencies.
-5. Set environment variables, check `example.env` for guidance.
-6. Set up the `.runtimeconfig.json` based on `example.runtimeconfig.json`.
-7. Run `npm run update-commands` to update command definitions with Discord.
-8. Run `firebase:emulators start` to run the bot from the local machine.
+5. Enter the `functions` directory and run `npm i` to install its dependencies.
+6. Run `npm run update-commands` to update command definitions with Discord.
+7. Run `npm run firebase-debug` to run the Database Emulator and the cleanup
+   function on your machine
+8. Run `npm run debug` to run the application proper.
     - You should use `ngrok` or simlar to get this working in a test
       environment that isn't directly exposed to the internet.
-8. Run `firebase deploy --only functions` to deploy.
-
-And not nearly as soul crushing as SabelyeBot 3!
-
-## Some further detail
-
-Of the dependencies only `discord-interactions-js` and `firebase` are actually
-used for the bot's backbone.  All the other packages are used in providing
-specific commands.
-
-`dotenv` and `node-fetch` are used in the `update-commands` script.
+9. For production use, run `firebase deploy` to deploy to a Firebase project,
+   and run `src/index.js` on a server.
 
 ## Issues
 
-Beta software has bugs.  Fact of life.  If you find a bug, please
+Pre-release software has bugs.  Fact of life.  If you find a bug, please
 include the following in your [complaint][hatemail]:
 
 - A description of the bug (What should have happened? What did happen?)
