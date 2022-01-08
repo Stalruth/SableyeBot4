@@ -14,7 +14,7 @@ const command = {
 
 const process = function(interaction) {
   const contents = [];
-  const results = [];
+  const results = new Set();
   const genData = gens.data['gen8natdex'];
 
   for(const message in interaction.data.resolved.messages) {
@@ -32,19 +32,13 @@ const process = function(interaction) {
       const effects = new Set();
       graphs[effectCollection].forEach((effect) => {
         if(contentId.search(effect) != -1) {
-          effects.add(`${effect}`);
+          results.add(genData[effectCollection].get(effect));
         }
       });
-      results.push(...[...effects].map(e => {
-        return {
-          label: `${genData[effectCollection].get(e).name} (${effectTypes[effectCollection]})`,
-          value: `${effectTypes[effectCollection]}|${e}`,
-        };
-      }));
     });
   }
-  
-  if(results.length === 0) {
+
+  if(results.size === 0) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
@@ -57,13 +51,12 @@ const process = function(interaction) {
       },
     };
   }
-  
-  if(results.length === 1) {
-    const [ effectType, id ] = results[0].value.split('|');
-    const data = getData(genData, id)[0];
+
+  if(results.size === 1) {
+    const data = [...results][0];
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: Object.assign(dt[effectType](data, genData.num, false), {
+      data: Object.assign(dt[data.effectType](data, genData.num, false), {
         flags: InteractionResponseFlags.EPHEMERAL,
       }),
     };
@@ -75,7 +68,7 @@ const process = function(interaction) {
     }
     return rhs.label === lhs.label ? 0 : 1;
   };
-  
+
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
@@ -88,7 +81,10 @@ const process = function(interaction) {
         components: [{
           type: 3,
           custom_id: '|gen8natdex|',
-          options: results.sort(cmp).slice(0,25)
+          options: [...results].map(e=>({
+            label: `${e.name} (${e.effectType})`,
+            value: `${e.effectType}|${e.id}`,
+          })).sort(cmp).slice(0,25)
         }]
       }],
       flags: InteractionResponseFlags.EPHEMERAL,

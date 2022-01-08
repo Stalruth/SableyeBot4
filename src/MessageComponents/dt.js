@@ -10,7 +10,7 @@ const gens = require('gen-db');
 async function process(interaction) {
   const [ idOne, gen, verboseArg ] = interaction.data.custom_id.split('|');
   const [ effectType, idTwo ] = interaction.data.values[0].split('|');
-  
+
   const id = idTwo ?? idOne;
 
   const verbose = !!verboseArg;

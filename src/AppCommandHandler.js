@@ -65,7 +65,6 @@ async function onApplicationCommand(req, res) {
     }
 
     if(defer) {
-      console.log('deferring');
       res.json({
         type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
       });

@@ -272,7 +272,7 @@ const process = async function(interaction) {
   const args = getargs(interaction).params;
 
   const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
-  const filterArgs = [];
+  const filters = [];
   const gen = args.gen ?? 'gen8natdex';
   const isVgc = args.mode === 'vgc';
 
@@ -280,18 +280,15 @@ const process = async function(interaction) {
     const abilities = args.abilities.split(',');
     for(const ability of abilities) {
       if(data.abilities.get(ability)?.exists) {
-        filterArgs.push({filter: 'ability', query: ability});
+        filters.push(filterFactory['ability'](gen, ability, isVgc));
       } else {
         return {
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            embeds: [buildEmbed({
-              title: "Error",
-              description: `The ability ${ability} could not be found in the given generation.`,
-              color: 0xCC0000,
-            })],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+          embeds: [buildEmbed({
+            title: "Error",
+            description: `The ability ${ability} could not be found in the given generation.`,
+            color: 0xCC0000,
+          })],
+          flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
     }
@@ -301,18 +298,15 @@ const process = async function(interaction) {
     const types = args.types.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filterArgs.push({filter: 'type', query: type});
+        filters.push(filterFactory['type'](gen, type, isVgc));
       } else {
         return {
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            embeds: [buildEmbed({
-              title: "Error",
-              description: `The type ${type} could not be found in the given generation.`,
-              color: 0xCC0000,
-            })],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+          embeds: [buildEmbed({
+            title: "Error",
+            description: `The type ${type} could not be found in the given generation.`,
+            color: 0xCC0000,
+          })],
+          flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
     }
@@ -322,18 +316,15 @@ const process = async function(interaction) {
     const moves = args.moves.split(',');
     for(const move of moves) {
       if(data.moves.get(move)?.exists) {
-        filterArgs.push({filter: 'move', query: move});
+        filters.push(filterFactory['move'](gen, move, isVgc));
       } else {
         return {
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            embeds: [buildEmbed({
-              title: "Error",
-              description: `The move ${move} could not be found in the given generation.`,
-              color: 0xCC0000,
-            })],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+          embeds: [buildEmbed({
+            title: "Error",
+            description: `The move ${move} could not be found in the given generation.`,
+            color: 0xCC0000,
+          })],
+          flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
     }
@@ -341,19 +332,16 @@ const process = async function(interaction) {
 
   for (const stat of ['hp','atk','def','spa','spd','spe','bst','weight-kg','height-m']) {
     if(args[stat]) {
-      if(args[stat].match(/^([<>]?\d+|\d+-\d+)$/)) {
-        filterArgs.push({filter: stat, query: args[stat]});
+      if(args[stat].match(/^([<>]?\d+|\d+-\d+)$/) !== null) {
+        filters.push(filterFactory[stat](gen, args[stat], isVgc));
       } else {
         return {
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            embeds: [buildEmbed({
-              title: "Error",
-              description: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
-              color: 0xCC0000,
-            })],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+          embeds: [buildEmbed({
+            title: "Error",
+            description: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
+            color: 0xCC0000,
+          })],
+          flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
     }
@@ -363,18 +351,15 @@ const process = async function(interaction) {
     const types = args.weaknesses.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filterArgs.push({filter: 'weakness', query: type});
+        filters.push(filterFactory['weakness'](gen, type, isVgc));
       } else {
         return {
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            embeds: [buildEmbed({
-              title: "Error",
-              description: `The type ${type} could not be found in the given generation.`,
-              color: 0xCC0000,
-            })],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+          embeds: [buildEmbed({
+            title: "Error",
+            description: `The type ${type} could not be found in the given generation.`,
+            color: 0xCC0000,
+          })],
+          flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
     }
@@ -384,54 +369,48 @@ const process = async function(interaction) {
     const types = args.resists.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filterArgs.push({filter: 'resist', query: type});
+        filters.push(filterFactory['resist'](gen, type, isVgc));
       } else {
         return {
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            embeds: [buildEmbed({
-              title: "Error",
-              description: `The type ${type} could not be found in the given generation.`,
-              color: 0xCC0000,
-            })],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+          embeds: [buildEmbed({
+            title: "Error",
+            description: `The type ${type} could not be found in the given generation.`,
+            color: 0xCC0000,
+          })],
+          flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
     }
   }
 
   if(args['egg-group']) {
-    filterArgs.push({filter: 'egg-group', query: args['egg-group']});
+    filters.push(filterFactory['egg-group'](gen, args['egg-group'], isVgc));
   }
 
   if(args.evolves !== undefined) {
-    filterArgs.push({filter: 'evolves', query: args['evolves'] ? 't' : 'f'});
+    filters.push(filterFactory['evolves'](gen, args['evolves'], isVgc));
   }
 
   if(args['has-evolved'] !== undefined) {
-    filterArgs.push({filter: 'has-evolved', query: args['has-evolved'] ? 't' : 'f'});
+    filters.push(filterFactory['has-evolved'](gen, args['has-evolved'], isVgc));
   }
 
   if(args['vgc-legality'] !== undefined) {
-    filterArgs.push({filter: 'vgc-legality', query: args['vgc-legality']});
+    filters.push(filterFactory['vgc-legality'](gen, args['vgc-legality'], isVgc));
   }
 
-  if(filterArgs.length === 0) {
+  if(filters.length === 0) {
     return {
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: "You haven't added any filters.",
-          color: 0xCC0000,
-        })],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+      embeds: [buildEmbed({
+        title: "Error",
+        description: "You haven't added any filters.",
+        color: 0xCC0000,
+      })],
+      flags: InteractionResponseFlags.EPHEMERAL,
     };
   }
 
-  const threshold = args.threshold ?? filterArgs.length;
+  const threshold = args.threshold ?? filters.length;
 
   const sortKey = args['sort'];
 
@@ -442,8 +421,6 @@ const process = async function(interaction) {
       timestamp: interaction.id / 4194304 + 1420070400000,
     }
   };
-
-  const filters = filterArgs.map((f) => filterFactory[f.filter](gen, f.query, isVgc));
 
   const results = (await applyFilters(gen, filters, threshold)).sort((lhs, rhs) => {
     if (!sortKey) {
@@ -526,7 +503,7 @@ const process = async function(interaction) {
       }
     ]),
   };
-  
+
   config.pages = pages;
 
   if(pages.length > 1) {
