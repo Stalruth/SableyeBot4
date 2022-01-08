@@ -210,11 +210,19 @@ const filterFactory = {
       },
     };
   },
-  'egg-group': (dataSet, eggGroup, isVgc) => {
+  'breeds-with': (dataSet, pokemonId, isVgc) => {
+    const pokemon = genData[dataSet].species.get(Data.toID(pokemonId));
+    if(!pokemon) {
+      throw pokemonId;
+    }
+
+    const name = pokemon.name;
+    const eggGroups = new Set(pokemon.eggGroups);
+
     return {
-      description: `Is in the ${eggGroup} egg group`,
+      description: `Can breed with ${name}.`,
       predicate: (pokemon) => {
-        return pokemon['eggGroups'].some(e=>e===eggGroup);
+        return pokemon['eggGroups'].some(e=>eggGroups.has(e));
       },
     };
   },

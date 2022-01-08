@@ -70,7 +70,7 @@ const completeNature = complete('natures');
 const completePokemon = complete('species');
 
 function completeFilterType(id) {
-  const negate = id.startsWith('!') ? '!' : '';
+  const negate = id.trimStart().startsWith('!') ? '!' : '';
   return graphs.types
       .filter(e=>e.startsWith(Data.toID(id)))
       .map((e,i) => {

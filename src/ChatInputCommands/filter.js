@@ -4,6 +4,7 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 
 const getargs = require('discord-getarg');
 const gens = require('gen-db');
+const { completeAbility, completeFilterType, completeMove, completeType, completePokemon } = require('pkmn-complete');
 
 function paginate(array, limit) {
   const results = [''];
@@ -27,75 +28,14 @@ const command = {
     {
       name: 'abilities',
       type: 3,
-      description: 'Comma delimited list of Abilities the Pokémon must have.',
+      description: 'Can have the Abilities listed. (Comma-delimited list)',
       autocomplete: true,
     },
     {
-      name: 'egg-group',
+      name: 'breeds-with',
       type: 3,
-      description: 'Egg Group the Pokémon must be in.',
-      choices: [
-        {
-          name: 'Amorphous',
-          value: 'Amorphous',
-        },
-        {
-          name: 'Bug',
-          value: 'Bug',
-        },
-        {
-          name: 'Dragon',
-          value: 'Dragon',
-        },
-        {
-          name: 'Ditto',
-          value: 'Ditto',
-        },
-        {
-          name: 'Fairy',
-          value: 'Fairy',
-        },
-        {
-          name: 'Field',
-          value: 'Field',
-        },
-        {
-          name: 'Flying',
-          value: 'Flying',
-        },
-        {
-          name: 'Grass',
-          value: 'Grass',
-        },
-        {
-          name: 'Human-Like',
-          value: 'Human-Like',
-        },
-        {
-          name: 'Mineral',
-          value: 'Mineral',
-        },
-        {
-          name: 'Monster',
-          value: 'Monster',
-        },
-        {
-          name: 'Undiscovered',
-          value: 'Undiscovered',
-        },
-        {
-          name: 'Water 1',
-          value: 'Water 1',
-        },
-        {
-          name: 'Water 2',
-          value: 'Water 2',
-        },
-        {
-          name: 'Water 3',
-          value: 'Water 3',
-        },
-      ],
+      description: 'Can breed with the given Pokémon.',
+      autocomplete: true,
     },
     {
       name: 'evolves',
@@ -110,25 +50,25 @@ const command = {
     {
       name: 'moves',
       type: 3,
-      description: 'Comma delimited list of moves.',
+      description: 'Can learn the moves listed (except through Sketch). (Comma-delimited list)',
       autocomplete: true,
     },
     {
       name: 'resists',
       type: 3,
-      description: "Comma delimited list of Resistances.",
+      description: 'Takes less than 1x damage from the types listed (disregards Abilities). (Comma-delimited list)',
       autocomplete: true,
     },
     {
       name: 'types',
       type: 3,
-      description: 'Comma delimited list of types. Prefix a type with `!` to negate.',
+      description: 'Has all of the types listed. (Comma-delimited list, prefix a type with `!` to negate)',
       autocomplete: true,
     },
     {
       name: 'vgc-legality',
       type: 3,
-      description: "Legendary status of a Pokémon",
+      description: "Is legal in certain VGC formats.",
       choices: [
         {
           name: 'VGC Legal',
@@ -151,79 +91,69 @@ const command = {
     {
       name: 'weaknesses',
       type: 3,
-      description: "Comma delimited list of Weaknesses.",
+      description: 'Takes more than 1x damage from the types listed (disregards Abilities). (Comma-delimited list)',
       autocomplete: true,
     },
     {
       name: 'weight-kg',
       type: 3,
-      description: "Weight in kg, supports `<STAT`, `>STAT`, `STAT-STAT`",
+      description: "Weight in kg. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
     },
     {
       name: 'height-m',
       type: 3,
-      description: "Height in metres, supports `<STAT`, `>STAT`, `STAT-STAT`",
+      description: "Height in metres. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
     },
     {
       name: 'hp',
       type: 3,
-      description: "Base HP, supports `<STAT`, `>STAT`, `STAT-STAT`",
+      description: "Base HP. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
     },
     {
       name: 'atk',
       type: 3,
-      description: "Base Attack, supports `<STAT`, `>STAT`, `STAT-STAT`",
+      description: "Base Attack. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
     },
     {
       name: 'def',
       type: 3,
-      description: "Base Defence, supports `<STAT`, `>STAT`, `STAT-STAT`",
+      description: "Base Defence. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
     },
     {
       name: 'spa',
       type: 3,
-      description: "Base Special Attack, supports `<STAT`, `>STAT`, `STAT-STAT`",
+      description: "Base Special Attack. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
     },
     {
       name: 'spd',
       type: 3,
-      description: "Base Special Defence, supports `<STAT`, `>STAT`, `STAT-STAT`",
+      description: "Base Special Defence. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
     },
     {
       name: 'spe',
       type: 3,
-      description: "Base Speed, supports `<STAT`, `>STAT`, `STAT-STAT`",
+      description: "Base Speed. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
     },
     {
       name: 'bst',
       type: 3,
-      description: "Base Stat Total, supports `<STAT`, `>STAT`, `STAT-STAT`",
+      description: "Base Stat Total. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
     },
     {
-      name: 'gen',
+      name: 'game',
       type: 3,
-      description: 'The Generation used in calculation',
+      description: 'The Games the results apply to.',
       choices: gens.names,
     },
     {
-      name: 'mode',
-      type: 3,
-      description: 'Limit search to current generation.',
-      choices: [
-        {
-          name: 'VGC',
-          value: 'vgc',
-        },
-        {
-          name: 'Default',
-          value: 'default',
-        },
-      ],
+      name: 'transfer-moves',
+      type: 5,
+      description: 'Include moves learned in older gens. (Enabled by default, exclude for VGC rules)',
     },
     {
       name: 'sort',
       type: 3,
-      description: 'Sort results by the given key (High to Low)',
+      description: 'Sort results by the given stat (High to Low)',
       choices: [
         {
           name: 'HP',
@@ -258,7 +188,7 @@ const command = {
     {
       name: 'threshold',
       type: 4,
-      description: 'Amount of filters that must match. Comma-separated fields count one for each item.',
+      description: 'Amount of filters that must match. Comma-separated fields count once for each item.',
       min_value: 1,
     },
   ],
@@ -274,7 +204,7 @@ const process = async function(interaction) {
   const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
   const filters = [];
   const gen = args.gen ?? 'gen8natdex';
-  const isVgc = args.mode === 'vgc';
+  const isVgc = !args['transfer-moves'];
 
   if(args.abilities) {
     const abilities = args.abilities.split(',');
@@ -383,8 +313,19 @@ const process = async function(interaction) {
     }
   }
 
-  if(args['egg-group']) {
-    filters.push(filterFactory['egg-group'](gen, args['egg-group'], isVgc));
+  if(args['breeds-with']) {
+    if(data.species.get(args['breeds-with'])?.exists) {
+      filters.push(filterFactory['breeds-with'](gen, args['breeds-with'], isVgc));
+    } else {
+      return {
+        embeds: [buildEmbed({
+          title: "Error",
+          description: `The Pokémon ${args['breeds-with']} could not be found in the given generation.`,
+          color: 0xCC0000,
+        })],
+        flags: InteractionResponseFlags.EPHEMERAL,
+      };
+    }
   }
 
   if(args.evolves !== undefined) {
@@ -514,67 +455,55 @@ const process = async function(interaction) {
   return message;
 };
 
-function autocomplete(interaction) {
-  const { completeAbility, completeFilterType, completeMove, completeType } = require('pkmn-complete');
+function getMultiComplete(resolver, completer, canNegate) {
+  return function multiCompleter(id) {
+    const terms = id.split(',');
+    const currentTerm = terms.pop();
+    const resolved = terms.map(e=>{
+      const effect = resolver.get(e);
+      if (!effect) {
+        return null;
+      }
+      const negated = (e.trimStart().startsWith('!') && canNegate) ? '!' : '';
+      return {
+        name: `${negated}${effect.name}`,
+        value: `${negated}${effect.id}`,
+      };
+    });
 
+    if (resolved.some(e => !e)) {
+      return [];
+    }
+
+    const prefix = resolved.reduce((acc, cur) => ({
+      name: `${acc.name}${cur.name}, `,
+      value: `${acc.value}${cur.value},`,
+    }),{name: '', value: ''});
+
+    return completer(currentTerm).map(choice => ({
+      name: `${prefix.name}${choice.name}`,
+      value: `${prefix.value}${choice.value}`
+    }))
+  };
+}
+
+function autocomplete(interaction) {
   const {params, focused} = getargs(interaction);
 
   const autoArg = params[focused];
   const completers = {
-    'abilities': completeAbility,
-    'types': completeFilterType,
-    'moves': completeMove,
-    'weaknesses': completeType,
-    'resists': completeType,
+    'abilities': getMultiComplete(gens.data['gen8natdex'].abilities, completeAbility, false),
+    'types': getMultiComplete(gens.data['gen8natdex'].types, completeFilterType, true),
+    'moves': getMultiComplete(gens.data['gen8natdex'].moves, completeMove, false),
+    'weaknesses': getMultiComplete(gens.data['gen8natdex'].types, completeType, false),
+    'resists': getMultiComplete(gens.data['gen8natdex'].types, completeType, false),
+    'breeds-with': completePokemon,
   };
-  const searches = {
-    'abilities': 'abilities',
-    'types': 'types',
-    'moves': 'moves',
-    'weaknesses': 'types',
-    'resists': 'types',
-  };
-
-  const items = autoArg.split(',');
-  const current = items.pop();
-  const resolved = items.map((e) => {
-    const item = gens.data['gen8natdex'][searches[focused]].get(e);
-    if(!item) {
-      return null;
-    }
-    const negated = e.startsWith('!') ? '!' : '';
-    return {
-      id: `${negated}${item.id}`,
-      name: `${negated}${item.name}`,
-    };
-  });
-
-  if(resolved.some(e=>!e)) {
-    return {
-      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-      data: {
-        choices: [],
-      },
-    };
-  }
-
-  const prefix = resolved.reduce((acc,cur) => {
-    return {
-      name: `${acc.name}${cur.name}, `,
-      value: `${acc.value}${cur.id},`,
-    };
-  }, {name:'',value:''});
 
   return {
     type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {
-      choices: completers[focused](current)
-      .map(e=>{
-        return {
-          name: `${prefix.name}${e.name}`,
-          value: `${prefix.value}${e.value}`,
-        };
-      }),
+      choices: completers[focused](autoArg)
     },
   };
 }
