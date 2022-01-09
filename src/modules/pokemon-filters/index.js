@@ -220,10 +220,25 @@ const filterFactory = {
     const eggGroups = new Set(pokemon.eggGroups);
 
     return {
-      description: `Can breed with ${name}.`,
-      predicate: (pokemon) => {
-        return pokemon['eggGroups'].some(e=>eggGroups.has(e));
-      },
+      description: `Can be bred with ${name} (${pokemon.eggGroups.join(', ')}).`,
+      predicate: (candidate) => {
+        if (candidate['eggGroups'].indexOf('Undiscovered') > -1 ||
+          eggGroups.has('Undiscovered')) {
+          return false;
+        }
+
+        if (candidate['eggGroups'].indexOf('Ditto') > -1 ||
+          eggGroups.has('Ditto')) {
+          return true;
+        }
+
+        if ((candidate.genderRatio.M === 0 && candidate.genderRatio.F === 0) ||
+          (pokemon.genderRatio.M === 0 && pokemon.genderRatio.F === 0)) {
+          return false;
+        }
+
+        return candidate['eggGroups'].some(e=>eggGroups.has(e));
+      };,
     };
   },
   evolves: (dataSet, arg, isVgc) => {
