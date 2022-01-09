@@ -238,7 +238,7 @@ const filterFactory = {
         }
 
         return candidate['eggGroups'].some(e=>eggGroups.has(e));
-      };,
+      },
     };
   },
   evolves: (dataSet, arg, isVgc) => {
