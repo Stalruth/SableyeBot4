@@ -54,6 +54,10 @@ See the [more technical README][README].
 SableyeBot is licensed under the [MIT License][LICENSE], and has [publicly
 available source code][repo].
 
+## Terms of Use
+
+See [Sableye Bot's Terms of Use][TERMS].
+
 ## Privacy
 
 See [Sableye Bot's Privacy Policy][PRIVACY].
@@ -71,6 +75,7 @@ This bot doesn't collect much though.
 [hatemail]: https://github.com/Stalruth/SableyeBot4/issues/new
 [invite]: https://discord.com/api/oauth2/authorize?client_id=211522070620667905&permissions=0&scope=applications.commands%20bot
 [LICENSE]: LICENSE/
+[TERMS]: TERMS/
 [PRIVACY]: PRIVACY/
 [README]: README/
 [repo]: https://github.com/Stalruth/SableyeBot4/
