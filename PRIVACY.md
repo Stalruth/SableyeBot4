@@ -1,13 +1,13 @@
-Accurate as of 12:00 06-Jan-2021 Australian Eastern Daylight Time (UTC+11)
+Accurate as of 21:00 12-Jan-2021 Australian Eastern Daylight Time (UTC+11)
 
 # Sableye Bot Privacy Policy
 
 This Privacy Policy is written to expand on the data collected by SableyeBot
 versions 4 and above (the "Application"), which of this data is processed or
-retained and the basis for such processing or collection.
+retained and the basis for such processing or retention.
 
-If such collection or processing is not desired then do not engage with the
-Application in the ways detailed below.
+If such collection, processing, or retention is not desired then do not engage
+with the Application in the ways detailed below.
 
 ## Methods of Data Collection
 
@@ -26,6 +26,10 @@ Interaction is received:
   - Guild ID
 
     Uniquely identifies the "Server" the Interaction was sent in
+
+  - Guild Locale
+
+    Language set for the "Server".
 
   - Channel ID
 
@@ -57,7 +61,7 @@ Interaction is received:
 
       - Public Flags
 
-        Any Public Flags applied to the account, such as Dsicord HypeSquad
+        Any Public Flags applied to the account, such as Discord HypeSquad
         status.
 
       - Guild Nickname
@@ -75,6 +79,10 @@ Interaction is received:
       - Whether the user has passed Membership Screening
 
       - The permissions the user has in the server.
+
+      - The User Locale
+
+        The Language the user has set in their Discord Client
 
 ## What the Application processes
 
