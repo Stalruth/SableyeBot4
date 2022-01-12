@@ -152,8 +152,6 @@ const filterFactory = {
     }
   },
   move: (dataSet, moveId, isVgc) => {
-    const fastMoves = require('fast-moves');
-
     const data = genData[dataSet];
     const move = data.moves.get(Data.toID(moveId));  
     if(!move) {
@@ -170,8 +168,8 @@ const filterFactory = {
       async: true,
       description: `Has the move ${move['name']}`,
       predicate: async (pokemon) => {
-        const modId = isVgc ? restrictions[data.num] : dataSet;
-        return fastMoves[modId][move.id][pokemon.id];
+        const modId = isVgc ? restrictions[data.num] : undefined;
+        return data.learnsets.canLearn(pokemon.id, move.id, modId)
       },
     };
   },

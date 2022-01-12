@@ -2,7 +2,7 @@
   "name": "sableyebot4",
   "version": "4.0.0-sigma",
   "description": "Competitive Pokemon Discord Bot",
-  "main": "src/index.js",
+  "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-docs:md": "eleventy",
@@ -10,37 +10,16 @@
     "serve-docs:md": "eleventy --serve",
     "build-docs": "npm-run-all build-docs:static build-docs:md",
     "serve-docs": "npm-run-all build-docs:static serve-docs:md",
-    "start": "node src/index.js",
-    "debug": "node -r dotenv/config src/index.js",
     "firebase-debug": "firebase emulators:start",
-    "update-commands": "node -r dotenv/config src/updateCommands.js"
+    "start": "node server/index.js",
+    "debug": "node -r dotenv/config server/index.js",
+    "update-commands": "node -r dotenv/config server/updateCommands.js"
   },
   "author": "Stuart Rutheford",
-  "license": "ISC",
-  "dependencies": {
-    "@pkmn/data": "^0.5.3",
-    "@pkmn/img": "^0.1.14",
-    "@pkmn/mods": "^0.5.3",
-    "@pkmn/sim": "^0.5.3",
-    "discord-getarg": "file:src/modules/discord-getarg",
-    "discord-interactions": "^2.4.1",
-    "dt-utils": "file:src/modules/dt-utils",
-    "embed-builder": "file:src/modules/embed-builder",
-    "express": "^4.17.2",
-    "fast-moves": "file:src/modules/fast-moves",
-    "firebase-admin": "^10.0.1",
-    "gen-db": "file:src/modules/gen-db",
-    "init-admin": "file:src/modules/init-admin",
-    "learnsetutils": "file:src/modules/learnsetutils",
-    "pkmn-colours": "file:src/modules/pkmn-colours",
-    "pkmn-complete": "file:src/modules/pkmn-complete",
-    "pokemon-filters": "file:src/modules/pokemon-filters",
-    "typecheck": "file:src/modules/typecheck"
-  },
+  "license": "MIT",
   "devDependencies": {
     "@11ty/eleventy": "^0.12.1",
     "dotenv": "^10.0.0",
-    "node-fetch": "^2.6.1",
     "npm-run-all": "^4.1.5"
   },
   "engines": {

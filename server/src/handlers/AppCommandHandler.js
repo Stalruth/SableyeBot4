@@ -40,7 +40,7 @@ addCommand('nature', './ChatInputCommands/nature.js');
 addCommand('sprite', './ChatInputCommands/sprite.js');
 addCommand('weakness', './ChatInputCommands/weakness.js');
 
-addCommand('Search', './MessageCommands/Search.js');
+addCommand('Search', './ContextMenuCommands/Search.js');
 
 async function onApplicationCommand(req, res) {
   const info = getargs(req.body);

@@ -1,7 +1,7 @@
 {
   "name": "sableye-functions",
-  "version": "1.0.0",
-  "description": "",
+  "version": "4.0.0-sigma",
+  "description": "Pub/Sub Functions for Sableye Bot 4.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

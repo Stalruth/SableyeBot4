@@ -3,7 +3,7 @@
 const { verifyKeyMiddleware } = require('discord-interactions');
 const express = require('express');
 
-const { sableye } = require('./sableye.js');
+const { sableye } = require('./src/sableye.js');
 
 const PUBLIC_KEY = process.env.PUBLIC_KEY;
 const PORT = process.env.PORT;

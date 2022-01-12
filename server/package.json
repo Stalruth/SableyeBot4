@@ -1,0 +1,42 @@
+{
+  "name": "sableyebot-server",
+  "version": "4.0.0-sigma",
+  "description": "Server Package for SableyeBot 4",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "debug": "node -r dotenv/config src/index.js",
+    "update-commands": "node -r dotenv/config updateCommands.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stalruth/SableyeBot4.git"
+  },
+  "author": "Stuart Rutherford",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Stalruth/SableyeBot4/issues"
+  },
+  "homepage": "https://sableye-bot.web.app",
+  "dependencies": {
+    "@pkmn/data": "^0.5.4",
+    "@pkmn/img": "^0.1.14",
+    "@pkmn/mods": "^0.5.4",
+    "@pkmn/sim": "^0.5.4",
+    "discord-getarg": "file:src/modules/discord-getarg",
+    "discord-interactions": "^2.4.1",
+    "dt-utils": "file:src/modules/dt-utils",
+    "embed-builder": "file:src/modules/embed-builder",
+    "express": "^4.17.2",
+    "fast-moves": "file:src/modules/fast-moves",
+    "firebase-admin": "^10.0.1",
+    "gen-db": "file:src/modules/gen-db",
+    "init-admin": "file:src/modules/init-admin",
+    "learnsetutils": "file:src/modules/learnsetutils",
+    "pkmn-colours": "file:src/modules/pkmn-colours",
+    "pkmn-complete": "file:src/modules/pkmn-complete",
+    "pokemon-filters": "file:src/modules/pokemon-filters",
+    "typecheck": "file:src/modules/typecheck"
+  }
+}

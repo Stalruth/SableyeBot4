@@ -2,9 +2,9 @@
 
 const { verifyKey } = require('discord-interactions');
 
-const { onApplicationCommand, onAutocomplete } = require('./AppCommandHandler.js');
-const onComponentInteraction = require('./ComponentHandler.js');
-const onPing = require('./PingHandler.js');
+const { onApplicationCommand, onAutocomplete } = require('./handlers/AppCommandHandler.js');
+const onComponentInteraction = require('./handlers/MessageComponentHandler.js');
+const onPing = require('./handlers/PingHandler.js');
 
 const handlers = {
   1: onPing,
