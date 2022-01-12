@@ -260,9 +260,32 @@ const process = async function(interaction) {
     }
   }
 
-  for (const stat of ['hp','atk','def','spa','spd','spe','bst','weight-kg','height-m']) {
+  for (const stat of ['hp','atk','def','spa','spd','spe','bst']) {
     if(args[stat]) {
       if(args[stat].match(/^([<>]?\d+|\d+-\d+)$/) !== null) {
+        filters.push(filterFactory[stat](gen, args[stat], isVgc));
+      } else {
+        return {
+          embeds: [buildEmbed({
+            title: "Error",
+            description: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
+            color: 0xCC0000,
+          })],
+          flags: InteractionResponseFlags.EPHEMERAL,
+        };
+      }
+    }
+  }
+
+  for (const stat of ['weight-kg','height-m']) {
+    if(args[stat]) {
+      let match = false;
+      if(args[stat].startsWith('<') || args[stat].startsWith('>')) {
+        match = !isNaN(args[stat].slice(1));
+      } else {
+        match = !(args[stat].split('-').some(e => isNaN(e)));
+      }
+      if(match) {
         filters.push(filterFactory[stat](gen, args[stat], isVgc));
       } else {
         return {
