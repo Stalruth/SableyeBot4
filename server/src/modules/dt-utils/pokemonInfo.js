@@ -21,7 +21,6 @@ function pokemonInfo(pokemon, gen, verbose) {
   fields.push({
     name: `Type${pokemon['types'].length > 1 ? 's' : ''}`,
     value: pokemon['types'].join('/'),
-    inline: true,
   });
 
   const statNames = ['HP', 'Atk', 'Def', ...(gen <= 2 ? ['Spc'] : ['SpA', 'SpD']), 'Spe']
