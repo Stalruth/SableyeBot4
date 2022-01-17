@@ -6,27 +6,44 @@ const buildEmbed = require('embed-builder');
 const gens = require('gen-db');
 
 function itemInfo(item, gen, verbose) {
-  let title = item['name'];
-  let description = item['desc'];
+  const title = item['name'];
+  const description = item['desc'];
+  
+  const fields = [];
 
   if(verbose) {
     if(item['naturalGift']) {
-      description += `\nNatural Gift: ${item['naturalGift']['basePower']} Power ${item['naturalGift']['type']}-type.`;
+      fields.push({
+        'name': 'Natural Gift',
+        'value':`${item['naturalGift']['basePower']} Power ${item['naturalGift']['type']}-type.`,
+      });
     }
     if(item['fling']) {
-      description += `\nFling: ${item['fling']['basePower']} Power`;
-      if(item['fling']['status'] || item['fling']['volatileStatus']) {
-        description += `, causes ${item['fling']['status'] || item['fling']['volatileStatus']}`;
-      }
+      const flingStatus = item['fling']['status'] || item['fling']['volatileStatus'];
+      const statusNames = {
+        'flinch': 'Flinches',
+        'brn': 'Burns',
+        'par': 'Paralyzes',
+        'psn': 'Poisons',
+        'tox': 'Badly Poisons'
+      };
+      fields.push({
+        'name': 'Fling',
+        'value': `${item['fling']['basePower']} Power${flingStatus ? (', ' + statusNames[flingStatus] + ' the target.') : ''}`,
+      });
     }
 
-    description += `\nIntroduced: Generation ${item['gen']}`;
+    fields.push({
+      'name': 'Introduced',
+      'value': `Generation ${item['gen']}`,
+    });
   }
 
   return {
     embeds: [buildEmbed({
       title,
       description,
+      fields,
     })],
   };
 }

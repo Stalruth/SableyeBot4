@@ -64,26 +64,40 @@ const process = (interaction) => {
   }
 
   let title = `- [${types.join('/')}]`;
-  let description = '';
+  let fields = [];
 
   const eff = {
-    '0x': [],
-    '0.125x': [],
-    '0.25x': [],
-    '0.5x': [],
-    '1x': [],
-    '2x': [],
-    '4x': [],
-    '8x': [],
+    0: [],
+    0.125: [],
+    0.25: [],
+    0.5: [],
+    1: [],
+    2: [],
+    4: [],
+    8: [],
   };
 
   for(const i of data.types) {
-    eff[`${damageTaken(data, types, i.id)}x`].push(i.name);
+    eff[damageTaken(data, types, i.id)].push(i.name);
   }
+  
+  const names = {
+    0: 'Immune',
+    0.125: 'Resists (0.125x)',
+    0.25: 'Resists (0.25x)',
+    0.5: 'Resists (0.5x)',
+    1: 'Neutral damage',
+    2: 'Weak (2x)',
+    4: 'Weak (4x)',
+    8: 'Weak (8x)',
+  };
 
-  for(const i of ['0x', '0.125x', '0.25x', '0.5x', '1x', '2x', '4x', '8x']) {
+  for(const i of [0, 0.125, 0.25, 0.5, 1, 2, 4, 8]) {
     if(eff[i].length === 0) { continue; }
-    description += `\n${i}: ${eff[i].join(', ')}`;
+    fields.push({
+      name: names[i],
+      value: eff[i].join(', '),
+    });
   }
 
   return {
@@ -91,7 +105,7 @@ const process = (interaction) => {
     data: {
       embeds: [buildEmbed({
         title,
-        description,
+        fields,
         color: colours.types[Data.toID(types[0])]
       })]
     },

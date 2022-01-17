@@ -106,7 +106,7 @@ function moveInfo(move, gen, verbose) {
     });
     fields.push({
       name: 'Introduced',
-      value: move['gen'],
+      value: `Generation ${move['gen']}`,
       inline: true
     });
   }

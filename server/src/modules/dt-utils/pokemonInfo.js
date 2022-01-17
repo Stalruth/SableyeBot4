@@ -16,19 +16,13 @@ function lowKickPower(weight) {
 }
 
 function pokemonInfo(pokemon, gen, verbose) {
-  let title = `No. ${pokemon['num']}: ${pokemon['name']}`;
-  let description = `${pokemon['types'].join('/')} Type`;
-
-  if(!gen < 3) {
-    const abilities = [pokemon['abilities'][0]]
-    if(pokemon['abilities'][1]) {
-      abilities.push(pokemon['abilities'][1]);
-    }
-    if(pokemon['abilities']['H'] && !pokemon['unreleasedHidden']) {
-      abilities.push(pokemon['abilities']['H'] + ' (Hidden)');
-    }
-    description += `\nAbilities: ${abilities.join(', ')}`;
-  }
+  const title = `No. ${pokemon['num']}: ${pokemon['name']}`;
+  const fields = [];
+  fields.push({
+    name: `Type${pokemon['types'].length > 1 ? 's' : ''}`,
+    value: pokemon['types'].join('/'),
+    inline: true,
+  });
 
   const statNames = ['HP', 'Atk', 'Def', ...(gen <= 2 ? ['Spc'] : ['SpA', 'SpD']), 'Spe']
   const stats = [
@@ -43,65 +37,141 @@ function pokemonInfo(pokemon, gen, verbose) {
     ]),
     pokemon.baseStats.spe
   ];
-  description += `\n${statNames.join('/')}: ${stats.join('/')} [BST: ${stats.reduce((ac, el) => ac + el)}]`;
+  fields.push({
+    name: `${statNames.join('/')}`,
+    value: `${stats.join('/')}`,
+    inline: true,
+  },
+  {
+    name: 'Total',
+    value: stats.reduce((ac, el) => ac + el),
+    inline: true,
+  });
+
+  if(gen >= 3) {
+    const abilities = [pokemon['abilities'][0]]
+    if(pokemon['abilities'][1]) {
+      abilities.push(pokemon['abilities'][1]);
+    }
+    if(pokemon['abilities']['H'] && !pokemon['unreleasedHidden']) {
+      abilities.push(pokemon['abilities']['H'] + ' (Hidden)');
+    }
+    fields.push({
+      name: 'Abilities',
+      value: abilities.join(', '),
+    });
+  }
 
   if(verbose) {
-    description += `\nIntroduced: Generation ${pokemon['gen']}`;
-    description += `\nWeight: ${pokemon['weightkg']}kg (${lowKickPower(pokemon['weightkg'])} BP); Height: ${pokemon['heightm']}m`;
+    fields.push({
+      name: 'Weight (Low Kick BP)',
+      value: `${pokemon['weightkg']}kg (${lowKickPower(pokemon['weightkg'])} BP)`,
+      inline: true,
+    },
+    {
+      name: 'Height',
+      value: `${pokemon['heightm']}m`,
+      inline: true,
+    },
+    {
+      name: 'Introduced',
+      value: `Generation ${pokemon['gen']}`,
+    });
   }
 
   if(pokemon['baseSpecies'] !== pokemon['name']) {
-    description += `\nBase Species: ${pokemon['baseSpecies']}`;
+    fields.push({
+      name: 'Base Species',
+      value: pokemon['baseSpecies'],
+      inline: true,
+    });
   }
 
   if(pokemon['otherFormes']) {
-    description += `\nOther Formes: ${pokemon['otherFormes'].join(', ')}`;
+    fields.push({
+      name: 'Other Formes',
+      value: pokemon['otherFormes'].join(', '),
+      inline: true,
+    });
   }
 
   if(verbose) {
     if(pokemon['prevo']) {
-      description += `\nPre-evolution: ${pokemon['prevo']}`;
+      fields.push({
+        name: 'Pre-evolution',
+        value: pokemon['prevo'],
+        inline: true,
+      });
     }
     if(pokemon['evos']) {
-      description += `\nEvolution(s): ${pokemon['evos'].join(', ')}`;
+      fields.push({
+        name: `Evolution${pokemon['evos'].length > 1 ? 's' : ''}`,
+        value: pokemon['evos'].join(', '),
+        inline: true,
+      });
     }
-    description += `\nEgg Groups: ${pokemon['eggGroups']}`;
 
-    description += `\nGender Ratio: `
     const genderRatio = {
       'M': pokemon['genderRatio']['M'] * 100,
       'F': pokemon['genderRatio']['F'] * 100,
-      'N': pokemon['genderRatio']['M'] + pokemon['genderRatio']['F'] === 0 ? 100 : 0
+      'N/A': pokemon['genderRatio']['M'] + pokemon['genderRatio']['F'] === 0 ? 100 : 0
     };
     let ratios = [];
-    ['M','F','N'].forEach((el) => {
+    ['M','F','N/A'].forEach((el) => {
       if(genderRatio[el] > 0) {
         ratios.push(`${el}: ${genderRatio[el]}%`);
       }
     });
-    description += ratios.join(', ');
+    
+    fields.join({
+      name: 'Egg groups',
+      value: pokemon['eggGroups'].join(', '),
+      inline: true,
+    },
+    {
+      name: 'Gender Ratio',
+      value: ratios.join(', '),
+      inline: true,
+    });
 
     if(pokemon['requiredItems']) {
-      description += `\nRequired Item: ${pokemon['requiredItems'].join(', ')}`;
+      fields.push({
+        name: 'Required Item',
+        value: pokemon['requiredItems'].join(', '),
+      });
     }
 
     if(pokemon['requiredAbility']) {
-      description += `\nRequired Ability: ${pokemon['requiredAbility']}`;
+      fields.push({
+        name: 'Required Ability',
+        value: pokemon['requiredAbility'],
+      });
     }
 
     if(pokemon['eventOnly']) {
-      description += `\nThis Pokémon is only available through events.`;
+      fields.push({
+        name: 'Event Only',
+        value: 'This Pokémon is only available through events.',
+      });
     }
 
     if(pokemon['battleOnly']) {
-      description += `\nThis Pokémon only appears in battle.`;
+      fields.push({
+        name: 'Battle Only',
+        value: 'This Pokémon only appears in battle.',
+      });
     }
+
+    fields.push({
+      name: 'Color',
+      value: pokemon['color'],
+    });
   }
 
   return {
     embeds: [buildEmbed({
       title,
-      description,
+      fields,
       color: colours.types[toID(pokemon.types[0])]
     })],
   };

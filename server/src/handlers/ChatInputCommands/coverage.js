@@ -103,7 +103,7 @@ const process = (interaction) => {
         data: {
           embeds: [buildEmbed({
             title: 'Error',
-            description: `The type(s) ${nonTypes.join(', ')} do not exist in the given generation.`,
+            description: `The type${nonTypes.length > 1 ? 's' : ''} ${nonTypes.join(', ')} do not exist in the given generation.`,
             color: 0xCC0000,
           })],
           flags: InteractionResponseFlags.EPHEMERAL,
@@ -115,7 +115,7 @@ const process = (interaction) => {
     types.push(...titleInfo.types);
   }
 
-  const title = (titleInfo.pokemon ? `${titleInfo.pokemon.name} [${titleInfo.pokemon.types.join('/')}] ` : '') + `${titleInfo.types.join(', ')}`;
+  const title = (titleInfo.pokemon ? `${titleInfo.pokemon.name} [${titleInfo.pokemon.types.join('/')}] ` : '') + `${titleInfo.types.length > 0 ? ' + ' : ''}${titleInfo.types.join(', ')}`;
 
   const eff = {
     '0': [],
@@ -131,10 +131,20 @@ const process = (interaction) => {
     eff[`${mult}`].push(dType.name);
   }
 
-  let description = '';
+  const fields = [];
+  const names = {
+    '0': 'Cannot Hit',
+    '0.5': 'Hits for 0.5x',
+    '1': 'Hits for 1x',
+    '2': 'Hits for 2x',
+  };
+
   for(const i of ['0', '0.5', '1', '2']) {
     if(eff[i].length === 0) { continue; }
-    description += `\n${i}x: ${eff[i].join(', ')}`;
+    fields.push({
+      name: `${names[i]}:`,
+      value: eff[i].join(', '),
+    });
   }
 
   return {
@@ -142,12 +152,11 @@ const process = (interaction) => {
     data: {
       embeds: [buildEmbed({
         title,
-        description,
+        fields,
         color: colours.types[Data.toID(types[0])]
       })],
     },
   };
-
 };
 
 function autocomplete(interaction) {

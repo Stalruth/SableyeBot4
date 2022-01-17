@@ -140,7 +140,7 @@ const command = {
       description: "Base Stat Total. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
     },
     {
-      name: 'game',
+      name: 'gen',
       type: 3,
       description: 'The Games the results apply to.',
       choices: gens.names,
@@ -204,7 +204,7 @@ const process = async function(interaction) {
   const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
   const filters = [];
   const gen = args.gen ?? 'gen8natdex';
-  const isVgc = !args['transfer-moves'];
+  const isVgc = !(args['transfer-moves'] ?? true);
 
   if(args.abilities) {
     const abilities = args.abilities.split(',');

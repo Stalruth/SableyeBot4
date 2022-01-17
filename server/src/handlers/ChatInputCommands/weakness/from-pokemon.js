@@ -51,24 +51,36 @@ const process = (interaction) => {
   }
 
   const title = `${pokemon['name']} [${pokemon['types'].join('/')}]`;
-  let description = '';
+  const fields = [];
 
   const eff = {
-    '0x': [],
-    '0.25x': [],
-    '0.5x': [],
-    '1x': [],
-    '2x': [],
-    '4x': [],
+    0: [],
+    0.25: [],
+    0.5: [],
+    1: [],
+    2: [],
+    4: [],
   };
 
   for(const i of data.types) {
-    eff[`${damageTaken(data, pokemon.types, i.id)}x`].push(i.name);
+    eff[damageTaken(data, pokemon.types, i.id)].push(i.name);
   }
 
-  for(const i of ['0x', '0.25x', '0.5x', '1x', '2x', '4x']) {
+  const names = {
+    0: 'Immune',
+    0.25: 'Resists (0.25x)',
+    0.5: 'Resists (0.5x)',
+    1: 'Neutral damage',
+    2: 'Weak (2x)',
+    4: 'Weak (4x)',
+  };
+
+  for(const i of [0, 0.25, 0.5, 1, 2, 4]) {
     if(eff[i].length === 0) { continue; }
-    description += `\n${i}: ${eff[i].join(', ')}`;
+    fields.push({
+      name: names[i],
+      value: eff[i].join(', '),
+    });
   }
 
   return {
@@ -76,7 +88,7 @@ const process = (interaction) => {
     data: {
       embeds: [buildEmbed({
         title,
-        description,
+        fields,
         color: colours.types[Data.toID(pokemon.types[0])]
       })]
     },
