@@ -1,7 +1,7 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const admin = require('init-admin');
+const db = require('db-service');
 
 const buildEmbed = require('embed-builder');
 
@@ -27,8 +27,18 @@ async function getPage(interaction) {
     };
   }
 
-  // get from rtdb
-  const pages = (await admin.database().ref(`/filters/${interaction.message.interaction.id}/pages`).once('value')).val();
+  const pages = db.filters.findOne({interactionId: interaction.message.interaction.id})?.pages;
+
+  // cache miss
+  if(!pages) {
+    return {
+      type: InteractionResponseType.UPDATE_MESSAGE,
+      data: {
+        embeds: interaction.message.embeds,
+        components: []
+      },
+    };
+  }
 
   const fields = interaction.message.embeds[0].fields.map(field => {
     if(field.name.startsWith('Results')) {
@@ -46,7 +56,7 @@ async function getPage(interaction) {
     pageNumber,
     Math.min(pageNumber + 1, pages.length),
     pages.length
-  ]))]
+  ]))];
 
   return {
     type: InteractionResponseType.UPDATE_MESSAGE,

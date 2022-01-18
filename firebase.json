@@ -1,23 +1,11 @@
 {
   "emulators": {
-    "functions": {
-      "port": 5001
-    },
     "ui": {
       "enabled": true
     },
-    "database": {
-      "port": 9000
-    },
     "hosting": {
       "port": 5000
-    },
-    "pubsub": {
-      "port": 8085
     }
-  },
-  "functions": {
-    "source": "./functions"
   },
   "hosting": {
     "public": "_site",
@@ -26,8 +14,5 @@
       "**/.*",
       "**/node_modules/**"
     ]
-  },
-  "database": {
-    "rules": "database.rules.json"
   }
 }

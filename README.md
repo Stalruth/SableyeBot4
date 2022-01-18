@@ -16,17 +16,13 @@ Follow these steps to run your own local copy:
 
 1. Clone this repository.
 2. Rename `example.env` to `.env` and fill out the fields needed.
-3. Set up a local Firebase environment (`npm i -g firebase-tools`)
-4. Run `npm i` to install dependencies.
-5. Enter the `functions` directory and run `npm i` to install its dependencies.
-6. Run `npm run update-commands` to update command definitions with Discord.
-7. Run `npm run firebase-debug` to run the Database Emulator and the cleanup
-   function on your machine
-8. Run `npm run debug` to run the application proper.
+3. Run `npm i` to install dependencies.
+4. Enter the `functions` directory and run `npm i` to install its dependencies.
+5. Run `npm run update-commands` to update command definitions with Discord.
+6. Run `npm run debug` to run the application proper.
     - You should use `ngrok` or simlar to get this working in a test
       environment that isn't directly exposed to the internet.
-9. For production use, run `firebase deploy` to deploy to a Firebase project,
-   and run `src/index.js` on a server.
+7. For production use, run `server/src/index.js` on a server.
 
 ## Issues
 

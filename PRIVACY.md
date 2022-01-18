@@ -1,8 +1,8 @@
-Accurate as of 21:00 12-Jan-2021 Australian Eastern Daylight Time (UTC+11)
+Accurate as of 12:00 19-Jan-2021 Australian Eastern Daylight Time (UTC+11)
 
 # Sableye Bot Privacy Policy
 
-This Privacy Policy is written to expand on the data collected by SableyeBot
+This Privacy Policy is written to expand on the data collected by Sableye Bot
 versions 4 and above (the "Application"), which of this data is processed or
 retained and the basis for such processing or retention.
 
@@ -12,8 +12,8 @@ with the Application in the ways detailed below.
 ## Methods of Data Collection
 
 The Application collects data sent to it through the "Interactions" facilities
-offered by Discord by people who use the commands provided by the Application
-("Users").
+offered by Discord to allow people ("Users") to utilise the Application's
+features.
 
 All data collection occurs through this facility, and the Application does not
 engage in any passive collection of information outside of this channel.
@@ -25,7 +25,7 @@ Interaction is received:
 
   - Guild ID
 
-    Uniquely identifies the "Server" the Interaction was sent in
+    Uniquely identifies the "Server" the Interaction was sent in.
 
   - Guild Locale
 
@@ -33,7 +33,7 @@ Interaction is received:
 
   - Channel ID
 
-    Uniquely identifies the "Channel" the Interaction was sent in
+    Uniquely identifies the "Channel" the Interaction was sent in.
 
   - Command Name
 
@@ -113,11 +113,10 @@ of commands and the popularity of different paramters:
 
 ## Where this data is stored
 
-The Application runs on infrastructure provided by Digital Ocean.  Parts of the
-Application also run on Google Firebase.
+The Application runs on infrastructure provided by Digital Ocean.
 
-The `/filter` command also stores the following information in Firebase Realtime
-Database for up to 15 minutes to facilitate advanced queries:
+The `/filter` command also stores the following information in an in-memory
+database for up to 15 minutes to facilitate pagination of query results:
 
   - The time the command was used
 

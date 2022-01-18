@@ -1,6 +1,7 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
+const db = require('db-service');
 
 const getargs = require('discord-getarg');
 const gens = require('gen-db');
@@ -195,7 +196,6 @@ const command = {
 };
 
 const process = async function(interaction) {
-  const admin = require('init-admin');
   const buildEmbed = require('embed-builder');
   const { filterFactory, applyFilters } = require('pokemon-filters');
 
@@ -379,10 +379,11 @@ const process = async function(interaction) {
   const sortKey = args['sort'];
 
   const config = {
-    info: {
+    interactionId: interaction.id,
+    timestamp: interaction.id / 4194304 + 1420070400000,
+    webhook: {
       token: interaction.token,
       appId: interaction.application_id,
-      timestamp: interaction.id / 4194304 + 1420070400000,
     }
   };
 
@@ -471,8 +472,7 @@ const process = async function(interaction) {
   config.pages = pages;
 
   if(pages.length > 1) {
-    const ref = admin.database().ref(`/filters/${interaction.id}`);
-    await ref.set(config);
+    db.filters.insert(config);
   }
 
   return message;

@@ -7,3 +7,4 @@ You will not use Sableye Bot (the "Application") for any of the following purpos
 - To abuse Discord's API.
 - To control any facility where failure could result in personal injury or
   death, such as the management of nuclear weapons.
+

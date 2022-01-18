@@ -1,9 +1,0 @@
-{
-  "rules": {
-    "filters": {
-      ".indexOn": "info/timestamp",
-    },
-    ".read": false,
-    ".write": false
-  }
-}
