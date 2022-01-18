@@ -63,7 +63,7 @@ const command = {
     {
       name: 'gen',
       type: 4,
-      description: 'The Generation used in calculation',
+      description: 'The Generation to calculate for.',
       choices: [
         {
           name: 'GSC',

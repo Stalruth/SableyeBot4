@@ -19,7 +19,7 @@ const options = {
 };
 
 async function main() {
-  const result = await fetch(`https://discord.com/api/applications/${APP_ID}`
+  const result = await fetch(`https://discord.com/api/v9/applications/${APP_ID}`
     + (GUILD_ID ? `/guilds/${GUILD_ID}` : '') + `/commands`, options);
   if(result.ok) {
     console.log('Updated!');

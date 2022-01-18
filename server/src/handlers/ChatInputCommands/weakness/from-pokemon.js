@@ -16,14 +16,14 @@ const command = {
     {
       name: 'pokemon',
       type: 3,
-      description: 'Pokemon to evaluate the STABs of',
+      description: 'Pokemon to check the weaknesses of.',
       required: true,
       autocomplete: true,
     },
     {
       name: 'gen',
       type: 3,
-      description: 'The Generation used in calculation',
+      description: 'The Generation to calculate against.',
       choices: gens.names,
     },
   ],

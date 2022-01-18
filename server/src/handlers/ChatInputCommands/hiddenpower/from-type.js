@@ -22,7 +22,7 @@ const listTypes = function(typeList) {
 }
 
 const command = {
-  description: 'Returns the Hidden Power produced by the given IVs.',
+  description: 'Returns the "best" IVs that result in a Hidden Power of the given Type.',
   options: [
     {
       name: 'type',
@@ -34,7 +34,7 @@ const command = {
     {
       name: 'gen',
       type: 4,
-      description: 'The Generation used in calculation',
+      description: 'The Generation to calculate for.',
       choices: [
         {
           name: 'GSC',

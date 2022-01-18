@@ -17,14 +17,14 @@ const command = {
     {
       name: 'types',
       type: 3,
-      description: 'Comma separated list of types to check the combined coverage of.',
+      description: 'Comma separated list of types to check the weaknesses of.',
       required: true,
       autocomplete: true,
     },
     {
       name: 'gen',
       type: 3,
-      description: 'The Generation used in calculation',
+      description: 'The Generation used to calculate against.',
       choices: gens.names,
     },
   ],

@@ -10,7 +10,7 @@ const colours = require('pkmn-colours');
 const { completePokemon } = require('pkmn-complete');
 
 const command = {
-  description: 'Return the number of events a Pokemon has or the details of a specific event.',
+  description: 'Return the number of events a Pokémon has or the details of a specific event.',
   options: [
     {
       name: 'name',

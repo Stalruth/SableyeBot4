@@ -2,7 +2,7 @@ const fromStats = require('./hiddenpower/from-stats.js');
 const fromType = require('./hiddenpower/from-type.js');
 
 const command = {
-  description: 'Retrieve information about Hidden Powers.',
+  description: 'Retrieve information about Hidden Power.',
   options: [
     Object.assign({
       name: 'from-stats',

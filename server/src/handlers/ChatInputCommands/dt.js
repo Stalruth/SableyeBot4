@@ -14,7 +14,7 @@ const command = {
     {
       name: 'name',
       type: 3,
-      description: 'Name of the Pokemon, Ability, Move, Item or Nature to look up.',
+      description: 'Name of the Pokemon, Ability, Move, Item, or Nature to look up.',
       required: true,
       autocomplete: true,
     },
@@ -26,7 +26,7 @@ const command = {
     {
       name: 'gen',
       type: 3,
-      description: 'The Generation used for lookup.',
+      description: 'The Generation to check against.',
       choices: gens.names,
     },
   ],

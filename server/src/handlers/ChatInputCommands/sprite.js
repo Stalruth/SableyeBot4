@@ -10,12 +10,12 @@ const buildEmbed = require('embed-builder');
 const { completeSprite } = require('pkmn-complete');
 
 const command = {
-  description: 'Link to the Pokemon Showdown Damage Calculator.',
+  description: 'Shows the Pokémon Showdown sprite requested.',
   options: [
     {
       name: 'pokemon',
       type: 3,
-      description: 'Pokemon to show',
+      description: 'Pokemon to show.',
       required: true,
       autocomplete: true
     },
@@ -27,7 +27,7 @@ const command = {
     {
       name: 'back',
       type: 5,
-      description: 'Show the back variant.',
+      description: 'Show the back facing variant.',
     },
     {
       name: 'female',
@@ -42,7 +42,7 @@ const command = {
     {
       name: 'gen',
       type: 3,
-      description: 'The Generation of the sprite.',
+      description: 'The Generation to look up.',
       choices: [
         {
           name: 'Yellow',
