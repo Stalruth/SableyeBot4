@@ -3,18 +3,16 @@
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const db = require('db-service');
 
-const buildEmbed = require('embed-builder');
+const { buildEmbed, buildError } = require('embed-builder');
 
 async function getPage(interaction) {
   if(interaction.member.user.id !== interaction.message.interaction.user.id) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: 'Only the person who ran the command may change the page it displays.',
-          color: 0xCC0000,
-        })],
+        embeds: [
+          buildError('Only the person who ran the command may change the page it displays.')
+        ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };

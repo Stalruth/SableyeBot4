@@ -5,13 +5,13 @@ const Data = require('@pkmn/data');
 const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
-const buildEmbed = require('embed-builder');
+const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pkmn-colours');
 const { completeType } = require('pkmn-complete');
 const damageTaken = require('typecheck');
 
-const command = {
+const definition = {
   description: 'Returns the resistances and weaknesses of a Pokémon with the given types.',
   options: [
     {
@@ -53,11 +53,9 @@ const process = (interaction) => {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: `Could not find Type(s) named ${nonTypes.join(',')} in Generation ${args.gen}.`,
-          color: 0xCC0000,
-        })],
+        embeds: [
+          buildError(`Could not find Type(s) named ${nonTypes.join(',')} in Generation ${args.gen}.`,)
+        ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
@@ -153,5 +151,11 @@ function autocomplete(interaction) {
   };
 }
 
-module.exports = {command, process, autocomplete};
+module.exports = {
+  definition,
+  command: {
+    process,
+    autocomplete
+  }
+};
 

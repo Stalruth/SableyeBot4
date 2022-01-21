@@ -5,10 +5,10 @@ const Data = require('@pkmn/data');
 const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
-const buildEmbed = require('embed-builder');
+const { buildEmbed } = require('embed-builder');
 const colours = require('pkmn-colours');
 
-const command = {
+const definition = {
   description: 'Returns the Hidden Power produced by the given IVs.',
   options: [
     {
@@ -124,5 +124,10 @@ const process = (interaction) => {
   };
 }
 
-module.exports = {command, process}
+module.exports = {
+  definition,
+  command: {
+    process
+  },
+}
 

@@ -4,10 +4,21 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 
 const getargs = require('discord-getarg');
 const { dt, getData } = require('dt-utils');
-const buildEmbed = require('embed-builder');
+const { buildError } = require('embed-builder');
 const gens = require('gen-db');
 
 async function process(interaction) {
+  if(interaction.member.user.id !== interaction.message.interaction.user.id) {
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        embeds: [
+          buildError('Only the person who ran the command may change the page it displays.')
+        ],
+        flags: InteractionResponseFlags.EPHEMERAL,
+      },
+    };
+  }
   const [ idOne, gen, verboseArg ] = interaction.data.custom_id.split('|');
   const [ effectType, idTwo ] = interaction.data.values[0].split('|');
 

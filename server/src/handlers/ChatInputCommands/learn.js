@@ -4,13 +4,13 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const Data = require('@pkmn/data');
 
 const getargs = require('discord-getarg');
-const buildEmbed = require('embed-builder');
+const { buildEmbed, buildError } = require('embed-builder');
 const decodeSource = require('learnsetutils');
 const gens = require('gen-db');
 const colours = require('pkmn-colours');
 const { completePokemon, completeMove } = require('pkmn-complete');
 
-const command = {
+const definition = {
   description: 'Returns the learnset of the Pokémon given, or how it learns a given move.',
   options: [
     {
@@ -63,11 +63,9 @@ const process = async function(interaction) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: `Could not find a Pokémon named ${args.name} in the given generation.`,
-          color: 0xCC0000,
-        })],
+        embeds: [
+          buildError(`Could not find a Pokémon named ${args.name} in the given generation.`)
+        ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
@@ -101,11 +99,9 @@ const process = async function(interaction) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: `Could not find a move named ${args.move}${args.gen ? ` in Generation ${args.gen}` : ''}.`,
-          color: 0xCC0000,
-        })],
+        embeds: [
+          buildError(`Could not find a move named ${args.move}${args.gen ? ` in Generation ${args.gen}` : ''}.`)
+        ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
@@ -188,5 +184,11 @@ function autocomplete(interaction) {
   };
 }
 
-module.exports = {command, process, autocomplete};
+module.exports = {
+  definition,
+  command: {
+    process,
+    autocomplete,
+  }
+};
 

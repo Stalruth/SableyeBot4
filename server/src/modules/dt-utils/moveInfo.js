@@ -3,7 +3,7 @@
 const { InteractionResponseFlags } = require('discord-interactions');
 const { toID } = require('@pkmn/data');
 
-const buildEmbed = require('embed-builder');
+const { buildEmbed } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pkmn-colours');
 
@@ -182,7 +182,7 @@ function moveInfo(move, gen, verbose) {
       inline: true,
     });
   }
-  if(move['flags']['distance'] && data.num >= 5 && data.num <= 6) {
+  if(move['flags']['distance'] && gen >= 5 && gen <= 6) {
     fields.push({
       name: 'Distance',
       value: 'Targets any Pokémon in a Triple Battle.',
@@ -203,7 +203,7 @@ function moveInfo(move, gen, verbose) {
       inline: true,
     });
   }
-  if(move['flags']['nonsky'] && data.num === 6) {
+  if(move['flags']['nonsky'] && gen === 6) {
     fields.push({
       name: 'Non-Sky',
       value: 'Cannot be selected in a Sky Battle.',

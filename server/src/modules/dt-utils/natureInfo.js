@@ -1,6 +1,6 @@
 'use strict';
 
-const buildEmbed = require('embed-builder');
+const { buildEmbed } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pkmn-colours');
 

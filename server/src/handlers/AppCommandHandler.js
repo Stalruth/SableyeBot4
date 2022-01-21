@@ -4,7 +4,11 @@ const { InteractionResponseType } = require('discord-interactions');
 const getargs = require('discord-getarg');
 const fetch = require('node-fetch');
 
+const { buildError } = require('embed-builder');
+
 const definitions = [];
+const commands = {};
+
 const processes = {};
 const autocompletes = {};
 const modulePaths = {};
@@ -15,14 +19,10 @@ function initCommand(name) {
     // Command already added.
     return;
   }
-  const {command, process, defer, autocomplete} = require(modulePaths[name]);
-  command['name'] = name;
-  definitions.push(command);
-  processes[name] = process;
-  defers[name] = defer;
-  if(autocomplete) {
-    autocompletes[name] = autocomplete;
-  }
+  const {definition, command} = require(modulePaths[name]);
+  definition['name'] = name;
+  definitions.push(definition);
+  commands[name] = command;
 }
 
 function addCommand(name, modulePath) {
@@ -42,27 +42,28 @@ addCommand('weakness', './ChatInputCommands/weakness.js');
 
 addCommand('Search', './ContextMenuCommands/Search.js');
 
+function getCommandData(commandPath) {
+  if(commandPath.length === 1) {
+    return commands[commandPath[0]];
+  } else if(commandPath.length === 2) {
+    return commands[commandPath[0]][commandPath[1]];
+  } else {
+    return commands[commandPath[0]][commandPath[1]][commandPath[2]];
+  }
+}
+
 async function onApplicationCommand(req, res) {
   const info = getargs(req.body);
-  const command = [req.body.data?.name, ...info.subcommand];
+  const commandPath = [req.body.data?.name, ...info.subcommand];
 
   try {
-    initCommand(command[0]);
+    initCommand(commandPath[0]);
 
-    console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), JSON.stringify(info.params));
+    console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>commandPath[e] ?? null), JSON.stringify(info.params));
 
-    let commandProcess = (async()=>({}))();
-    let defer = false;
-    if(command.length === 1) {
-      commandProcess = processes[command[0]](req.body);
-      defer = defers[command[0]];
-    } else if(command.length === 2) {
-      commandProcess = processes[command[0]][command[1]](req.body);
-      defer = defers[command[0]]?.[command[1]];
-    } else {
-      commandProcess = processes[command[0]][command[1]][command[2]](req.body);
-      defer = defers[command[0]]?.[command[1]]?.[command[2]];
-    }
+    const commandData = getCommandData(commandPath);
+    const process = (commandData.process ?? (()=>{}))(req.body);
+    const defer = commandData.defer ?? false;
 
     if(defer) {
       res.json({
@@ -71,13 +72,13 @@ async function onApplicationCommand(req, res) {
       await fetch(`https://discord.com/api/v9/webhooks/${req.body.application_id}/${req.body.token}/messages/@original`,
       {
         method: 'PATCH',
-        body: JSON.stringify(await commandProcess),
+        body: JSON.stringify(await process),
         headers: {
           'Content-Type': 'application/json',
         },
       });
     } else {
-      res.json(await commandProcess);
+      return res.json(await process);
     }
   } catch (e) {
     console.error(e);
@@ -87,21 +88,16 @@ async function onApplicationCommand(req, res) {
 
 async function onAutocomplete(req, res) {
   const info = getargs(req.body);
-  const command = [req.body.data?.name, ...info.subcommand];
+  const commandPath = [req.body.data?.name, ...info.subcommand];
 
   try {
-    initCommand(command[0]);
+    initCommand(commandPath[0]);
 
-    console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>command[e] ?? null), JSON.stringify(info.params), info.focused);
+    console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>commandPath[e] ?? null), JSON.stringify(info.params), info.focused);
 
-    let autocompleteProcess = () => ({type:8,choices:[info.params[info.focused]]});
-    if(command.length === 1) {
-      autocompleteProcess = autocompletes[command[0]];
-    } else if(command.length === 2) {
-      autocompleteProcess = autocompletes[command[0]][command[1]];
-    } else {
-      autocompleteProcess = autocompletes[command[0]][command[1]][command[2]];
-    }
+    const commandData = getCommandData(commandPath);
+    const autocompleteProcess = commandData.autocomplete ?? (()=>({type:8,choices:[info.params[info.focused]]}));
+
     res.json(await autocompleteProcess(req.body));
   } catch(e) {
     res.json({

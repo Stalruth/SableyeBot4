@@ -1,17 +1,17 @@
 const fromPokemon = require('./weakness/from-pokemon.js');
 const fromTypes = require('./weakness/from-types.js');
 
-const command = {
+const definition = {
   description: 'Weaknesses based on a given Pokémon or types.',
   options: [
     Object.assign({
       name: 'from-pokemon',
       type: 1,
-    }, fromPokemon.command),
+    }, fromPokemon.definition),
     Object.assign({
       name: 'from-types',
       type: 1,
-    }, fromTypes.command),
+    }, fromTypes.definition),
   ],
 };
 
@@ -25,5 +25,11 @@ const autocomplete = {
   'from-types': fromTypes.autocomplete,
 };
 
-module.exports = {command, process, autocomplete};
+module.exports = {
+  definition,
+  command: {
+    'from-pokemon': fromPokemon.command,
+    'from-types': fromTypes.command,
+  }
+};
 

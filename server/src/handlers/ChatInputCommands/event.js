@@ -4,12 +4,12 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const Data = require('@pkmn/data');
 
 const getargs = require('discord-getarg');
-const buildEmbed = require('embed-builder');
+const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pkmn-colours');
 const { completePokemon } = require('pkmn-complete');
 
-const command = {
+const definition = {
   description: 'Return the number of events a Pokémon has or the details of a specific event.',
   options: [
     {
@@ -37,11 +37,9 @@ const process = async function(interaction) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: `Could not find a Pokémon named ${args.name}.`,
-          color: 0xCC0000,
-        })],
+        embeds: [
+          buildError(`Could not find a Pokémon named ${args.name}.`)
+        ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
@@ -71,11 +69,9 @@ const process = async function(interaction) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: `${pokemon.name} only has ${learnset.eventData.length} event${learnset.eventData.length !== 1 ? 's' : ''}.`,
-          color: 0xCC0000,
-        })],
+        embeds: [
+          buildError(`${pokemon.name} only has ${learnset.eventData.length} event${learnset.eventData.length !== 1 ? 's' : ''}.`)
+        ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
@@ -176,5 +172,11 @@ function autocomplete(interaction) {
   };
 }
 
-module.exports = {command, process, autocomplete};
+module.exports = {
+  definition,
+  command: {
+    process,
+    autocomplete,
+  }
+};
 

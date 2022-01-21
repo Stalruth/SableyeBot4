@@ -2,7 +2,7 @@
 
 const { InteractionResponseFlags } = require('discord-interactions');
 
-const buildEmbed = require('embed-builder');
+const { buildEmbed } = require('embed-builder');
 const gens = require('gen-db');
 
 function itemInfo(item, gen, verbose) {

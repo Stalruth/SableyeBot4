@@ -4,13 +4,13 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const Data = require('@pkmn/data');
 
 const getargs = require('discord-getarg');
-const buildEmbed = require('embed-builder');
+const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pkmn-colours');
 const { completePokemon, completeType } = require('pkmn-complete');
 const damageTaken = require('typecheck');
 
-const command = {
+const definition = {
   description: 'Returns type coverage based on a Pokémons STAB and/or types.',
   options: [
     {
@@ -36,7 +36,7 @@ const command = {
   ],
 };
 
-const process = (interaction) => {
+function process(interaction) {
   const args = getargs(interaction).params;
 
   const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
@@ -45,11 +45,9 @@ const process = (interaction) => {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: 'Error',
-          description: 'Please provide a Pokémon and/or at least one Type.',
-          color: 0xCC0000,
-        })],
+        embeds: [
+          buildError('Please provide a Pokémon and/or at least one Type.')
+        ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
@@ -69,11 +67,9 @@ const process = (interaction) => {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [buildEmbed({
-            title: 'Error',
-            description: `Pokémon ${args.pokemon} does not exist in the given generation.`,
-            color: 0xCC0000,
-          })],
+          embeds: [
+            buildError(`Pokémon ${args.pokemon} does not exist in the given generation.`),
+          ],
           flags: InteractionResponseFlags.EPHEMERAL,
         },
       };
@@ -101,11 +97,9 @@ const process = (interaction) => {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [buildEmbed({
-            title: 'Error',
-            description: `The type${nonTypes.length > 1 ? 's' : ''} ${nonTypes.join(', ')} do not exist in the given generation.`,
-            color: 0xCC0000,
-          })],
+          embeds: [
+            buildError(`The type${nonTypes.length > 1 ? 's' : ''} ${nonTypes.join(', ')} do not exist in the given generation.`)
+          ],
           flags: InteractionResponseFlags.EPHEMERAL,
         },
       };
@@ -219,5 +213,11 @@ function autocomplete(interaction) {
   }
 }
 
-module.exports = {command, process, autocomplete};
+module.exports = {
+  definition,
+  command: {
+    process,
+    autocomplete,
+  }
+};
 

@@ -5,7 +5,7 @@ const Data = require('@pkmn/data');
 const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
-const buildEmbed = require('embed-builder');
+const { buildEmbed } = require('embed-builder');
 const colours = require('pkmn-colours');
 
 const types = new Data.Generations(Sim.Dex).get(7).types;
@@ -21,7 +21,7 @@ const listTypes = function(typeList) {
   return result;
 }
 
-const command = {
+const definition = {
   description: 'Returns the "best" IVs that result in a Hidden Power of the given Type.',
   options: [
     {
@@ -152,5 +152,10 @@ const process = (interaction) => {
   };
 }
 
-module.exports = {command, process}
+module.exports = {
+  definition,
+  command: {
+    process
+  },
+}
 

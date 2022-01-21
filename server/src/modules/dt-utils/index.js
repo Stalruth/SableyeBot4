@@ -1,12 +1,5 @@
 'use strict';
 
-const { InteractionResponseFlags } = require('discord-interactions');
-const { toID } = require('@pkmn/data');
-
-const buildEmbed = require('embed-builder');
-const gens = require('gen-db');
-const colours = require('pkmn-colours');
-
 const abilityInfo = require('./abilityInfo.js');
 const itemInfo = require('./itemInfo.js');
 const moveInfo = require('./moveInfo.js');

@@ -4,11 +4,11 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 
 const getargs = require('discord-getarg');
 const { dt, getData } = require('dt-utils');
-const buildEmbed = require('embed-builder');
+const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const { completeAll } = require('pkmn-complete');
 
-const command = {
+const definition = {
   description: 'Return information on the given Pokemon, Ability, Move, Item, or Nature.',
   options: [
     {
@@ -44,11 +44,7 @@ async function process(interaction) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: `Could not find a result matching ${params.name} in the given generation.`,
-          color: 0xCC0000,
-        })],
+        embeds: [buildError(`Could not find a result matching ${params.name} in the given generation.`)],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
@@ -95,5 +91,11 @@ function autocomplete(interaction) {
   };
 }
 
-module.exports = {command, process, autocomplete};
+module.exports = {
+  definition,
+  command: {
+    process,
+    autocomplete,
+  }
+};
 

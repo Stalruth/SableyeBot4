@@ -11,5 +11,13 @@ function buildEmbed(options) {
   return Object.assign(defaults, options);
 }
 
-module.exports = buildEmbed;
+function buildError(description) {
+  return buildEmbed({
+    title: "Error",
+    description: description,
+    color: 0xCC0000,
+  });
+}
+
+module.exports = { buildEmbed, buildError };
 

@@ -2,13 +2,14 @@
 
 const { InteractionResponseType } = require('discord-interactions');
 
-const buildEmbed = require('embed-builder');
+const { buildEmbed } = require('embed-builder');
 
-const command = {
+const definition = {
   description: 'About SableyeBot',
 };
 
 const process = function(interaction) {
+  throw 'oops';
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
@@ -35,5 +36,10 @@ const process = function(interaction) {
   };
 };
 
-module.exports = {command, process};
+module.exports = {
+  definition,
+  command: {
+    process,
+  },
+};
 

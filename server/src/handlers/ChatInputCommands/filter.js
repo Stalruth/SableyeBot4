@@ -3,9 +3,11 @@
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 const db = require('db-service');
 
+const { buildEmbed, buildError } = require('embed-builder');
 const getargs = require('discord-getarg');
 const gens = require('gen-db');
 const { completeAbility, completeFilterType, completeMove, completeType, completePokemon } = require('pkmn-complete');
+const { filterFactory, applyFilters } = require('pokemon-filters');
 
 function paginate(array, limit) {
   const results = [''];
@@ -23,7 +25,7 @@ function paginate(array, limit) {
   return results;
 }
 
-const command = {
+const definition = {
   description: 'Get all Pokémon fitting the given conditions.',
   options: [
     {
@@ -196,9 +198,6 @@ const command = {
 };
 
 const process = async function(interaction) {
-  const buildEmbed = require('embed-builder');
-  const { filterFactory, applyFilters } = require('pokemon-filters');
-
   const args = getargs(interaction).params;
 
   const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
@@ -213,11 +212,9 @@ const process = async function(interaction) {
         filters.push(filterFactory['ability'](gen, ability, isVgc));
       } else {
         return {
-          embeds: [buildEmbed({
-            title: "Error",
-            description: `The ability ${ability} could not be found in the given generation.`,
-            color: 0xCC0000,
-          })],
+          embeds: [
+            buildError(`The ability ${ability} could not be found in the given generation.`)
+          ],
           flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
@@ -231,11 +228,9 @@ const process = async function(interaction) {
         filters.push(filterFactory['type'](gen, type, isVgc));
       } else {
         return {
-          embeds: [buildEmbed({
-            title: "Error",
-            description: `The type ${type} could not be found in the given generation.`,
-            color: 0xCC0000,
-          })],
+          embeds: [
+            buildError(`The type ${type} could not be found in the given generation.`)
+          ],
           flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
@@ -249,11 +244,9 @@ const process = async function(interaction) {
         filters.push(filterFactory['move'](gen, move, isVgc));
       } else {
         return {
-          embeds: [buildEmbed({
-            title: "Error",
-            description: `The move ${move} could not be found in the given generation.`,
-            color: 0xCC0000,
-          })],
+          embeds: [
+            buildError(`The move ${move} could not be found in the given generation.`)
+          ],
           flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
@@ -266,11 +259,9 @@ const process = async function(interaction) {
         filters.push(filterFactory[stat](gen, args[stat], isVgc));
       } else {
         return {
-          embeds: [buildEmbed({
-            title: "Error",
-            description: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
-            color: 0xCC0000,
-          })],
+          embeds: [
+            buildError(`The query ${args[stat]} is not valid for the '${stat}' argument.`)
+          ],
           flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
@@ -289,11 +280,9 @@ const process = async function(interaction) {
         filters.push(filterFactory[stat](gen, args[stat], isVgc));
       } else {
         return {
-          embeds: [buildEmbed({
-            title: "Error",
-            description: `The query ${args[stat]} is not valid for the '${stat}' argument.`,
-            color: 0xCC0000,
-          })],
+          embeds: [
+            buildError(`The query ${args[stat]} is not valid for the '${stat}' argument.`)
+          ],
           flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
@@ -307,11 +296,9 @@ const process = async function(interaction) {
         filters.push(filterFactory['weakness'](gen, type, isVgc));
       } else {
         return {
-          embeds: [buildEmbed({
-            title: "Error",
-            description: `The type ${type} could not be found in the given generation.`,
-            color: 0xCC0000,
-          })],
+          embeds: [
+            buildError(`The type ${type} could not be found in the given generation.`)
+          ],
           flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
@@ -325,11 +312,9 @@ const process = async function(interaction) {
         filters.push(filterFactory['resist'](gen, type, isVgc));
       } else {
         return {
-          embeds: [buildEmbed({
-            title: "Error",
-            description: `The type ${type} could not be found in the given generation.`,
-            color: 0xCC0000,
-          })],
+          embeds: [
+            buildError(`The type ${type} could not be found in the given generation.`)
+          ],
           flags: InteractionResponseFlags.EPHEMERAL,
         };
       }
@@ -341,11 +326,9 @@ const process = async function(interaction) {
       filters.push(filterFactory['breeds-with'](gen, args['breeds-with'], isVgc));
     } else {
       return {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: `The Pokémon ${args['breeds-with']} could not be found in the given generation.`,
-          color: 0xCC0000,
-        })],
+        embeds: [
+          buildError(`The Pokémon ${args['breeds-with']} could not be found in the given generation.`)
+        ],
         flags: InteractionResponseFlags.EPHEMERAL,
       };
     }
@@ -365,11 +348,9 @@ const process = async function(interaction) {
 
   if(filters.length === 0) {
     return {
-      embeds: [buildEmbed({
-        title: "Error",
-        description: "You haven't added any filters.",
-        color: 0xCC0000,
-      })],
+      embeds: [
+        buildError("You haven't added any filters.")
+      ],
       flags: InteractionResponseFlags.EPHEMERAL,
     };
   }
@@ -531,5 +512,12 @@ function autocomplete(interaction) {
   };
 }
 
-module.exports = {command, defer: true, process, autocomplete};
+module.exports = {
+  definition,
+  command: {
+    process,
+    defer: true,
+    autocomplete,
+  }
+};
 

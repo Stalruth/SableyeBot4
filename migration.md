@@ -15,11 +15,12 @@ Sableye Bot currently accepts two different kinds of commands:
 
 ## What's Changing?
 
-On the 30th of March 2022, Sableye Bot will no longer be able to respond to
+On the **INSERT DATE HERE**, Sableye Bot will no longer be able to respond to
 Prefix Commands - from this date onwards Sableye Bot will only respond to
 Slash Commands.
 
-This means that the usage of the bot changes dramatically.
+This means that the usage of the bot changes dramatically - the help text
+shown in the Slash Command UI should help with this.
 
 Additionally, some commands are being removed without replacement. These are:
 
@@ -34,10 +35,8 @@ Additionally, some commands are being removed without replacement. These are:
 - `//deletegame`
 - `//fc`
 
-    These commands are a legal nightmare to behold.  They were useful to a
-    lot of people while they were there but I will not be missing them.
-
-    That said if you want these to be ported over please [let me know!][hatemail]
+    These commands have fallen out of use in recent years with the release of
+    the Switch games.
 
 - `//ability`
 - `//item`
@@ -47,7 +46,7 @@ Additionally, some commands are being removed without replacement. These are:
 
     These were already called by `//data` (better knows as `//dt`), but the
     new `/dt` command also has a prompt to properly disambiguate between
-    Metronome the Item and Metronome the move.
+    Metronome the Item and Metronome the Move.
 
 - The following filters on `//filter`:
     - `num`

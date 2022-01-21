@@ -4,7 +4,7 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const { toID } = require('@pkmn/data');
 
 const { dt, getData } = require('dt-utils');
-const buildEmbed = require('embed-builder');
+const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const { graphs } = require('pkmn-complete');
 
@@ -42,11 +42,9 @@ const process = function(interaction) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: `Could not find any results in the selected message.`,
-          color: 0xCC0000,
-        })],
+        embeds: [
+          buildError(`Could not find any results in the selected message.`)
+        ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };

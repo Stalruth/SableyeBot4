@@ -6,10 +6,10 @@ const Img = require('@pkmn/img');
 const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
-const buildEmbed = require('embed-builder');
+const { buildError } = require('embed-builder');
 const { completeSprite } = require('pkmn-complete');
 
-const command = {
+const definition = {
   description: 'Shows the Pokémon Showdown sprite requested.',
   options: [
     {
@@ -85,11 +85,7 @@ const process = function(interaction) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: `Could not find a Pokemon named ${args.pokemon}.`,
-          color: 0xCC0000,
-        })],
+        embeds: [buildError(`Could not find a Pokemon named ${args.pokemon}.`)],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
@@ -112,11 +108,7 @@ const process = function(interaction) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: "Error",
-          description: `Could not find a Pokemon named ${args.pokemon}.`,
-          color: 0xCC0000,
-        })],
+        embeds: [buildError(`Could not find a Pokemon named ${args.pokemon}.`)],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
@@ -140,5 +132,11 @@ function autocomplete(interaction) {
   };
 }
 
-module.exports = {command, process, autocomplete};
+module.exports = {
+  definition,
+  command: {
+    process,
+    autocomplete,
+  }
+};
 

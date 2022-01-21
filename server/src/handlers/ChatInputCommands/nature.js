@@ -6,7 +6,7 @@ const Sim = require('@pkmn/sim');
 
 const colours = require('pkmn-colours');
 const getargs = require('discord-getarg');
-const buildEmbed = require('embed-builder');
+const { buildEmbed } = require('embed-builder');
 
 const stats = [
   {
@@ -31,7 +31,7 @@ const stats = [
   },
 ];
 
-const command = {
+const definition = {
   description: 'Returns the Nature that affects the stats provided.',
   options: [
     {
@@ -110,5 +110,10 @@ const process = (interaction) => {
   };
 }
 
-module.exports = {command, process}
+module.exports = {
+  definition,
+  command: {
+    process,
+  }
+};
 
