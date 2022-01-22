@@ -8,7 +8,7 @@ const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const { graphs } = require('pkmn-complete');
 
-const command = {
+const definition = {
   type: 3,
 };
 
@@ -90,5 +90,10 @@ const process = function(interaction) {
   };
 };
 
-module.exports = {command, process};
+module.exports = {
+  definition,
+  command: {
+    process
+  }
+};
 
