@@ -49,7 +49,7 @@ const process = async function(interaction) {
   const event = args.event ?? learnset.eventData?.length === 1 ? 1 : undefined;
 
   if(!event) {
-    const description = learnset['eventData']?.length ? `Include an Event ID for more information (1-${learnset['eventData'].length})` : '';
+    const description = learnset['eventData']?.length ? `Set the \`event\` option to a number between 1 and ${learnset['eventData'].length} for more information.` : '';
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
