@@ -109,7 +109,12 @@ function process(interaction) {
     types.push(...titleInfo.types);
   }
 
-  const title = (titleInfo.pokemon ? `${titleInfo.pokemon.name} [${titleInfo.pokemon.types.join('/')}] ` : '') + `${titleInfo.types.length > 0 ? ' + ' : ''}${titleInfo.types.join(', ')}`;
+  const titleSegments = [
+    titleInfo.pokemon ? `${titleInfo.pokemon.name} [${titleInfo.pokemon.types.join('/')}] ` : '',
+    titleInfo.types.join(', ')
+  ].filter(e=>e.length>0);
+
+  const title = titleSegments.join(' + ');
 
   const eff = {
     '0': [],
