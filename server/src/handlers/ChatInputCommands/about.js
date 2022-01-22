@@ -9,7 +9,6 @@ const definition = {
 };
 
 const process = function(interaction) {
-  throw 'oops';
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
