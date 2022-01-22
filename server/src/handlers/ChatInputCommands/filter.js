@@ -41,12 +41,12 @@ const definition = {
       autocomplete: true,
     },
     {
-      name: 'evolves',
+      name: 'has-evo',
       type: 5,
       description: 'Has (or does not have) an evolution.',
     },
     {
-      name: 'has-evolved',
+      name: 'has-prevo',
       type: 5,
       description: 'Has (or does not have) a pre-evolution',
     },
