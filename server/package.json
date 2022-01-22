@@ -1,6 +1,6 @@
 {
   "name": "sableyebot-server",
-  "version": "4.0.0-sigma",
+  "version": "4.0.0-rc1",
   "description": "Server Package for SableyeBot 4",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "gen-db": "file:src/modules/gen-db",
     "learnsetutils": "file:src/modules/learnsetutils",
     "lokijs": "^1.5.12",
-    "node-fetch": "^2.6.7",
+    "node-fetch": "^3.2.0",
     "pkmn-colours": "file:src/modules/pkmn-colours",
     "pkmn-complete": "file:src/modules/pkmn-complete",
     "pokemon-filters": "file:src/modules/pokemon-filters",

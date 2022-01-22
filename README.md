@@ -2,10 +2,6 @@
 
 Competitive Pokémon Discord Bot, rewritten from the ground up.
 
-This software is in sigma, which like a sigma male means it is totally unaware
-of how to be a functioning member of society. If it starts being especially bad,
-[let me know][hatemail].
-
 Proceed with caution.
 
 ## Installation
@@ -26,8 +22,7 @@ Follow these steps to run your own local copy:
 
 ## Issues
 
-Pre-release software has bugs.  Fact of life.  If you find a bug, please
-include the following in your [complaint][hatemail]:
+If you find a bug, please include the following in your [complaint][hatemail]:
 
 - A description of the bug (What should have happened? What did happen?)
 - Reproduction steps (This usually means pasting out the commands you used,
@@ -47,7 +42,7 @@ I'll fuss over the specifics myself.
 ## Credits
 * [PokemonShowdown][1] (by @Zarel/@smogon), the initial source of our
   data.
-* [Modular Pokémon Showdown][2] (by @pkmn), which puts PS into an
+* [Modular Pokémon Showdown][2] (by @scheibo/@pkmn), which puts PS into an
   easily queried format.
 * [SableyeBot3][3] (by @JsKingBoo), the direct predecessor to this bot.
 

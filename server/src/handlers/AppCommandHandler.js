@@ -2,7 +2,6 @@
 
 const { InteractionResponseType } = require('discord-interactions');
 const getargs = require('discord-getarg');
-const fetch = require('node-fetch');
 
 const { buildError } = require('embed-builder');
 
@@ -62,7 +61,7 @@ async function onApplicationCommand(req, res) {
     const followUp = commandData.followUp ?? (()=>{});
 
     res.json(await process);
-    
+
     await followUp(req.body);
   } catch (e) {
     console.error(e);

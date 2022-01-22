@@ -1,7 +1,6 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const fetch = require('node-fetch');
 
 const db = require('db-service');
 const { buildEmbed, buildError } = require('embed-builder');
@@ -408,20 +407,21 @@ async function process(interaction) {
       appId: interaction.application_id,
     }
   };
-  
+
   db.filters.insert(config);
-  
+
   return {
     type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
   };
 }
 
 async function followUp(interaction) {
+  const fetch = (await import('node-fetch')).default;
   const commandData = db.filters.findOne({interactionId: interaction.id});
   if(!commandData) { return; }
   const { threshold, gen, isVgc, sortKey } = commandData.parameters;
   const filters = commandData.filters.map(
-      e=>filterFactory[e.type](gen, e.query, isVgc)
+    e=>filterFactory[e.type](gen, e.query, isVgc)
   );
 
   const results = (await applyFilters(gen, filters, threshold)).sort((lhs, rhs) => {
@@ -505,10 +505,8 @@ async function followUp(interaction) {
       }
     ]),
   };
-  
-  console.log(JSON.stringify(message));
 
-  const response = await fetch(`https://discord.com/api/v9/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`,
+  await fetch(`https://discord.com/api/v9/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`,
     {
       method: 'PATCH',
       body: JSON.stringify(message),
@@ -518,8 +516,6 @@ async function followUp(interaction) {
       },
     }
   );
-
-  console.log(await response.text());
 }
 
 function getMultiComplete(resolver, completer, canNegate) {

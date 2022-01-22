@@ -1,7 +1,5 @@
 'use strict';
 
-const fetch = require('node-fetch');
-
 const { getCommandDefinitions } = require('./src/handlers/AppCommandHandler.js');
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -19,6 +17,7 @@ const options = {
 };
 
 async function main() {
+  const fetch = (await import('node-fetch')).default;
   const result = await fetch(`https://discord.com/api/v9/applications/${APP_ID}`
     + (GUILD_ID ? `/guilds/${GUILD_ID}` : '') + `/commands`, options);
   if(result.ok) {
@@ -30,3 +29,4 @@ async function main() {
 }
 
 main();
+
