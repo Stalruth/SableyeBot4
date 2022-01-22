@@ -1,8 +1,9 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const db = require('db-service');
+const fetch = require('node-fetch');
 
+const db = require('db-service');
 const { buildEmbed, buildError } = require('embed-builder');
 const getargs = require('discord-getarg');
 const gens = require('gen-db');
@@ -197,25 +198,28 @@ const definition = {
   ],
 };
 
-const process = async function(interaction) {
+async function process(interaction) {
   const args = getargs(interaction).params;
 
-  const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
-  const filters = [];
   const gen = args.gen ?? 'gen8natdex';
+  const data = gens.data[gen];
+  const filters = [];
   const isVgc = !(args['transfer-moves'] ?? true);
 
   if(args.abilities) {
     const abilities = args.abilities.split(',');
     for(const ability of abilities) {
       if(data.abilities.get(ability)?.exists) {
-        filters.push(filterFactory['ability'](gen, ability, isVgc));
+        filters.push({'type': 'ability', 'query': ability});
       } else {
         return {
-          embeds: [
-            buildError(`The ability ${ability} could not be found in the given generation.`)
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            embeds: [
+              buildError(`The ability ${ability} could not be found in the given generation.`)
+            ],
+            flags: InteractionResponseFlags.EPHEMERAL,
+          },
         };
       }
     }
@@ -225,13 +229,16 @@ const process = async function(interaction) {
     const types = args.types.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filters.push(filterFactory['type'](gen, type, isVgc));
+        filters.push({'type': 'type', 'query': type});
       } else {
         return {
-          embeds: [
-            buildError(`The type ${type} could not be found in the given generation.`)
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            embeds: [
+              buildError(`The type ${type} could not be found in the given generation.`)
+            ],
+            flags: InteractionResponseFlags.EPHEMERAL,
+          },
         };
       }
     }
@@ -241,13 +248,16 @@ const process = async function(interaction) {
     const moves = args.moves.split(',');
     for(const move of moves) {
       if(data.moves.get(move)?.exists) {
-        filters.push(filterFactory['move'](gen, move, isVgc));
+        filters.push({'type':'move','query':move});
       } else {
         return {
-          embeds: [
-            buildError(`The move ${move} could not be found in the given generation.`)
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            embeds: [
+              buildError(`The move ${move} could not be found in the given generation.`)
+            ],
+            flags: InteractionResponseFlags.EPHEMERAL,
+          },
         };
       }
     }
@@ -255,14 +265,23 @@ const process = async function(interaction) {
 
   for (const stat of ['hp','atk','def','spa','spd','spe','bst']) {
     if(args[stat]) {
-      if(args[stat].match(/^([<>]?\d+|\d+-\d+)$/) !== null) {
-        filters.push(filterFactory[stat](gen, args[stat], isVgc));
+      let match = false;
+      if(args[stat].startsWith('<') || args[stat].startsWith('>')) {
+        match = !isNaN(args[stat].slice(1));
+      } else {
+        match = !(args[stat].split('-').some(e => isNaN(e)));
+      }
+      if(match) {
+        filters.push({'type':stat,'query':args[stat]});
       } else {
         return {
-          embeds: [
-            buildError(`The query ${args[stat]} is not valid for the '${stat}' argument.`)
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            embeds: [
+              buildError(`The query ${args[stat]} is not valid for the '${stat}' argument.`)
+            ],
+            flags: InteractionResponseFlags.EPHEMERAL,
+          },
         };
       }
     }
@@ -277,13 +296,16 @@ const process = async function(interaction) {
         match = !(args[stat].split('-').some(e => isNaN(e)));
       }
       if(match) {
-        filters.push(filterFactory[stat](gen, args[stat], isVgc));
+        filters.push({'type':stat,'query':args[stat]});
       } else {
         return {
-          embeds: [
-            buildError(`The query ${args[stat]} is not valid for the '${stat}' argument.`)
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            embeds: [
+              buildError(`The query ${args[stat]} is not valid for the '${stat}' argument.`)
+            ],
+            flags: InteractionResponseFlags.EPHEMERAL,
+          },
         };
       }
     }
@@ -293,13 +315,16 @@ const process = async function(interaction) {
     const types = args.weaknesses.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filters.push(filterFactory['weakness'](gen, type, isVgc));
+        filters.push({type:'weakness',query:type});
       } else {
         return {
-          embeds: [
-            buildError(`The type ${type} could not be found in the given generation.`)
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            embeds: [
+              buildError(`The type ${type} could not be found in the given generation.`)
+            ],
+            flags: InteractionResponseFlags.EPHEMERAL,
+          },
         };
       }
     }
@@ -309,13 +334,16 @@ const process = async function(interaction) {
     const types = args.resists.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filters.push(filterFactory['resist'](gen, type, isVgc));
+        filters.push({type:'resist',query:type});
       } else {
         return {
-          embeds: [
-            buildError(`The type ${type} could not be found in the given generation.`)
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            embeds: [
+              buildError(`The type ${type} could not be found in the given generation.`)
+            ],
+            flags: InteractionResponseFlags.EPHEMERAL,
+          }
         };
       }
     }
@@ -323,35 +351,41 @@ const process = async function(interaction) {
 
   if(args['breeds-with']) {
     if(data.species.get(args['breeds-with'])?.exists) {
-      filters.push(filterFactory['breeds-with'](gen, args['breeds-with'], isVgc));
+      filters.push({type:'breeds-with',query:args['breeds-with']});
     } else {
       return {
-        embeds: [
-          buildError(`The Pokémon ${args['breeds-with']} could not be found in the given generation.`)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          embeds: [
+            buildError(`The Pokémon ${args['breeds-with']} could not be found in the given generation.`)
+          ],
+          flags: InteractionResponseFlags.EPHEMERAL,
+        },
       };
     }
   }
 
-  if(args.evolves !== undefined) {
-    filters.push(filterFactory['evolves'](gen, args['evolves'], isVgc));
+  if(args['has-evo'] !== undefined) {
+    filters.push({type:'has-evo',query:args['has-evo']});
   }
 
-  if(args['has-evolved'] !== undefined) {
-    filters.push(filterFactory['has-evolved'](gen, args['has-evolved'], isVgc));
+  if(args['has-prevo'] !== undefined) {
+    filters.push({type:'has-prevo',query:args['has-prevo']});
   }
 
   if(args['vgc-legality'] !== undefined) {
-    filters.push(filterFactory['vgc-legality'](gen, args['vgc-legality'], isVgc));
+    filters.push({type:'vgc-legality',query:args['vgc-legality']});
   }
 
   if(filters.length === 0) {
     return {
-      embeds: [
-        buildError("You haven't added any filters.")
-      ],
-      flags: InteractionResponseFlags.EPHEMERAL,
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        embeds: [
+          buildError("You haven't added any filters.")
+        ],
+        flags: InteractionResponseFlags.EPHEMERAL,
+      },
     };
   }
 
@@ -362,11 +396,33 @@ const process = async function(interaction) {
   const config = {
     interactionId: interaction.id,
     timestamp: interaction.id / 4194304 + 1420070400000,
+    filters,
+    parameters: {
+      sortKey,
+      isVgc,
+      gen,
+      threshold,
+    },
     webhook: {
       token: interaction.token,
       appId: interaction.application_id,
     }
   };
+  
+  db.filters.insert(config);
+  
+  return {
+    type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+  };
+}
+
+async function followUp(interaction) {
+  const commandData = db.filters.findOne({interactionId: interaction.id});
+  if(!commandData) { return; }
+  const { threshold, gen, isVgc, sortKey } = commandData.parameters;
+  const filters = commandData.filters.map(
+      e=>filterFactory[e.type](gen, e.query, isVgc)
+  );
 
   const results = (await applyFilters(gen, filters, threshold)).sort((lhs, rhs) => {
     if (!sortKey) {
@@ -449,15 +505,22 @@ const process = async function(interaction) {
       }
     ]),
   };
+  
+  console.log(JSON.stringify(message));
 
-  config.pages = pages;
+  const response = await fetch(`https://discord.com/api/v9/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(message),
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'SableyeBot (https://github.com/Stalruth/SableyeBot4, v4.0.0-rc1)',
+      },
+    }
+  );
 
-  if(pages.length > 1) {
-    db.filters.insert(config);
-  }
-
-  return message;
-};
+  console.log(await response.text());
+}
 
 function getMultiComplete(resolver, completer, canNegate) {
   return function multiCompleter(id) {
@@ -516,7 +579,7 @@ module.exports = {
   definition,
   command: {
     process,
-    defer: true,
+    followUp,
     autocomplete,
   }
 };

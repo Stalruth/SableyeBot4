@@ -239,7 +239,7 @@ const filterFactory = {
       },
     };
   },
-  evolves: (dataSet, arg, isVgc) => {
+  'has-evo': (dataSet, arg, isVgc) => {
     const value = ['t', true].includes(arg);
     return {
       description: `${value ? 'Has' : 'Does not have'} an evolution.`,
@@ -248,7 +248,7 @@ const filterFactory = {
       },
     };
   },
-  'has-evolved': (dataSet, arg, isVgc) => {
+  'has-prevo': (dataSet, arg, isVgc) => {
     const value = ['t', true].includes(arg);
     return {
       description: `${value ? 'Has' : 'Does not have'} a pre-evolution.`,

@@ -8,14 +8,10 @@ const { buildError } = require('embed-builder');
 
 const definitions = [];
 const commands = {};
-
-const processes = {};
-const autocompletes = {};
 const modulePaths = {};
-const defers = {};
 
 function initCommand(name) {
-  if(processes[name]) {
+  if(commands[name]) {
     // Command already added.
     return;
   }
@@ -63,23 +59,11 @@ async function onApplicationCommand(req, res) {
 
     const commandData = getCommandData(commandPath);
     const process = (commandData.process ?? (()=>{}))(req.body);
-    const defer = commandData.defer ?? false;
+    const followUp = commandData.followUp ?? (()=>{});
 
-    if(defer) {
-      res.json({
-        type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
-      });
-      await fetch(`https://discord.com/api/v9/webhooks/${req.body.application_id}/${req.body.token}/messages/@original`,
-      {
-        method: 'PATCH',
-        body: JSON.stringify(await process),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-    } else {
-      return res.json(await process);
-    }
+    res.json(await process);
+    
+    await followUp(req.body);
   } catch (e) {
     console.error(e);
     throw(e)
