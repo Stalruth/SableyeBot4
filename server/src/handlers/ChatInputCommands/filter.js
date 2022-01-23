@@ -438,6 +438,8 @@ async function followUp(interaction) {
   });
 
   const pages = paginate(results.map((el)=>{return el.name}), 1000);
+  commandData.pages = pages;
+  db.filters.update(commandData);
 
   const fields = [
     {
