@@ -25,6 +25,7 @@ function addCommand(name, modulePath) {
 }
 
 addCommand('about', './ChatInputCommands/about.js');
+addCommand('calculator', './ChatInputCommands/calculator.js');
 addCommand('coverage', './ChatInputCommands/coverage.js');
 addCommand('dt', './ChatInputCommands/dt.js');
 addCommand('event', './ChatInputCommands/event.js');
