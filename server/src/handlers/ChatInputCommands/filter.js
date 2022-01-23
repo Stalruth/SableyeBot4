@@ -2,7 +2,6 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 
-const db = require('db-service');
 const { buildEmbed, buildError } = require('embed-builder');
 const getargs = require('discord-getarg');
 const gens = require('gen-db');
@@ -198,6 +197,8 @@ const definition = {
 };
 
 async function process(interaction) {
+  const db = require('db-service');
+
   const args = getargs(interaction).params;
 
   const gen = args.gen ?? 'gen8natdex';
@@ -416,7 +417,9 @@ async function process(interaction) {
 }
 
 async function followUp(interaction) {
+  const db = require('db-service');
   const fetch = (await import('node-fetch')).default;
+
   const commandData = db.filters.findOne({interactionId: interaction.id});
   if(!commandData) { return; }
   const { threshold, gen, isVgc, sortKey } = commandData.parameters;
