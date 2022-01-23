@@ -14,6 +14,7 @@ filters.on('delete', async (data) => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, 4.0.0-rc2)',
       },
       body: JSON.stringify(message)
     });

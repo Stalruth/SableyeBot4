@@ -1,6 +1,6 @@
 {
   "name": "sableyebot-server",
-  "version": "4.0.0-rc1",
+  "version": "4.0.0-rc2",
   "description": "Server Package for SableyeBot 4",
   "main": "index.js",
   "scripts": {
