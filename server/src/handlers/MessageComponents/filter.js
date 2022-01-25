@@ -48,13 +48,18 @@ async function getPage(interaction) {
     return field;
   });
 
-  const pageList = [...(new Set([
-    1,
-    Math.max(pageNumber - 1, 1),
-    pageNumber,
-    Math.min(pageNumber + 1, pages.length),
-    pages.length
-  ]))];
+  const pageList = pages.length <= 5 ?
+    new Array(pages.length)
+      .fill(0)
+      .map((e,i)=>i+1)
+    :
+    [...(new Set([
+      1,
+      Math.max(pageNumber - 1, 1),
+      pageNumber,
+      Math.min(pageNumber + 1, pages.length),
+      pages.length
+    ]))];
 
   return {
     type: InteractionResponseType.UPDATE_MESSAGE,

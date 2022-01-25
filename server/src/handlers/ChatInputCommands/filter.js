@@ -487,11 +487,16 @@ async function followUp(interaction) {
     });
   }
 
-  const pageList = [...(new Set([
-    1,
-    Math.min(2, pages.length),
-    pages.length
-  ]))];
+  const pageList = pages.length <= 5 ?
+    new Array(pages.length)
+      .fill(0)
+      .map((e,i)=>i+1)
+    :
+    [...(new Set([
+      1,
+      Math.min(2, pages.length),
+      pages.length
+    ]))];
 
   const message = {
     embeds: [buildEmbed({
