@@ -30,13 +30,30 @@ async function getPage(interaction, respond) {
 
   // cache miss
   if(!pages) {
-    return respond({
+    respond({
       type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         embeds: interaction.message.embeds,
         components: []
       },
     });
+
+    await fetch(`https://discord.com/api/v9/webhooks/${interaction.application_id}/${interaction.token}`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          embeds: [
+            buildError('This command execution has expired, please run it again.')
+          ],
+          flags: InteractionResponseFlags.EPHEMERAL,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, v4.0.0-rc1)',
+        },
+      }
+    );
+    return;
   }
 
   const fields = interaction.message.embeds[0].fields.map(field => {
