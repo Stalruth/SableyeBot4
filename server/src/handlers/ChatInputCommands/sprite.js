@@ -35,7 +35,7 @@ const definition = {
       description: 'Show the female variant.',
     },
     {
-      name: 'afd',
+      name: 'april-fools',
       type: 5,
       description: 'Use the April Fools Day sprites.',
     },
@@ -75,9 +75,8 @@ const definition = {
 
 const process = function(interaction) {
   const args = getargs(interaction).params;
-  args.gen ??= 'ani';
 
-  const gen = args.afd ? 'gen5' : args.gen;
+  const gen = args['april-fools'] ? 'gen5' : (args.gen ?? 'ani');
 
   const pokemon = Sim.Dex.species.get(Data.toID(args.pokemon));
 
@@ -117,7 +116,7 @@ const process = function(interaction) {
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      content: args.afd ? spriteUrl.replace('gen5', 'afd') : spriteUrl,
+      content: args['april-fools'] ? spriteUrl.replace('gen5', 'afd') : spriteUrl,
     },
   };
 };
