@@ -18,9 +18,13 @@ addComponent('Search', './MessageComponents/dt.js');
 async function onComponentInteraction(req, res) {
   console.log(req.body.type, req.body.id, req.body.message.interaction.name, req.body.data.custom_id, JSON.stringify(req.body.data.values));
 
+  const respond = (response) => {
+    res.json(response)
+  }
+
   try {
     initComponent(req.body.message.interaction.name);
-    res.json(await processes[req.body.message.interaction.name](req.body));
+    await processes[req.body.message.interaction.name](req.body, respond);
   } catch (e) {
     console.error(e);
     res.sendStatus(500);

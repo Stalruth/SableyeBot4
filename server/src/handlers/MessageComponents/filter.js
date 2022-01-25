@@ -5,9 +5,10 @@ const db = require('db-service');
 
 const { buildEmbed, buildError } = require('embed-builder');
 
-async function getPage(interaction) {
+async function getPage(interaction, respond) {
+  const fetch = (await import('node-fetch')).default;
   if(interaction.member.user.id !== interaction.message.interaction.user.id) {
-    return {
+    return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -15,27 +16,27 @@ async function getPage(interaction) {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   const pageNumber = parseInt(interaction.data.custom_id, 10);
   if(!pageNumber || isNaN(pageNumber)) {
-    return {
+    return respond({
       type: InteractionResponseType.DEFERRED_UPDATE_MESSAGE,
-    };
+    });
   }
 
   const pages = db.filters.findOne({interactionId: interaction.message.interaction.id})?.pages;
 
   // cache miss
   if(!pages) {
-    return {
+    return respond({
       type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         embeds: interaction.message.embeds,
         components: []
       },
-    };
+    });
   }
 
   const fields = interaction.message.embeds[0].fields.map(field => {
@@ -61,7 +62,7 @@ async function getPage(interaction) {
       pages.length
     ]))];
 
-  return {
+  return respond({
     type: InteractionResponseType.UPDATE_MESSAGE,
     data: {
       embeds: [buildEmbed({
@@ -80,7 +81,7 @@ async function getPage(interaction) {
         }
       ],
     },
-  };
+  });
 }
 
 module.exports = getPage;
