@@ -10,7 +10,6 @@
     "serve-docs:md": "eleventy --serve",
     "build-docs": "npm-run-all build-docs:static build-docs:md",
     "serve-docs": "npm-run-all build-docs:static serve-docs:md",
-    "firebase-debug": "firebase emulators:start",
     "start": "node server/index.js",
     "debug": "node -r dotenv/config server/index.js",
     "update-commands": "node -r dotenv/config server/updateCommands.js"
@@ -21,8 +20,5 @@
     "@11ty/eleventy": "^1.0.0",
     "dotenv": "^10.0.0",
     "npm-run-all": "^4.1.5"
-  },
-  "engines": {
-    "node": "16"
   }
 }
