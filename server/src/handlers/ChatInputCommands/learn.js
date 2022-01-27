@@ -50,6 +50,39 @@ const definition = {
   ],
 };
 
+async function listMoves(data, pokemon, restriction) {
+  const vgcNotes = [,,,,,'Pentagon','Plus','Galar'];
+  const learnables = await data.learnsets.learnable(pokemon.id, restriction);
+
+  const learnsets = []
+  for await (const l of data.learnsets.all(pokemon)) {
+    learnsets.push(l);
+  }
+
+  const description = Object.keys(learnables)
+    .filter(id => learnsets.map(l => l['learnset'][id])
+        .flat()
+        .filter(source => !!source)
+        .filter(source => !restriction || (source.startsWith(String(data.num)) && !source.endsWith('V')))
+        .length > 0
+    )
+    .map(id=>data.moves.get(id))
+    .filter(el=>!!el)
+    .sort()
+    .join(', ');
+
+  return {
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+    data: {
+      embeds: [buildEmbed({
+        title: `${pokemon['name']}'s moveset:\n`,
+        description,
+        color: colours.types[Data.toID(pokemon.types[0])]
+      })],
+    },
+  };
+}
+
 const process = async function(interaction) {
   const args = getargs(interaction).params;
 
@@ -70,27 +103,13 @@ const process = async function(interaction) {
       },
     };
   }
+  
+  const restriction = args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined;
 
-  const learnables = await data.learnsets.learnable(pokemon.id, args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined);
-
-  let title = '';
-  let description = '';
+  const learnables = await data.learnsets.learnable(pokemon.id, restriction);
 
   if(!args.move) {
-    return {
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [buildEmbed({
-          title: `${pokemon['name']}'s moveset:\n`,
-          description: (Object.keys(learnables)
-            .map(id=>data.moves.get(id)?.name)
-            .filter(el=>!!el)
-            .sort()
-            .join(', ')),
-          color: colours.types[Data.toID(pokemon.types[0])]
-        })],
-      },
-    };
+    return await listMoves(data, pokemon, restriction);
   }
 
   const move = data.moves.get(Data.toID(args.move));
