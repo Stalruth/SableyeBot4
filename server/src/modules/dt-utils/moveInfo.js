@@ -17,7 +17,7 @@ function moveInfo(move, gen, verbose) {
     inline: true
   });
   fields.push({
-    name: 'Power',
+    name: 'Category',
     value: move.category,
     inline: true
   });
