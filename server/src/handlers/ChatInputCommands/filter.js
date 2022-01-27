@@ -438,8 +438,12 @@ async function followUp(interaction) {
   });
 
   const pages = paginate(results.map((el)=>{return el.name}), 1000);
-  commandData.pages = pages;
-  db.filters.update(commandData);
+  if (pages.length > 1) {
+    commandData.pages = pages;
+    db.filters.update(commandData);
+  } else {
+    db.filters.remove(commandData);
+  }
 
   const fields = [
     {
@@ -489,8 +493,8 @@ async function followUp(interaction) {
 
   const pageList = pages.length <= 5 ?
     new Array(pages.length)
-      .fill(0)
-      .map((e,i)=>i+1)
+    .fill(0)
+    .map((e,i)=>i+1)
     :
     [...(new Set([
       1,
