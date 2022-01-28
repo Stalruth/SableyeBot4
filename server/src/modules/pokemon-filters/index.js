@@ -158,18 +158,19 @@ const filterFactory = {
       throw moveId;
     }
 
-    const restrictions = {
-      6: 'Pentagon',
-      7: 'Plus',
-      8: 'Galar',
-    };
-
     return {
       async: true,
       description: `Has the move ${move['name']}`,
       predicate: async (pokemon) => {
-        const modId = isVgc ? restrictions[data.num] : undefined;
-        return data.learnsets.canLearn(pokemon.id, move.id, modId)
+        const sources = [];
+        for await (const l of data.learnsets.all(pokemon)) {
+          sources.push(l.learnset?.[move.id]);
+        }
+        return sources
+          .flat()
+          .filter(source => !!source)
+          .filter(source => !isVgc || (source.startsWith(String(data.num)) && !source.endsWith('V')))
+          .length > 0
       },
     };
   },
