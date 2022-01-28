@@ -51,10 +51,9 @@ const definition = {
 };
 
 async function listMoves(data, pokemon, restriction) {
-  const vgcNotes = [,,,,,'Pentagon','Plus','Galar'];
   const learnables = await data.learnsets.learnable(pokemon.id, restriction);
 
-  const learnsets = []
+  const learnsets = [];
   for await (const l of data.learnsets.all(pokemon)) {
     learnsets.push(l);
   }
@@ -154,7 +153,7 @@ const process = async function(interaction) {
   let currentSpecies = pokemon;
   while(true) {
     const sources = (await data.learnsets.get(currentSpecies.id) ?? await data.learnsets.get(currentSpecies.baseSpecies))['learnset'][move.id] ?? [];
-    const filteredSources = sources.filter(el => el[0] === latestSourceGen);
+    const filteredSources = sources.filter(el => (el[0].startsWith(`${latestSourceGen}`)) && !((args.mode === 'vgc') && el.endsWith('V')));
     if(filteredSources.length > 0) {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -184,11 +183,9 @@ const process = async function(interaction) {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
-        title: "Something went wrong!",
-        description: "Please let the developer know what command you ran to cause this message [here](https://github.com/Stalruth/SableyeBot4/issues/new)",
-        color: 0xCC0000,
+        description: `${pokemon.name} does not learn ${move.name} in Generation ${data.num}.`,
+        color: colours.types[Data.toID(pokemon.types[0])],
       })],
-      flags: InteractionResponseFlags.EPHEMERAL,
     },
   };
 };
