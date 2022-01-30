@@ -51,7 +51,7 @@ See the [more technical README][README].
 
 ## License
 
-SableyeBot is licensed under the [MIT License][LICENSE], and has [publicly
+Sableye Bot is licensed under the [MIT License][LICENSE], and has [publicly
 available source code][repo].
 
 ## Terms of Use

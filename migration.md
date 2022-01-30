@@ -4,7 +4,7 @@
 
 Sableye Bot currently accepts two different kinds of commands:
 
-- Prefix commands: These are the old commands we all know and love, which
+- Message commands: These are the old commands we all know and love, which
     would be sent as a message and the bot would respond to that message.
 
     Exacmples include `//dt Sableye` and `//sprite Yveltal`.
@@ -15,19 +15,14 @@ Sableye Bot currently accepts two different kinds of commands:
 
 ## What's Changing?
 
-On the **INSERT DATE HERE**, Sableye Bot will no longer be able to respond to
-Prefix Commands - from this date onwards Sableye Bot will only respond to
+On the 31st of March 2022, Sableye Bot will no longer be able to respond to
+Message Commands - from this date onwards Sableye Bot will only respond to
 Slash Commands.
 
-This means that the usage of the bot changes dramatically - the help text
-shown in the Slash Command UI should help with this.
+This means that the usage of the bot changes dramatically, however the new
+commands come with built-in help text to describe the function of each command.
 
 Additionally, some commands are being removed without replacement. These are:
-
-- `//calculator`
-
-    This was only a link to the Pokemon Showdown Damage Calculator.  I
-    strongly suspect it will not be missed.
 
 - `//addfc`
 - `//addgame`
@@ -36,7 +31,8 @@ Additionally, some commands are being removed without replacement. These are:
 - `//fc`
 
     These commands have fallen out of use in recent years with the release of
-    the Switch games.
+    the Switch games, and I would like to get my GDPR obligations out of the way
+    permanently.
 
 - `//ability`
 - `//item`
@@ -47,6 +43,9 @@ Additionally, some commands are being removed without replacement. These are:
     These were already called by `//data` (better knows as `//dt`), but the
     new `/dt` command also has a prompt to properly disambiguate between
     Metronome the Item and Metronome the Move.
+    
+    Additionally, these commands weren't used much compared to the (usually
+    equivalent) `//data` command.
 
 - The following filters on `//filter`:
     - `num`
@@ -77,7 +76,7 @@ Additionally, some commands are being removed without replacement. These are:
 ## Why?
 
 On the 30th of July 2021, Discord announced that access to Message Contents
-(required for Prefix Commands) would be placed behind a Privileged Intent,
+(required for Message Commands) would be placed behind a Privileged Intent,
 and only bots with features that depended on access to Message Content in a
 way that cannot be replicated with Slash Commands would be allowed to have
 it.
@@ -90,12 +89,8 @@ accept the new commands.
 The first version of Sableye Bot 4 was completed after about a week's worth
 of work, on the 5th of August.  It wasn't complete - notably it was missing
 replacements for `//filter` and `//sprite` - but over the next five months
-it would become a nearly feature complete replacement for the previous
-version of Sableye Bot.
-
-Yes bots are able to access the contents of messages featuring their @mention
-or in their Direct Messages - this was only negotiated by the Bot Developer
-community after I'd finished the initial version.
+it became a nearly feature complete replacement for the previous version of
+Sableye Bot.
 
 It's my hope that many of the new commands are easier for people to use,
 especially with the addition of Autocomplete options, though there are also
@@ -103,8 +98,8 @@ definitely some commands which suffer such as `/filter`.
 
 ## Why disable the commands a month early?
 
-So that if everything goes horribly wrong I can reinstate the old bot while
-things get fixed.
+I want to make the cut early so that the new bot can be tested under production
+conditions while I still have the option of going back if needed.
 
 ## Workarounds
 
@@ -113,10 +108,11 @@ descriptions that they are "Comma delimited lists".  This means that if you
 wish to pass multiple values to them you can - just separate different values
 with commas.
 
-For example, where the old command would take `//coverage dark fire` the new
+For example, where the old command would take `//coverage Dark, Fire` the new
 command works with `/coverage types:Dark, Fire`.
 
 This isn't perfect and I'll definitely be keeping my eyes open for any
 improvements I can make to these commands, but this is the workaround for now.
 
 [hatemail]: https://github.com/Stalruth/SableyeBot4/issues/new
+
