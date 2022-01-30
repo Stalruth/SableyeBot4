@@ -65,6 +65,7 @@ async function onApplicationCommand(req, res) {
 
     await followUp(req.body);
   } catch (e) {
+    console.error(req.body.type, req.body.id, ...[0,1,2].map(e=>commandPath[e] ?? null), JSON.stringify(info.params));
     console.error(e);
     throw(e)
   }
@@ -76,8 +77,6 @@ async function onAutocomplete(req, res) {
 
   try {
     initCommand(commandPath[0]);
-
-    console.log(req.body.type, req.body.id, ...[0,1,2].map(e=>commandPath[e] ?? null), JSON.stringify(info.params), info.focused);
 
     const commandData = getCommandData(commandPath);
     const autocompleteProcess = commandData.autocomplete ?? (()=>({type:8,choices:[info.params[info.focused]]}));
