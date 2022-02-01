@@ -1,4 +1,4 @@
-Accurate as of 12:00 19-Jan-2021 Australian Eastern Daylight Time (UTC+11)
+Accurate as of 00:00 31-Jan-2021 UTC
 
 # Sableye Bot Privacy Policy
 
@@ -9,6 +9,9 @@ retained and the basis for such processing or retention.
 If such collection, processing, or retention is not desired then do not engage
 with the Application in the ways detailed below.
 
+For the Privacy Policy as it pertains to Message Content Commands, please refer
+to [PRIVACY-v3]
+
 ## Methods of Data Collection
 
 The Application collects data sent to it through the "Interactions" facilities
@@ -18,7 +21,7 @@ features.
 All data collection occurs through this facility, and the Application does not
 engage in any passive collection of information outside of this channel.
 
-## What the Application Collects
+## What the Application Receives from Discord
 
 The application receives the following information from Discord when an
 Interaction is received:
@@ -127,4 +130,6 @@ database for up to 15 minutes to facilitate pagination of query results:
 No personal information is processed or retained for any length of time.  While
 this data is received from Discord, it is not used in the provision of the
 Application's functionality.
+
+[PRIVACY-v3]: /PRIVACY-v3/
 
