@@ -23,12 +23,12 @@ const process = function(interaction) {
         fields: [
           {
             name: 'Invite Link',
-            value: '[Click here](https://discord.com/api/oauth2/authorize?client_id=211522070620667905&permissions=0&scope=bot%20applications.commands)',
+            value: '[Click Here](https://discord.com/api/oauth2/authorize?client_id=211522070620667905&permissions=0&scope=bot%20applications.commands)',
             inline: true,
           },
           {
             name: 'Privacy Policy',
-            value: '[Click Here](https://sableye-bot.xyz/PRIVACY',
+            value: '[Click Here](https://sableye-bot.xyz/PRIVACY)',
             inline: true,
           },
           {
