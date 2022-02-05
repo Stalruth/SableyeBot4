@@ -53,3 +53,7 @@ footer a {
   color: #f7f7f7;
 }
 
+:root {
+  --color-link: #0E77CD;
+}
+
