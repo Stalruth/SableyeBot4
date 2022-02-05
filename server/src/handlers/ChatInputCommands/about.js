@@ -15,7 +15,7 @@ const process = function(interaction) {
       embeds: [buildEmbed({
         title: 'About SableyeBot',
         description: 'Competitive Pokemon Discord Bot',
-        url: 'https://github.com/StAlRuth/SableyeBot4',
+        url: 'https://sableye-bot.xyz/',
         author: {
           name: 'stalruth#3021',
           icon_url: 'https://cdn.discordapp.com/avatars/112038152390123520/56a380f68b4127e8bc49d8e08dd6bd6e.webp',
