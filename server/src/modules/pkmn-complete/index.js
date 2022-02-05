@@ -51,7 +51,7 @@ const graphs = {
 function complete(type) {
   function completeEntity(id) {
     return graphs[type]
-        .filter(e=>e.startsWith(Data.toID(id)))
+        .filter(e=>e.includes(Data.toID(id)))
         .slice(0,10)
         .map((e,i) => {
           return {
