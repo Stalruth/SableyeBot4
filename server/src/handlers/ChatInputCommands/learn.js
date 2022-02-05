@@ -87,7 +87,7 @@ const process = async function(interaction) {
 
   const vgcNotes = [,,,,,'Pentagon','Plus','Galar'];
 
-  const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
+  const data = gens.data[args.gen ? args.gen : 'natdex'];
 
   const pokemon = data.species.get(Data.toID(args.name));
 

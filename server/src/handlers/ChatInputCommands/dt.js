@@ -36,7 +36,7 @@ async function process(interaction) {
   const args = getargs(interaction);
   const { params } = args;
 
-  const data = gens.data[params.gen ? params.gen : 'gen8natdex'];
+  const data = gens.data[params.gen ? params.gen : 'natdex'];
 
   const results = getData(data, params.name);
 
@@ -69,7 +69,7 @@ async function process(interaction) {
           type: 1,
           components: [{
             type: 3,
-            custom_id: `${results[0].id}|${params.gen ?? 'gen8natdex'}|${params.verbose ? 'true' : ''}`,
+            custom_id: `${results[0].id}|${params.gen ?? 'natdex'}|${params.verbose ? 'true' : ''}`,
             options: results.map(entity => ({
               label: entity.effectType,
               value: entity.effectType,

@@ -4,7 +4,7 @@ const Sim = require('@pkmn/sim');
 
 const existedEver = (d) => {
   if (!d.exists) return false;
-  if ('isNonstandard' in d && ![null, 'Past'].includes(d.isNonstandard)) return false;
+  if ('isNonstandard' in d && ![null, 'Past', 'Future'].includes(d.isNonstandard)) return false;
   if (d.kind === 'Ability' && d.id === 'noability') return false;
   return !('tier' in d && d.tier === 'Unreleased');
 };
@@ -48,8 +48,8 @@ const genNames = [
     value: 'gen8bdsp',
   },
   {
-    name: 'Gen 8 National Dex',
-    value: 'gen8natdex',
+    name: 'National Dex',
+    value: 'natdex',
   },
 ];
 
@@ -102,9 +102,9 @@ const genData = {
     delete genData['gen8bdsp'];
     return genData['gen8bdsp'] = getGen(new Mods.ModdedDex(Sim.Dex.mod('gen8bdsp', ModBdsp)), 8);
   },
-  get ['gen8natdex']() {
-    delete genData['gen8natdex'];
-    return genData['gen8natdex'] = getGen(Sim.Dex, 8, existedEver);
+  get ['natdex']() {
+    delete genData['natdex'];
+    return genData['natdex'] = getGen(Sim.Dex, 8, existedEver);
   },
 }
 

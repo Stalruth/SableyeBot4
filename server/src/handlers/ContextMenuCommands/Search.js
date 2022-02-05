@@ -15,7 +15,7 @@ const definition = {
 const process = function(interaction) {
   const contents = [];
   const results = new Set();
-  const genData = gens.data['gen8natdex'];
+  const genData = gens.data['natdex'];
 
   for(const message in interaction.data.resolved.messages) {
     const contentId = toID(interaction.data.resolved.messages[message].content);
@@ -78,7 +78,7 @@ const process = function(interaction) {
         type: 1,
         components: [{
           type: 3,
-          custom_id: '|gen8natdex|',
+          custom_id: '|natdex|',
           options: [...results].map(e=>({
             label: `${e.name} (${e.effectType})`,
             value: `${e.effectType}|${e.id}`,

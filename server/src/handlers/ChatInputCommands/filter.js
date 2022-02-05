@@ -201,7 +201,7 @@ async function process(interaction) {
 
   const args = getargs(interaction).params;
 
-  const gen = args.gen ?? 'gen8natdex';
+  const gen = args.gen ?? 'natdex';
   const data = gens.data[gen];
   const filters = [];
   const isVgc = !(args['transfer-moves'] ?? true);
@@ -569,11 +569,11 @@ function autocomplete(interaction) {
 
   const autoArg = params[focused];
   const completers = {
-    'abilities': getMultiComplete(gens.data['gen8natdex'].abilities, completeAbility, false),
-    'types': getMultiComplete(gens.data['gen8natdex'].types, completeFilterType, true),
-    'moves': getMultiComplete(gens.data['gen8natdex'].moves, completeMove, false),
-    'weaknesses': getMultiComplete(gens.data['gen8natdex'].types, completeType, false),
-    'resists': getMultiComplete(gens.data['gen8natdex'].types, completeType, false),
+    'abilities': getMultiComplete(gens.data['natdex'].abilities, completeAbility, false),
+    'types': getMultiComplete(gens.data['natdex'].types, completeFilterType, true),
+    'moves': getMultiComplete(gens.data['natdex'].moves, completeMove, false),
+    'weaknesses': getMultiComplete(gens.data['natdex'].types, completeType, false),
+    'resists': getMultiComplete(gens.data['natdex'].types, completeType, false),
     'breeds-with': completePokemon,
   };
 

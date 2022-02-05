@@ -39,7 +39,7 @@ const definition = {
 function process(interaction) {
   const args = getargs(interaction).params;
 
-  const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
+  const data = gens.data[args.gen ? args.gen : 'natdex'];
 
   if(!args.pokemon && !args.types) {
     return {
@@ -173,7 +173,7 @@ function autocomplete(interaction) {
   if(focused === 'types') {
     let typesGiven = 0;
     if(params.pokemon) {
-      const pokemon = gens.data['gen8natdex'].species.get(Data.toID(params.pokemon));
+      const pokemon = gens.data['natdex'].species.get(Data.toID(params.pokemon));
       if(pokemon?.exists) {
         typesGiven = pokemon.types.length;
       }
@@ -183,7 +183,7 @@ function autocomplete(interaction) {
       .slice(0,4 - typesGiven)
       .map(Data.toID);
     const current = types.pop();
-    const resolved = types.map(e=>gens.data['gen8natdex'].types.get(e));
+    const resolved = types.map(e=>gens.data['natdex'].types.get(e));
 
     if(resolved.some(e=>!e)) {
       res.json({

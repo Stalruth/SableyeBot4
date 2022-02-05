@@ -32,7 +32,7 @@ const definition = {
 const process = (interaction) => {
   const args = getargs(interaction).params;
 
-  const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
+  const data = gens.data[args.gen ? args.gen : 'natdex'];
 
   const pokemon = data.species.get(Data.toID(args.pokemon));
 

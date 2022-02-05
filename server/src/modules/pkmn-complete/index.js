@@ -6,7 +6,7 @@ const Data = require('@pkmn/data');
 const gens = require('gen-db');
 
 function graphGetter(type) {
-  const graph = Array.from(gens.data['gen8natdex'][type])
+  const graph = Array.from(gens.data['natdex'][type])
       .map(e=>e.id)
       .sort();
   return graph;
@@ -55,7 +55,7 @@ function complete(type) {
         .slice(0,10)
         .map((e,i) => {
           return {
-            name: gens.data['gen8natdex'][type].get(e).name,
+            name: gens.data['natdex'][type].get(e).name,
             value: e,
           };
         });
@@ -75,7 +75,7 @@ function completeFilterType(id) {
       .filter(e=>e.startsWith(Data.toID(id)))
       .map((e,i) => {
         return {
-          name: `${negate}${gens.data['gen8natdex'].types.get(e).name}`,
+          name: `${negate}${gens.data['natdex'].types.get(e).name}`,
           value: `${negate}${e}`,
         };
       });

@@ -20,10 +20,10 @@
   },
   "homepage": "https://sableye-bot.web.app",
   "dependencies": {
-    "@pkmn/data": "^0.5.4",
+    "@pkmn/data": "^0.5.6",
     "@pkmn/img": "^0.1.14",
-    "@pkmn/mods": "^0.5.4",
-    "@pkmn/sim": "^0.5.4",
+    "@pkmn/mods": "^0.5.6",
+    "@pkmn/sim": "^0.5.6",
     "db-service": "file:src/modules/db-service",
     "discord-getarg": "file:src/modules/discord-getarg",
     "discord-interactions": "^2.4.1",

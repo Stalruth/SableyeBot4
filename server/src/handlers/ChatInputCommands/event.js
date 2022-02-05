@@ -31,7 +31,7 @@ const definition = {
 const process = async function(interaction) {
   const args = getargs(interaction).params;
 
-  const pokemon = gens.data['gen8natdex'].species.get(Data.toID(args.name));
+  const pokemon = gens.data['natdex'].species.get(Data.toID(args.name));
 
   if(!pokemon) {
     return {
@@ -45,7 +45,7 @@ const process = async function(interaction) {
     };
   }
 
-  const learnset = await gens.data['gen8natdex'].learnsets.get(pokemon['id']);
+  const learnset = await gens.data['natdex'].learnsets.get(pokemon['id']);
   const event = args.event ?? learnset.eventData?.length === 1 ? 1 : undefined;
 
   if(!event) {
@@ -147,7 +147,7 @@ const process = async function(interaction) {
 
   fields.push({
     name: 'Moves',
-    value: eventData['moves'].map(el=>gens.data['gen8natdex'].moves.get(el).name).join(', '),
+    value: eventData['moves'].map(el=>gens.data['natdex'].moves.get(el).name).join(', '),
   });
 
   return {

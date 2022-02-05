@@ -33,7 +33,7 @@ const definition = {
 const process = (interaction) => {
   const args = getargs(interaction).params;
 
-  const data = gens.data[args.gen ? args.gen : 'gen8natdex'];
+  const data = gens.data[args.gen ? args.gen : 'natdex'];
 
   const types = [...new Set(args.types
       .split(',')
@@ -117,7 +117,7 @@ function autocomplete(interaction) {
       .slice(0,3)
       .map(Data.toID);
   const current = types.pop();
-  const resolved = types.map(e=>gens.data['gen8natdex'].types.get(e));
+  const resolved = types.map(e=>gens.data['natdex'].types.get(e));
 
   if(resolved.some(e=>!e)) {
     return {
