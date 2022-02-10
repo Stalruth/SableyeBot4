@@ -48,11 +48,11 @@ const graphs = {
   },
 };
 
-function complete(type) {
-  function completeEntity(id) {
+function getMatcher(type) {
+  function getMatches(query) {
+    const id = Data.toID(query);
     return graphs[type]
-        .filter(e=>e.includes(Data.toID(id)))
-        .slice(0,10)
+        .filter(e=>e.includes(id))
         .map((e,i) => {
           return {
             name: gens.data['natdex'][type].get(e).name,
@@ -60,31 +60,12 @@ function complete(type) {
           };
         });
   }
-  return completeEntity;
+  return getMatches;
 }
 
-const completeAbility = complete('abilities');
-const completeMove = complete('moves');
-const completeItem = complete('items');
-const completeNature = complete('natures');
-const completePokemon = complete('species');
-
-function completeFilterType(id) {
-  const negate = id.trimStart().startsWith('!') ? '!' : '';
-  return graphs.types
-      .filter(e=>e.startsWith(Data.toID(id)))
-      .map((e,i) => {
-        return {
-          name: `${negate}${gens.data['natdex'].types.get(e).name}`,
-          value: `${negate}${e}`,
-        };
-      });
-}
-
-function completeSprite(id) {
+function getSpriteMatches(query) {
   return graphs.sprites
-      .filter(e=>e.startsWith(Data.toID(id)))
-      .slice(0,10)
+      .filter(e=>e.startsWith(Data.toID(query)))
       .map((e,i)=>{
         return {
           name: Sim.Dex.species.get(e).name,
@@ -93,31 +74,61 @@ function completeSprite(id) {
       });
 }
 
-function completeAll(id) {
-  return [
-      ...completeAbility(id),
-      ...completeMove(id),
-      ...completeItem(id),
-      ...completeNature(id),
-      ...completePokemon(id)
-  ].sort((lhs, rhs) => {
+const getAbilityMatches = getMatcher('abilities');
+const getMoveMatches = getMatcher('moves');
+const getItemMatches = getMatcher('items');
+const getNatureMatches = getMatcher('natures');
+const getPokemonMatches = getMatcher('species');
+const getTypeMatches = getMatcher('types');
+
+function getMatchSorter(query) {
+  return function matchSorter(lhs, rhs) {
+    const id = Data.toID(query);
+    if(lhs.value.startsWith(id) && !rhs.value.startsWith(id)) {
+      return -1;
+    }
+    if(rhs.value.startsWith(id) && !lhs.value.startsWith(id)) {
+      return 1;
+    }
     if(lhs.value < rhs.value) return -1;
     if(lhs.value > rhs.value) return 1;
     return 0;
-  }).filter((el,i,arr)=>{
-    return el.value !== arr[i-1]?.value;
-  }).slice(0,10);
+  }
+}
+
+function completeFilterType(query) {
+  const negate = query.trimStart().startsWith('!') ? '!' : '';
+  return getTypeMatches(query)
+      .sort(getMatchSorter(query))
+      .map(e => {
+        return {
+          name: `${negate}${e.name}`,
+          value: `${negate}${e.value}`,
+        };
+      });
+}
+
+function getCompleter(matchers) {
+  return function completer(query) {
+    return matchers
+    .reduce((acc, cur) => {
+      return [...acc, ...cur(query)];
+    }, [])
+    .sort(getMatchSorter(query))
+    .filter((el,i,arr)=>(el.value!==arr[i-1]?.value))
+    .slice(0, 10);
+  }
 }
 
 module.exports = {
   graphs,
-  completeAbility,
-  completeMove,
-  completeItem,
-  completePokemon,
-  completeType: complete('types'),
+  completeAbility: getCompleter([getAbilityMatches]),
+  completeMove: getCompleter([getMoveMatches]),
+  completeItem: getCompleter([getItemMatches]),
+  completePokemon: getCompleter([getPokemonMatches]),
+  completeType: getCompleter([getTypeMatches]),
   completeFilterType,
-  completeSprite,
-  completeAll,
+  completeSprite: getCompleter([getSpriteMatches]),
+  completeAll: getCompleter([getAbilityMatches, getMoveMatches, getItemMatches, getNatureMatches, getPokemonMatches]),
 };
 
