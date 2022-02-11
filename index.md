@@ -5,9 +5,9 @@
 Competitive Pokémon Discord Bot.  Features accurate data for every Pokémon
 game from Red and Blue to Sword and Shield.
 
-Slash commands are currently being trialled in a limited selection of servers
-and will be rolled out to all servers after some improvements are made to
-Discord.
+As of 14-Feb-2022, slash commands are currently available in all servers. If
+they aren't available in yours click the "Add to Server" button in Sableye
+Bot's profile to re-invite it to the server, no kicking necessary.
 
 ## Features
 

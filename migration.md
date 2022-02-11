@@ -43,9 +43,9 @@ Additionally, some commands are being removed without replacement. These are:
     These were already called by `//data` (better knows as `//dt`), but the
     new `/dt` command also has a prompt to properly disambiguate between
     Metronome the Item and Metronome the Move.
-    
-    Additionally, these commands weren't used much compared to the (usually
-    equivalent) `//data` command.
+
+    Additionally, these commands weren't used much compared to the
+    (equivalent) `//data` command.
 
 - The following filters on `//filter`:
     - `num`
@@ -71,7 +71,7 @@ Additionally, some commands are being removed without replacement. These are:
     - `monotype`
 
       This filter can be replicated with `types` as you can negate items with
-      an exclamation mark prefix - but this is also not incredibly useful.
+      an exclamation mark prefix.
 
 ## Why?
 

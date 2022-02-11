@@ -9,8 +9,8 @@ retained and the basis for such processing or retention.
 If such collection, processing, or retention is not desired then do not engage
 with the Application in the ways detailed below.
 
-For the Privacy Policy as it pertains to Message Content Commands, please refer
-to [PRIVACY-v3]
+This Privacy Policy is in force in conjunction with the Privacy Policy located
+at [PRIVACY-v3] until at least 31-Mar-2022.
 
 ## Methods of Data Collection
 

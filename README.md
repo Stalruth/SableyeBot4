@@ -1,8 +1,8 @@
 # SableyeBot 4
 
-Competitive Pokémon Discord Bot, rewritten from the ground up.
+[Invite this bot to your guild!][invite]
 
-Proceed with caution.
+Competitive Pokémon Discord Bot, rewritten from the ground up.
 
 ## Installation
 
@@ -13,7 +13,7 @@ Follow these steps to run your own local copy:
 1. Clone this repository.
 2. Rename `example.env` to `.env` and fill out the fields needed.
 3. Run `npm i` to install dependencies.
-4. Enter the `functions` directory and run `npm i` to install its dependencies.
+4. Enter the `server` directory and run `npm i` to install its dependencies.
 5. Run `npm run update-commands` to update command definitions with Discord.
 6. Run `npm run debug` to run the application proper.
     - You should use `ngrok` or simlar to get this working in a test
@@ -51,6 +51,7 @@ I'll fuss over the specifics myself.
 [MIT License][LICENSE]
 
 [hatemail]: https://github.com/Stalruth/SableyeBot4/issues/new
+[invite]: https://discord.com/api/oauth2/authorize?client_id=211522070620667905&permissions=0&scope=applications.commands%20bot
 [LICENSE]: /LICENSE
 [1]: https://github.com/Zarel/Pokemon-Showdown
 [2]: https://github.com/pkmn/ps
