@@ -9,7 +9,7 @@ filters.on('delete', async (data) => {
   try {
     const originalMessage = await fetch(`https://discord.com/api/v9/webhooks/${data.webhook.appId}/${data.webhook.token}/messages/@original`, {
       headers: {
-        'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, 4.0.0-rc9)',
+        'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, 4.0.0-rc10)',
       }
     });
     const message = await originalMessage.json();
@@ -18,7 +18,7 @@ filters.on('delete', async (data) => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, 4.0.0-rc9)',
+        'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, 4.0.0-rc10)',
       },
       body: JSON.stringify(message)
     });
