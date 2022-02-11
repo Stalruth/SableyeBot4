@@ -37,12 +37,6 @@ footer {
   bottom: 0;
 }
 
-@media(prefers-color-scheme: dark) {
-  footer {
-    background-color: #2d213d;
-  }
-}
-
 footer div {
   margin: 0 auto;
   padding: 0.5rem; 0;
@@ -55,5 +49,15 @@ footer a {
 
 :root {
   --color-link: #0E77CD;
+}
+
+@media(prefers-color-scheme: dark) {
+  footer {
+    background-color: #2d213d;
+  }
+  
+  :root {
+    --color-link: #0097fc;
+  }
 }
 
