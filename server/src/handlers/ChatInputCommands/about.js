@@ -32,6 +32,11 @@ const process = function(interaction) {
             inline: true,
           },
           {
+            name: 'Terms of Use',
+            value: '[Click Here](https://sableye-bot.xyz/TERMS)',
+            inline: true,
+          },
+          {
             name: 'Language',
             value: 'JavaScript (Powered by [express.js](https://expressjs.com/))',
           },
