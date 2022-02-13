@@ -11,19 +11,19 @@ const { completePokemon, completeType } = require('pkmn-complete');
 const damageTaken = require('typecheck');
 
 const definition = {
-  description: 'Returns type coverage based on a Pokémons STAB and/or types.',
+  description: 'Returns type coverage based on a Pokémon\'s STAB and/or types.',
   options: [
     {
       name: 'pokemon',
       type: 3,
-      description: 'Pokémon to check the coverage of.',
+      description: 'Pokémon to check.',
       required: false,
       autocomplete: true,
     },
     {
       name: 'types',
       type: 3,
-      description: 'Types to check the coverage of.',
+      description: 'Types to check. (Comma-delimited list)',
       required: false,
       autocomplete: true,
     },

@@ -17,7 +17,7 @@ const definition = {
     {
       name: 'types',
       type: 3,
-      description: 'Comma separated list of types to check the weaknesses of.',
+      description: 'Types to check the weaknesses of. (Comma-delimited list)',
       required: true,
       autocomplete: true,
     },
