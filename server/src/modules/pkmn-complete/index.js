@@ -96,18 +96,6 @@ function getMatchSorter(query) {
   }
 }
 
-function completeFilterType(query) {
-  const negate = query.trimStart().startsWith('!') ? '!' : '';
-  return getTypeMatches(query)
-      .sort(getMatchSorter(query))
-      .map(e => {
-        return {
-          name: `${negate}${e.name}`,
-          value: `${negate}${e.value}`,
-        };
-      });
-}
-
 function getCompleter(matchers) {
   return function completer(query) {
     return matchers
@@ -121,13 +109,11 @@ function getCompleter(matchers) {
 }
 
 module.exports = {
-  graphs,
   completeAbility: getCompleter([getAbilityMatches]),
   completeMove: getCompleter([getMoveMatches]),
   completeItem: getCompleter([getItemMatches]),
   completePokemon: getCompleter([getPokemonMatches]),
   completeType: getCompleter([getTypeMatches]),
-  completeFilterType,
   completeSprite: getCompleter([getSpriteMatches]),
   completeAll: getCompleter([getAbilityMatches, getMoveMatches, getItemMatches, getNatureMatches, getPokemonMatches]),
 };

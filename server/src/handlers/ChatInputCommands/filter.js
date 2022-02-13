@@ -541,7 +541,7 @@ function getMultiComplete(resolver, completer, canNegate) {
       if (!effect) {
         return null;
       }
-      const negated = (e.trimStart().startsWith('!') && canNegate) ? '!' : '';
+      const negated = (canNegate && e.trim()[0] === '!') ? '!' : '';
       return {
         name: `${negated}${effect.name}`,
         value: `${negated}${effect.id}`,
@@ -557,10 +557,11 @@ function getMultiComplete(resolver, completer, canNegate) {
       value: `${acc.value}${cur.value},`,
     }),{name: '', value: ''});
 
+    const negated = (canNegate && currentTerm.trim()[0] === '!') ? '!' : '';
     return completer(currentTerm).map(choice => ({
-      name: `${prefix.name}${choice.name}`,
-      value: `${prefix.value}${choice.value}`
-    }))
+      name: `${prefix.name}${negated}${choice.name}`,
+      value: `${prefix.value}${negated}${choice.value}`
+    }));
   };
 }
 
@@ -570,7 +571,7 @@ function autocomplete(interaction) {
   const autoArg = params[focused];
   const completers = {
     'abilities': getMultiComplete(gens.data['natdex'].abilities, completeAbility, false),
-    'types': getMultiComplete(gens.data['natdex'].types, completeFilterType, true),
+    'types': getMultiComplete(gens.data['natdex'].types, completeType, true),
     'moves': getMultiComplete(gens.data['natdex'].moves, completeMove, false),
     'weaknesses': getMultiComplete(gens.data['natdex'].types, completeType, false),
     'resists': getMultiComplete(gens.data['natdex'].types, completeType, false),
