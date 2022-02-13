@@ -135,7 +135,7 @@ const filterFactory = {
       throw typeId;
     }
 
-    if(typeId.startsWith('!')) {
+    if(typeId.trim()[0] === '!') {
       return {
         description: `Is not ${type['name']}-type`,
         predicate: (pokemon) => {
@@ -158,9 +158,27 @@ const filterFactory = {
       throw moveId;
     }
 
+    if(moveId.trim()[0] === '!') {
+      return {
+        async: true,
+        description: `Does not learn ${move['name']}`,
+        predicate: async (pokemon) => {
+          const sources = [];
+          for await (const l of data.learnsets.all(pokemon)) {
+            sources.push(l.learnset?.[move.id]);
+          }
+          return sources
+            .flat()
+            .filter(source => !!source)
+            .filter(source => !isVgc || (source.startsWith(String(data.num)) && !source.endsWith('V')))
+            .length === 0;
+        },
+      };
+    }
+
     return {
       async: true,
-      description: `Has the move ${move['name']}`,
+      description: `Learns ${move['name']}`,
       predicate: async (pokemon) => {
         const sources = [];
         for await (const l of data.learnsets.all(pokemon)) {
@@ -170,7 +188,7 @@ const filterFactory = {
           .flat()
           .filter(source => !!source)
           .filter(source => !isVgc || (source.startsWith(String(data.num)) && !source.endsWith('V')))
-          .length > 0
+          .length > 0;
       },
     };
   },

@@ -30,7 +30,7 @@ const definition = {
     {
       name: 'abilities',
       type: 3,
-      description: 'Can have the Abilities listed. (Comma-delimited list)',
+      description: 'Can have the Abilities given. (Comma-delimited list)',
       autocomplete: true,
     },
     {
@@ -52,19 +52,19 @@ const definition = {
     {
       name: 'moves',
       type: 3,
-      description: 'Can learn the moves listed (except through Sketch). (Comma-delimited list)',
+      description: 'Can learn the moves given (besides Sketch). (Comma-delimited list, prefix a move with `!` to negate)',
       autocomplete: true,
     },
     {
       name: 'resists',
       type: 3,
-      description: 'Takes less than 1x damage from the types listed (disregards Abilities). (Comma-delimited list)',
+      description: 'Takes less than 1x damage from the types given (disregards Abilities). (Comma-delimited list)',
       autocomplete: true,
     },
     {
       name: 'types',
       type: 3,
-      description: 'Has all of the types listed. (Comma-delimited list, prefix a type with `!` to negate)',
+      description: 'Has all of the types given. (Comma-delimited list, prefix a type with `!` to negate)',
       autocomplete: true,
     },
     {
@@ -93,7 +93,7 @@ const definition = {
     {
       name: 'weaknesses',
       type: 3,
-      description: 'Takes more than 1x damage from the types listed (disregards Abilities). (Comma-delimited list)',
+      description: 'Takes more than 1x damage from the types given (disregards Abilities). (Comma-delimited list)',
       autocomplete: true,
     },
     {
@@ -210,7 +210,7 @@ async function process(interaction) {
     const abilities = args.abilities.split(',');
     for(const ability of abilities) {
       if(data.abilities.get(ability)?.exists) {
-        filters.push({'type': 'ability', 'query': ability});
+        filters.push({'type':'ability','query':ability});
       } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -229,7 +229,7 @@ async function process(interaction) {
     const types = args.types.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filters.push({'type': 'type', 'query': type});
+        filters.push({'type':'type','query':type});
       } else {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -572,7 +572,7 @@ function autocomplete(interaction) {
   const completers = {
     'abilities': getMultiComplete(gens.data['natdex'].abilities, completeAbility, false),
     'types': getMultiComplete(gens.data['natdex'].types, completeType, true),
-    'moves': getMultiComplete(gens.data['natdex'].moves, completeMove, false),
+    'moves': getMultiComplete(gens.data['natdex'].moves, completeMove, true),
     'weaknesses': getMultiComplete(gens.data['natdex'].types, completeType, false),
     'resists': getMultiComplete(gens.data['natdex'].types, completeType, false),
     'breeds-with': completePokemon,
