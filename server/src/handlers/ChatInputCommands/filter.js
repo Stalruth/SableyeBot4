@@ -526,7 +526,7 @@ async function followUp(interaction) {
       body: JSON.stringify(message),
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, v4.0.0-rc10)',
+        'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, v4.0.0-rc11)',
       },
     }
   );
