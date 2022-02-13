@@ -109,6 +109,7 @@ function getCompleter(matchers) {
 }
 
 module.exports = {
+  graphs,
   completeAbility: getCompleter([getAbilityMatches]),
   completeMove: getCompleter([getMoveMatches]),
   completeItem: getCompleter([getItemMatches]),
