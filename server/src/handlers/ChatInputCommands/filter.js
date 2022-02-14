@@ -520,7 +520,7 @@ async function followUp(interaction) {
     ]),
   };
 
-  await fetch(`https://discord.com/api/v9/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`,
+  await fetch(`https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`,
     {
       method: 'PATCH',
       body: JSON.stringify(message),

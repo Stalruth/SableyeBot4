@@ -7,14 +7,14 @@ const filters = db.addCollection('filters', {indices: ['interactionId'], ttl: (1
 filters.on('delete', async (data) => {
   const fetch = (await import('node-fetch')).default;
   try {
-    const originalMessage = await fetch(`https://discord.com/api/v9/webhooks/${data.webhook.appId}/${data.webhook.token}/messages/@original`, {
+    const originalMessage = await fetch(`https://discord.com/api/v10/webhooks/${data.webhook.appId}/${data.webhook.token}/messages/@original`, {
       headers: {
         'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, 4.0.0-rc12)',
       }
     });
     const message = await originalMessage.json();
     message.components = [];
-    await fetch(`https://discord.com/api/v9/webhooks/${data.webhook.appId}/${data.webhook.token}/messages/@original`, {
+    await fetch(`https://discord.com/api/v10/webhooks/${data.webhook.appId}/${data.webhook.token}/messages/@original`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

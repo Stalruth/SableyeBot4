@@ -38,7 +38,7 @@ async function getPage(interaction, respond) {
       },
     });
 
-    await fetch(`https://discord.com/api/v9/webhooks/${interaction.application_id}/${interaction.token}`,
+    await fetch(`https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}`,
       {
         method: 'POST',
         body: JSON.stringify({
