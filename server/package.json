@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "debug": "node -r dotenv/config index.js",
-    "update-commands": "node -r dotenv/config updateCommands.js"
+    "update-commands": "node -r dotenv/config updateCommands.js",
+    "delete-commands": "node -r dotenv/config deleteCommands.js"
   },
   "repository": {
     "type": "git",
