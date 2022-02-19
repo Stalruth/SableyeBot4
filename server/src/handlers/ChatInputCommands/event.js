@@ -46,7 +46,7 @@ const process = async function(interaction) {
   }
 
   const learnset = await gens.data['natdex'].learnsets.get(pokemon['id']);
-  const event = args.event ?? learnset.eventData?.length === 1 ? 1 : undefined;
+  const event = args.event ?? (learnset.eventData?.length === 1 ? 1 : undefined);
 
   if(!event) {
     const description = learnset['eventData']?.length ? `Set the \`event\` option to a number between 1 and ${learnset['eventData'].length} for more information.` : '';
