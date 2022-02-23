@@ -7,7 +7,7 @@ const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pkmn-colours');
-const { completePokemon, completeType } = require('pkmn-complete');
+const { completePokemon, completeType, getMultiComplete } = require('pkmn-complete');
 const damageTaken = require('typecheck');
 
 const definition = {
@@ -171,51 +171,24 @@ function autocomplete(interaction) {
   }
 
   if(focused === 'types') {
-    let typesGiven = 0;
-    if(params.pokemon) {
-      const pokemon = gens.data['natdex'].species.get(Data.toID(params.pokemon));
-      if(pokemon?.exists) {
-        typesGiven = pokemon.types.length;
-      }
-    }
-
-    const types = params.types.split(',')
-      .slice(0,4 - typesGiven)
-      .map(Data.toID);
-    const current = types.pop();
-    const resolved = types.map(e=>gens.data['natdex'].types.get(e));
-
-    if(resolved.some(e=>!e)) {
-      res.json({
-        type: 8,
-        data: {
-          choices: [],
-        },
-      });
-      return;
-    }
-
-    const prefix = resolved.reduce((acc,cur) => {
-      return {
-        name: `${acc.name}${cur.name}, `,
-        value: `${acc.value}${cur.id},`,
-      };
-    }, {name:'',value:''});
-
     return {
       type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
       data: {
-        choices: completeType(current)
-        .filter(e=>!resolved.some(r=>e.value===r.id))
-        .map(e=>{
-          return {
-            name: `${prefix.name}${e.name}`,
-            value: `${prefix.value}${e.value}`,
-          };
-        }),
+        choices: getMultiComplete(gens.data['natdex'].types, completeType, false)(params['types']),
       },
     };
   }
+
+  // should never be hit
+  return {
+    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+    data: {
+      choices: [{
+        name: params[params[focused]],
+        value: params[params[focused]],
+      }]
+    },
+  };
 }
 
 module.exports = {

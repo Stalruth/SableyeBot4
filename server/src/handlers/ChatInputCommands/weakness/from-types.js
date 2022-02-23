@@ -8,7 +8,7 @@ const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pkmn-colours');
-const { completeType } = require('pkmn-complete');
+const { completeType, getMultiComplete } = require('pkmn-complete');
 const damageTaken = require('typecheck');
 
 const definition = {
@@ -111,44 +111,14 @@ const process = (interaction) => {
 }
 
 function autocomplete(interaction) {
-  const args = getargs(interaction).params;
-
-  const types = args.types.split(',')
-      .slice(0,3)
-      .map(Data.toID);
-  const current = types.pop();
-  const resolved = types.map(e=>gens.data['natdex'].types.get(e));
-
-  if(resolved.some(e=>!e)) {
-    return {
-      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-      data: {
-        choices: [],
-      },
-    };
-    return;
-  }
-
-  const prefix = resolved.reduce((acc,cur) => {
-    return {
-      name: `${acc.name}${cur.name}, `,
-      value: `${acc.value}${cur.id},`,
-    };
-  }, {name:'',value:''});
+  const { params } = getargs(interaction);
 
   return {
-    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-    data: {
-      choices: completeType(current)
-        .filter(e=>!resolved.some(r=>e.value===r.id))
-        .map(e=>{
-          return {
-            name: `${prefix.name}${e.name}`,
-            value: `${prefix.value}${e.value}`,
-          };
-        }),
-    },
-  };
+      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+      data: {
+        choices: getMultiComplete(gens.data['natdex'].types, completeType, false)(params['types']),
+      },
+    };
 }
 
 module.exports = {

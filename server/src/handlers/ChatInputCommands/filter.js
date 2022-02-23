@@ -5,7 +5,7 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const { buildEmbed, buildError } = require('embed-builder');
 const getargs = require('discord-getarg');
 const gens = require('gen-db');
-const { completeAbility, completeFilterType, completeMove, completeType, completePokemon } = require('pkmn-complete');
+const { completeAbility, completeFilterType, completeMove, completeType, completePokemon, getMultiComplete } = require('pkmn-complete');
 const { filterFactory, applyFilters } = require('pokemon-filters');
 
 function paginate(array, limit) {
@@ -530,39 +530,6 @@ async function followUp(interaction) {
       },
     }
   );
-}
-
-function getMultiComplete(resolver, completer, canNegate) {
-  return function multiCompleter(id) {
-    const terms = id.split(',');
-    const currentTerm = terms.pop();
-    const resolved = terms.map(e=>{
-      const effect = resolver.get(e);
-      if (!effect) {
-        return null;
-      }
-      const negated = (canNegate && e.trim()[0] === '!') ? '!' : '';
-      return {
-        name: `${negated}${effect.name}`,
-        value: `${negated}${effect.id}`,
-      };
-    });
-
-    if (resolved.some(e => !e)) {
-      return [];
-    }
-
-    const prefix = resolved.reduce((acc, cur) => ({
-      name: `${acc.name}${cur.name}, `,
-      value: `${acc.value}${cur.value},`,
-    }),{name: '', value: ''});
-
-    const negated = (canNegate && currentTerm.trim()[0] === '!') ? '!' : '';
-    return completer(currentTerm).map(choice => ({
-      name: `${prefix.name}${negated}${choice.name}`,
-      value: `${prefix.value}${negated}${choice.value}`
-    }));
-  };
 }
 
 function autocomplete(interaction) {
