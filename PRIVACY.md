@@ -1,4 +1,4 @@
-Accurate as of 00:00 31-Jan-2021 UTC
+Accurate as of 00:00 23-Feb-2021 UTC
 
 # Sableye Bot Privacy Policy
 
@@ -8,9 +8,6 @@ retained and the basis for such processing or retention.
 
 If such collection, processing, or retention is not desired then do not engage
 with the Application in the ways detailed below.
-
-This Privacy Policy is in force in conjunction with the Privacy Policy located
-at [PRIVACY-v3] until at least 31-Mar-2022.
 
 ## Methods of Data Collection
 
@@ -105,6 +102,10 @@ requests made of it, as follows:
 The Application stores some data for an extended period of time to assist in
 development and debugging.  This data will be used to examine the popularity
 of commands and the popularity of different paramters:
+
+  - Guild ID
+
+    The ID of the Guild the command is run in.
 
   - Command Name
 
