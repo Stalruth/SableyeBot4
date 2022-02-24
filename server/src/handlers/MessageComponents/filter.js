@@ -49,7 +49,7 @@ async function getPage(interaction, respond) {
         }),
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, v4.0.1)',
+          'User-Agent': 'DiscordBot (https://github.com/Stalruth/SableyeBot4, v4.0.2)',
         },
       }
     );
