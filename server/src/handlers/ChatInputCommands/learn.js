@@ -58,8 +58,10 @@ async function listMoves(data, pokemon, restriction) {
     learnsets.push(l);
   }
 
+  console.log(learnsets);
+
   const description = Object.keys(learnables)
-    .filter(id => learnsets.map(l => l['learnset'][id])
+    .filter(id => learnsets.map(l => l['learnset']?.[id])
         .flat()
         .filter(source => !!source)
         .filter(source => !restriction || (source.startsWith(String(data.num)) && !source.endsWith('V')))
@@ -152,7 +154,7 @@ const process = async function(interaction) {
 
   let currentSpecies = pokemon;
   while(true) {
-    const sources = (await data.learnsets.get(currentSpecies.id) ?? await data.learnsets.get(currentSpecies.baseSpecies))['learnset'][move.id] ?? [];
+    const sources = ((await data.learnsets.get(currentSpecies.id))['learnset'] ?? (await data.learnsets.get(currentSpecies.baseSpecies))['learnset'])[move.id] ?? [];
     const filteredSources = sources.filter(el => (el[0].startsWith(`${latestSourceGen}`)) && !((args.mode === 'vgc') && el.endsWith('V')));
     if(filteredSources.length > 0) {
       return {
