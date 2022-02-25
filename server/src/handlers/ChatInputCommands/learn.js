@@ -58,8 +58,6 @@ async function listMoves(data, pokemon, restriction) {
     learnsets.push(l);
   }
 
-  console.log(learnsets);
-
   const description = Object.keys(learnables)
     .filter(id => learnsets.map(l => l['learnset']?.[id])
         .flat()
@@ -104,7 +102,7 @@ const process = async function(interaction) {
       },
     };
   }
-  
+
   const restriction = args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined;
 
   const learnables = await data.learnsets.learnable(pokemon.id, restriction);
