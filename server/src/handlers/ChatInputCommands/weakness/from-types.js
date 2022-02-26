@@ -7,8 +7,8 @@ const Sim = require('@pkmn/sim');
 const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
-const colours = require('pkmn-colours');
-const { completeType, getMultiComplete } = require('pkmn-complete');
+const colours = require('pokemon-colours');
+const { completeType, getMultiComplete } = require('pokemon-complete');
 const damageTaken = require('typecheck');
 
 const definition = {

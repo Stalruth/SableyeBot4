@@ -7,7 +7,7 @@ const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const { buildError } = require('embed-builder');
-const { completeSprite } = require('pkmn-complete');
+const { completeSprite } = require('pokemon-complete');
 
 const definition = {
   description: 'Shows the Pokémon Showdown sprite requested.',

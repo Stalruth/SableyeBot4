@@ -6,7 +6,7 @@ const { toID } = require('@pkmn/data');
 const { dt, getData } = require('dt-utils');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
-const { graphs } = require('pkmn-complete');
+const { graphs } = require('pokemon-complete');
 
 const definition = {
   type: 3,

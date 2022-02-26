@@ -6,8 +6,8 @@ const Data = require('@pkmn/data');
 const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
-const colours = require('pkmn-colours');
-const { completePokemon } = require('pkmn-complete');
+const colours = require('pokemon-colours');
+const { completePokemon } = require('pokemon-complete');
 
 const definition = {
   description: 'Return the number of events a Pokémon has or the details of a specific event.',

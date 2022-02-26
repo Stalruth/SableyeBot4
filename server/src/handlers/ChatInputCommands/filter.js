@@ -5,7 +5,7 @@ const { InteractionResponseFlags, InteractionResponseType } = require('discord-i
 const { buildEmbed, buildError } = require('embed-builder');
 const getargs = require('discord-getarg');
 const gens = require('gen-db');
-const { completeAbility, completeFilterType, completeMove, completeType, completePokemon, getMultiComplete } = require('pkmn-complete');
+const { completeAbility, completeFilterType, completeMove, completeType, completePokemon, getMultiComplete } = require('pokemon-complete');
 const { filterFactory, applyFilters } = require('pokemon-filters');
 
 function paginate(array, limit) {

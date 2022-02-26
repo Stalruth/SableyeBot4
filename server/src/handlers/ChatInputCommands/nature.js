@@ -4,7 +4,7 @@ const { InteractionResponseType } = require('discord-interactions');
 const Data = require('@pkmn/data');
 const Sim = require('@pkmn/sim');
 
-const colours = require('pkmn-colours');
+const colours = require('pokemon-colours');
 const getargs = require('discord-getarg');
 const { buildEmbed } = require('embed-builder');
 

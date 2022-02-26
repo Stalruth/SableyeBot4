@@ -6,7 +6,7 @@ const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const { buildEmbed } = require('embed-builder');
-const colours = require('pkmn-colours');
+const colours = require('pokemon-colours');
 
 const definition = {
   description: 'Returns the Hidden Power produced by the given IVs.',

@@ -1,7 +1,7 @@
 {
-  "name": "pkmn-colours",
+  "name": "pokemon-complete",
   "version": "1.0.0",
-  "description": "Pokémon Related Colours",
+  "description": "Pokémon Autocomplete",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

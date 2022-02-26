@@ -7,8 +7,8 @@ const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const decodeSource = require('learnsetutils');
 const gens = require('gen-db');
-const colours = require('pkmn-colours');
-const { completePokemon, completeMove } = require('pkmn-complete');
+const colours = require('pokemon-colours');
+const { completePokemon, completeMove } = require('pokemon-complete');
 
 const definition = {
   description: 'Returns the learnset of the Pokémon given, or how it learns a given move.',

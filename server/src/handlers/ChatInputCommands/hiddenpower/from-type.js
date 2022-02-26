@@ -6,7 +6,7 @@ const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const { buildEmbed } = require('embed-builder');
-const colours = require('pkmn-colours');
+const colours = require('pokemon-colours');
 
 const types = new Data.Generations(Sim.Dex).get(7).types;
 

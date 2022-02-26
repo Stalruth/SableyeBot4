@@ -2,7 +2,7 @@
 
 const { buildEmbed } = require('embed-builder');
 const gens = require('gen-db');
-const colours = require('pkmn-colours');
+const colours = require('pokemon-colours');
 
 // Uh oh sisters! hardcoding!
 const neutralNatures = {

@@ -5,7 +5,7 @@ const { toID } = require('@pkmn/data');
 
 const { buildEmbed } = require('embed-builder');
 const gens = require('gen-db');
-const colours = require('pkmn-colours');
+const colours = require('pokemon-colours');
 
 function lowKickPower(weight) {
   if(weight < 10) return 20;

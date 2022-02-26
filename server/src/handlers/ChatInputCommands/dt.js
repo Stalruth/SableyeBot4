@@ -6,7 +6,7 @@ const getargs = require('discord-getarg');
 const { dt, getData } = require('dt-utils');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
-const { completeAll } = require('pkmn-complete');
+const { completeAll } = require('pokemon-complete');
 
 const definition = {
   description: 'Return information on the given Pokemon, Ability, Move, Item, or Nature.',

@@ -6,8 +6,8 @@ const Data = require('@pkmn/data');
 const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
-const colours = require('pkmn-colours');
-const { completePokemon, completeType, getMultiComplete } = require('pkmn-complete');
+const colours = require('pokemon-colours');
+const { completePokemon, completeType, getMultiComplete } = require('pokemon-complete');
 const damageTaken = require('typecheck');
 
 const definition = {
