@@ -30,7 +30,7 @@ const definition = {
     {
       name: 'abilities',
       type: 3,
-      description: 'Can have the Abilities given. (Comma-delimited list)',
+      description: 'Can have the Abilities given, separated by commas.',
       autocomplete: true,
     },
     {
@@ -52,19 +52,20 @@ const definition = {
     {
       name: 'moves',
       type: 3,
-      description: 'Can learn the moves given (besides Sketch). (Comma-delimited list, prefix a move with `!` to negate)',
+      description: 'Can learn the moves given (besides Sketch), separated by commas and negated with `!`.',
       autocomplete: true,
     },
     {
       name: 'resists',
       type: 3,
-      description: 'Takes less than 1x damage from the types given (disregards Abilities). (Comma-delimited list)',
+      description: 'Takes less than 1x damage from the types given (disregards Abilities), separated by commas.',
       autocomplete: true,
     },
     {
       name: 'types',
       type: 3,
       description: 'Has all of the types given. (Comma-delimited list, prefix a type with `!` to negate)',
+      description: 'Has all of the types given, separated by commas and negated with `!`.',
       autocomplete: true,
     },
     {
@@ -93,7 +94,7 @@ const definition = {
     {
       name: 'weaknesses',
       type: 3,
-      description: 'Takes more than 1x damage from the types given (disregards Abilities). (Comma-delimited list)',
+      description: 'Takes more than 1x damage from the types given (disregards Abilities), separated by commas.',
       autocomplete: true,
     },
     {

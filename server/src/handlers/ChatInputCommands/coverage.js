@@ -23,7 +23,7 @@ const definition = {
     {
       name: 'types',
       type: 3,
-      description: 'Types to check. (Comma-delimited list)',
+      description: 'Types to check, separated by commas.',
       required: false,
       autocomplete: true,
     },

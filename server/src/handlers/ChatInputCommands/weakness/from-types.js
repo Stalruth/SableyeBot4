@@ -17,7 +17,7 @@ const definition = {
     {
       name: 'types',
       type: 3,
-      description: 'Types to check the weaknesses of. (Comma-delimited list)',
+      description: 'Types to check the weaknesses of, separated by commas. (maximum 3)',
       required: true,
       autocomplete: true,
     },
@@ -76,7 +76,7 @@ const process = (interaction) => {
   };
 
   for(const i of data.types) {
-    eff[damageTaken(data, types, i.id)].push(i.name);
+    eff[i.totalEffectiveness(types)].push(i.name);
   }
   
   const names = {
