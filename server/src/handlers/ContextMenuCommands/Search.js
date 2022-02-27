@@ -17,8 +17,8 @@ const process = function(interaction) {
   const results = new Set();
   const genData = gens.data['natdex'];
 
-  for(const message in interaction.data.resolved.messages) {
-    const contentId = interaction.data.resolved.messages[message].content.toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+  for(const message of Object.values(interaction.data.resolved.messages)) {
+    const contentId = message.content.toLowerCase().replace(/[^a-z0-9]+/g, ' ');
 
     const effectTypes = {
       'species': 'Pokemon',
