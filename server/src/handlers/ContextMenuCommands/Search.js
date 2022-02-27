@@ -18,7 +18,7 @@ const process = function(interaction) {
   const genData = gens.data['natdex'];
 
   for(const message in interaction.data.resolved.messages) {
-    const contentId = toID(interaction.data.resolved.messages[message].content);
+    const contentId = interaction.data.resolved.messages[message].content.toLowerCase().replace(/[^a-z0-9]+/g, ' ');
 
     const effectTypes = {
       'species': 'Pokemon',
@@ -31,7 +31,8 @@ const process = function(interaction) {
     Object.keys(effectTypes).forEach((effectCollection) => {
       const effects = new Set();
       graphs[effectCollection].forEach((effect) => {
-        if(contentId.search(effect) != -1) {
+        const regex = new RegExp(`\\b${effect.split('').join(' ?')}\\b`, 'g');
+        if(contentId.search(regex) != -1) {
           results.add(genData[effectCollection].get(effect));
         }
       });
