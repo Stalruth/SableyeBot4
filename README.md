@@ -18,7 +18,7 @@ Follow these steps to run your own local copy:
 6. Run `npm run debug` to run the application proper.
     - You should use `ngrok` or simlar to get this working in a test
       environment that isn't directly exposed to the internet.
-7. For production use, run `server/src/index.js` on a server.
+7. For production use, install `pm2` and run `npm run pm2-start`.
 
 ## Issues
 
