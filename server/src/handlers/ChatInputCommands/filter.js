@@ -197,7 +197,7 @@ const definition = {
   ],
 };
 
-async function process(interaction) {
+async function validate(interaction) {
   const db = require('db-service');
 
   const args = getargs(interaction).params;
@@ -557,7 +557,7 @@ function autocomplete(interaction) {
 module.exports = {
   definition,
   command: {
-    process,
+    process: validate,
     followUp,
     autocomplete,
   }
