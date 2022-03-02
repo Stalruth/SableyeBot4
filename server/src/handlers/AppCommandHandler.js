@@ -66,7 +66,6 @@ async function onApplicationCommand(req, res) {
     await followUp(req.body);
   } catch (e) {
     console.error(req.body.type, req.body.guild_id, req.body.id, ...[0,1,2].map(e=>commandPath[e] ?? null), JSON.stringify(info.params));
-    console.error(e);
     throw(e)
   }
 }
