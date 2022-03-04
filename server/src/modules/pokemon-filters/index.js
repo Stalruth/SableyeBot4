@@ -1,8 +1,6 @@
 'use strict';
 
-const Data = require('@pkmn/data');
 const genDb = require('gen-db');
-const damageTaken = require('typecheck');
 
 const genData = genDb.data;
 
@@ -117,7 +115,7 @@ function statFilterFactory(stat) {
 
 const filterFactory = {
   ability: (dataSet, abilityId, isVgc) => {
-    const ability = genData[dataSet].abilities.get(Data.toID(abilityId));
+    const ability = genData[dataSet].abilities.get(abilityId);
     if(!ability?.exists) {
       throw abilityId;
     }
@@ -130,7 +128,7 @@ const filterFactory = {
     };
   },
   type: (dataSet, typeId, isVgc) => {
-    const type = genData[dataSet].types.get(Data.toID(typeId));
+    const type = genData[dataSet].types.get(typeId);
     if(!type?.exists) {
       throw typeId;
     }
@@ -153,7 +151,7 @@ const filterFactory = {
   },
   move: (dataSet, moveId, isVgc) => {
     const data = genData[dataSet];
-    const move = data.moves.get(Data.toID(moveId));  
+    const move = data.moves.get(moveId);
     if(!move) {
       throw moveId;
     }
@@ -202,7 +200,7 @@ const filterFactory = {
   'weight-kg': statFilterFactory('weight-kg'),
   'height-m': statFilterFactory('height-m'),
   weakness: (dataSet, typeId, isVgc) => {
-    const type = genData[dataSet].types.get(Data.toID(typeId));
+    const type = genData[dataSet].types.get(typeId);
     if(!type) {
       throw typeId;
     }
@@ -210,12 +208,12 @@ const filterFactory = {
     return {
       description: `Is weak to ${type.name}`,
       predicate: (pokemon) => {
-        return damageTaken(genData[dataSet], pokemon.types, type.id) > 1;
+        return type.totalEffectiveness(pokemon.types) > 1;
       },
     };
   },
   resist: (dataSet, typeId, isVgc) => {
-    const type = genData[dataSet].types.get(Data.toID(typeId));
+    const type = genData[dataSet].types.get(typeId);
     if(!type) {
       throw typeId;
     }
@@ -223,12 +221,12 @@ const filterFactory = {
     return {
       description: `Resists ${type.name}`,
       predicate: (pokemon) => {
-        return damageTaken(genData[dataSet], pokemon.types, type.id) < 1;
+        return type.totalEffectiveness(pokemon.types) < 1;
       },
     };
   },
   'breeds-with': (dataSet, pokemonId, isVgc) => {
-    const pokemon = genData[dataSet].species.get(Data.toID(pokemonId));
+    const pokemon = genData[dataSet].species.get(pokemonId);
     if(!pokemon) {
       throw pokemonId;
     }

@@ -1,15 +1,12 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const Data = require('@pkmn/data');
-const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pokemon-colours');
 const { completeType, getMultiComplete } = require('pokemon-complete');
-const damageTaken = require('typecheck');
 
 const definition = {
   description: 'Returns the resistances and weaknesses of a Pokémon with the given types.',
@@ -39,7 +36,7 @@ const process = (interaction) => {
       .split(',')
       .slice(0,3)
       .map((el) => {
-        return data.types.get(Data.toID(el))?.name;
+        return data.types.get(el)?.name;
       }))]
 
   if(types.some((el) => {return !el;})) {
@@ -104,7 +101,7 @@ const process = (interaction) => {
       embeds: [buildEmbed({
         title,
         fields,
-        color: colours.types[Data.toID(types[0])]
+        color: colours.types[data.types.get(types[0]).id]
       })]
     },
   };

@@ -1,14 +1,12 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const Data = require('@pkmn/data');
 
 const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pokemon-colours');
 const { completePokemon } = require('pokemon-complete');
-const damageTaken = require('typecheck');
 
 const definition = {
   description: 'Returns the given Pokémon\'s weaknesses and resistances.',
@@ -34,7 +32,7 @@ const process = (interaction) => {
 
   const data = gens.data[args.gen ? args.gen : 'natdex'];
 
-  const pokemon = data.species.get(Data.toID(args.pokemon));
+  const pokemon = data.species.get(args.pokemon);
 
   if(!pokemon?.exists) {
     return {
@@ -61,7 +59,7 @@ const process = (interaction) => {
   };
 
   for(const i of data.types) {
-    eff[damageTaken(data, pokemon.types, i.id)].push(i.name);
+    eff[i.totalEffectiveness(pokemon)].push(i.name);
   }
 
   const names = {
@@ -87,7 +85,7 @@ const process = (interaction) => {
       embeds: [buildEmbed({
         title,
         fields,
-        color: colours.types[Data.toID(pokemon.types[0])]
+        color: colours.types[data.types.get(pokemon.types[0]).id]
       })]
     },
   };

@@ -8,7 +8,6 @@ const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pokemon-colours');
 const { completePokemon, completeType, getMultiComplete } = require('pokemon-complete');
-const damageTaken = require('typecheck');
 
 const definition = {
   description: 'Returns type coverage based on a Pokémon\'s STAB and/or types.',
@@ -39,9 +38,7 @@ const definition = {
 function process(interaction) {
   const args = getargs(interaction).params;
 
-  const data = gens.data[args.gen ? args.gen : 'natdex'];
-
-  if(!args.pokemon && !args.types) {
+  if (!args.pokemon && !args.types) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
@@ -53,106 +50,90 @@ function process(interaction) {
     };
   }
 
-  const titleInfo = {
-    pokemon: false,
-    types: [],
-  };
+  const data = gens.data[args.gen ? args.gen : 'natdex'];
 
-  const types = []
+  const pokemon = data.species.get(args.pokemon ?? '');
 
-  if(args.pokemon) {
-    const pokemon = data.species.get(Data.toID(args.pokemon));
-
-    if(!pokemon?.exists) {
-      return {
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          embeds: [
-            buildError(`Pokémon ${args.pokemon} does not exist in the given generation.`),
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
-        },
-      };
-    }
-
-    titleInfo.pokemon = {
-      name: pokemon.name,
-      types: pokemon.types,
+  if (args.pokemon && !pokemon) {
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        embeds: [
+          buildError(`The Pokémon ${args.pokemon} does not exist in the given generation.`)
+        ],
+        flags: InteractionResponseFlags.EPHEMERAL,
+      },
     };
-
-    pokemon.types.forEach((el) => {types.push(el)});
   }
 
-  if(args.types) {
-    const sanitisedTypes = args.types
-        .split(',')
-        .map(el=>data.types.get(Data.toID(el))?.name);
+  const types = args.types?.split(',')?.map(t=>data.types.get(t)) ?? [];
 
-    if(sanitisedTypes.some(el=>!el)) {
-      const nonTypes = sanitisedTypes.map((el,a,i) => {
-        if(el) { return undefined; }
-        return args.types.split(',')[i];
-      }).filter(el=>!!el);
-
-      return {
+  if (args.types) {
+    const invalidTypes = [];
+    types.forEach((el, i) => {
+      if(!el) {
+        invalidTypes.push(args.types.split(',')[i]);
+      }
+    });
+    if (invalidTypes.length > 0) {
+    return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           embeds: [
-            buildError(`The type${nonTypes.length > 1 ? 's' : ''} ${nonTypes.join(', ')} do not exist in the given generation.`)
+            buildError(`The Type${invalidTypes.length > 1 ? 's' : ''} ${invalidTypes.join(', ')} do${invalidTypes.length > 1 ? '' : 'es'} not exist in the given generation.`),
           ],
           flags: InteractionResponseFlags.EPHEMERAL,
         },
       };
     }
-
-    titleInfo.types = [...new Set(sanitisedTypes)];
-    types.push(...titleInfo.types);
   }
 
-  const titleSegments = [
-    titleInfo.pokemon ? `${titleInfo.pokemon.name} [${titleInfo.pokemon.types.join('/')}] ` : '',
-    titleInfo.types.join(', ')
-  ].filter(e=>e.length>0);
+  const allTypes = [
+    ...(pokemon?.types?.map(t=>data.types.get(t)) ?? []),
+    ...types,
+  ];
 
-  const title = titleSegments.join(' + ');
+  const results = {};
 
-  const eff = {
-    '0': [],
-    '0.5': [],
-    '1': [],
-    '2': [],
-  };
-
-  for(const dType of data.types) {
-    const mult = types.reduce((acc, aType) => {
-      return Math.max(acc, damageTaken(data, [dType.id], aType));
+  for (const type of data.types) {
+    const effectiveness = allTypes.reduce((acc, cur) => {
+      return Math.max(acc, cur.totalEffectiveness([type.id]));
     }, 0);
-    eff[`${mult}`].push(dType.name);
+    results[`${effectiveness}`] ??= [];
+    results[`${effectiveness}`].push(type.name);
+  }
+
+  const titleParts = [];
+  if (args.pokemon) {
+    titleParts.push(`${pokemon.name} [${pokemon.types.join('/')}]`);
+  }
+  if (args.types) {
+    titleParts.push(types.map(t=>t.name).join(', '));
   }
 
   const fields = [];
-  const names = {
-    '0': 'Cannot Hit',
+  const fieldNames = {
+    '0': 'Does not hit',
     '0.5': 'Hits for 0.5x',
     '1': 'Hits for 1x',
     '2': 'Hits for 2x',
   };
-
-  for(const i of ['0', '0.5', '1', '2']) {
-    if(eff[i].length === 0) { continue; }
-    fields.push({
-      name: `${names[i]}:`,
-      value: eff[i].join(', '),
-    });
+  for (const i of ['0', '0.5', '1', '2']) {
+    if (results[i]) {
+      fields.push({
+        name: fieldNames[i],
+        value: results[i].join(', '),
+      });
+    }
   }
 
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
-        title,
+        title: titleParts.join(' + '),
         fields,
-        color: colours.types[Data.toID(types[0])]
+        color: colours.types[allTypes[0].id]
       })],
     },
   };
