@@ -77,9 +77,9 @@ function getSpriteMatches(query) {
 const getAbilityMatches = getMatcher('abilities');
 const getMoveMatches = getMatcher('moves');
 const getItemMatches = getMatcher('items');
-const getNatureMatches = getMatcher('natures');
+const getNatureMatches = getMatcher('natures', 25);
 const getPokemonMatches = getMatcher('species');
-const getTypeMatches = getMatcher('types');
+const getTypeMatches = getMatcher('types', 25);
 
 function getMatchSorter(query) {
   return function matchSorter(lhs, rhs) {
@@ -96,7 +96,7 @@ function getMatchSorter(query) {
   }
 }
 
-function getCompleter(matchers) {
+function getCompleter(matchers, matchCount=10) {
   return function completer(query) {
     return matchers
     .reduce((acc, cur) => {
@@ -104,13 +104,13 @@ function getCompleter(matchers) {
     }, [])
     .sort(getMatchSorter(query))
     .filter((el,i,arr)=>(el.value!==arr[i-1]?.value))
-    .slice(0, 10);
+    .slice(0, matchCount);
   }
 }
 
 function getMultiComplete(resolver, completer, canNegate) {
-  return function multiCompleter(id) {
-    const terms = id.split(',');
+  return function multiCompleter(query) {
+    const terms = query.split(',');
     const currentTerm = terms.pop();
     const resolved = terms.map(e=>{
       const effect = resolver.get(e);
@@ -134,10 +134,20 @@ function getMultiComplete(resolver, completer, canNegate) {
     }),{name: '', value: ''});
 
     const negated = (canNegate && currentTerm.trim()[0] === '!') ? '!' : '';
-    return completer(currentTerm).map(choice => ({
+
+    const results = completer(currentTerm).map(choice => ({
       name: `${prefix.name}${negated}${choice.name}`,
       value: `${prefix.value}${negated}${choice.value}`
     }));
+
+    if (results.length !== 1) {
+      return results;
+    } else {
+      return [results[0], ...completer('').map(choice => ({
+        name: `${results[0]['name']}, ${choice.name}`,
+        value: `${results[0]['value']},${choice.value}`,
+      }))];
+    }
   };
 }
 
