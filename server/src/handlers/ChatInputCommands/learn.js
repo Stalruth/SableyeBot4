@@ -82,6 +82,57 @@ async function listMoves(data, pokemon, restriction) {
   };
 }
 
+function getPrevo(data, pokemon, stages) {
+  let currentStage = pokemon;
+  for(let i = 0; i < stages; i++) {
+    currentStage = data.species.get(currentStage.prevo);
+  }
+  return currentStage;
+}
+
+async function checkMove(data, pokemon, move) {
+  const finalSources = [];
+  let latestGen = 0;
+  let loopCount = -1;
+  for await (const learnset of data.learnsets.all(pokemon)) {
+    loopCount++;
+    const sources = (learnset.learnset[move.id] ?? []).filter(el => {
+        return Number(el[0] <= data.num);
+    });
+
+    if(!sources.length) {
+      continue;
+    }
+
+    if(Number(sources[0][0]) < data.num) {
+      latestGen = Number(sources[0][0]);
+      continue;
+    }
+
+    const currentStage = getPrevo(data, pokemon, loopCount);
+
+    finalSources.push(...sources.filter(el=>Number(el[0]) === data.num)
+        .map(el => `- As ${currentStage.name} ${decodeSource(el)}`));
+  }
+
+  if(finalSources.length) {
+    return {
+      name: `${move.name}:`,
+      value: finalSources.join('\n'),
+    };
+  } else if (latestGen > 0) {
+    return {
+      name: `${move.name}`,
+      value: `- when transferred from Generation ${latestGen}`,
+    }; 
+  } else {
+    return {
+      name: `${move.name}:`,
+      value: `- ${pokemon.name} does not learn ${move.name} in Generation ${data.num}`,
+    };
+  }
+}
+
 const process = async function(interaction) {
   const args = getargs(interaction).params;
 
@@ -105,8 +156,6 @@ const process = async function(interaction) {
 
   const restriction = args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined;
 
-  const learnables = await data.learnsets.learnable(pokemon.id, restriction);
-
   if(!args.move) {
     return await listMoves(data, pokemon, restriction);
   }
@@ -125,69 +174,17 @@ const process = async function(interaction) {
     };
   }
 
-  if(!learnables[move.id]) {
-    return {
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [buildEmbed({
-          description: `${pokemon.name} does not learn ${move.name} in Generation ${data.num}.`,
-          color: colours.types[Data.toID(pokemon.types[0])],
-        })],
-      },
-    };
-  }
-
-  const latestSourceGen = learnables[move.id][0][0];
-  if(Number(latestSourceGen) !== data.num) {
-    return {
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [buildEmbed({
-          description: `${pokemon.name} learns ${move.name} when transferred from Generation ${latestSourceGen}`,
-          color: colours.types[Data.toID(pokemon.types[0])],
-        })],
-      },
-    };
-  }
-
-  let currentSpecies = pokemon;
-  while(true) {
-    const sources = ((await data.learnsets.get(currentSpecies.id))['learnset'] ?? (await data.learnsets.get(currentSpecies.baseSpecies))['learnset'])[move.id] ?? [];
-    const filteredSources = sources.filter(el => (el[0].startsWith(`${latestSourceGen}`)) && !((args.mode === 'vgc') && el.endsWith('V')));
-    if(filteredSources.length > 0) {
-      return {
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          embeds: [buildEmbed({
-            title: `${pokemon.name} does learn ${move.name}`,
-            fields: [
-              {
-                name: `As ${currentSpecies.name}`,
-                value: filteredSources.map(decodeSource)
-                  .map(el=>`- ${el}`)
-                  .join('\n'),
-              },
-            ],
-            color: colours.types[Data.toID(pokemon.types[0])],
-          })],
-        },
-      };
-    }
-    currentSpecies = data.species.get(currentSpecies.prevo ?? '');
-    if(!currentSpecies) {
-      break;
-    }
-  }
-
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
-        description: `${pokemon.name} does not learn ${move.name} in Generation ${data.num}.`,
+        title: pokemon.name,
+        fields: [await checkMove(data, pokemon, move)],
         color: colours.types[Data.toID(pokemon.types[0])],
       })],
     },
   };
+
 };
 
 function autocomplete(interaction) {

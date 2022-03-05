@@ -3,17 +3,17 @@ const decodeSource = (source) => {
   const extra = source.substr(2);
 
   const sourceNames = {
-    D:"From the dream world",
-    E:"As an egg move",
-    L:"By level up",
-    M:"From a TM, HM or TR",
-    R:"Special move",
-    S:"From an event",
-    T:"From a tutor",
-    V:"By VC transfer",
+    D:"from the dream world",
+    E:"as an egg move",
+    L:"by level up",
+    M:"from a TM, HM or TR",
+    R:"special move",
+    S:"from an event",
+    T:"from a tutor",
+    V:"by VC transfer",
     // Not fully convinced these are real
-    X:"As an egg, traded back",
-    Y:"From an event, traded back",
+    X:"as an egg, traded back",
+    Y:"from an event, traded back",
   };
 
   let result = sourceNames[method];
