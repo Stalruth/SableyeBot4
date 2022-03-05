@@ -8,7 +8,7 @@ const { buildEmbed, buildError } = require('embed-builder');
 const decodeSource = require('learnsetutils');
 const gens = require('gen-db');
 const colours = require('pokemon-colours');
-const { completePokemon, completeMove } = require('pokemon-complete');
+const { completePokemon, completeMove, getMultiComplete } = require('pokemon-complete');
 
 const definition = {
   description: 'Returns the learnset of the Pokémon given, or how it learns a given move.',
@@ -21,9 +21,9 @@ const definition = {
       autocomplete: true,
     },
     {
-      name: 'move',
+      name: 'moves',
       type: 3,
-      description: 'Name of the move to check',
+      description: 'Moves to check, separated by commas',
       autocomplete: true,
     },
     {
@@ -156,30 +156,40 @@ const process = async function(interaction) {
 
   const restriction = args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined;
 
-  if(!args.move) {
+  if(!args.moves) {
     return await listMoves(data, pokemon, restriction);
   }
 
-  const move = data.moves.get(Data.toID(args.move));
+  const moves = args.moves.split(',').map(e=>data.moves.get(e));
 
-  if(!move?.exists) {
+  if(moves.some(e=>e === undefined)) {
+    const invalidMoves = [];
+    moves.forEach((e,i) => {
+      if(e === undefined) {
+        invalidMoves.push(args.moves.split(',')[i]);
+      }
+    });
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
-          buildError(`Could not find a move named ${args.move}${args.gen ? ` in Generation ${args.gen}` : ''}.`)
+          buildError(`Could not find ${invalidMoves.length === 1 ? 'a ' : ''}move${invalidMoves.length > 1 ? 's ' : ''} named ${invalidMoves.join(', ')}${args.gen ? ` in Generation ${args.gen}` : ''}.`)
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
     };
   }
 
+  const fields = await Promise.all(moves.map(async (move) => {
+    return await checkMove(data, pokemon, move);
+  }));
+
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
         title: pokemon.name,
-        fields: [await checkMove(data, pokemon, move)],
+        fields,
         color: colours.types[Data.toID(pokemon.types[0])],
       })],
     },
@@ -189,10 +199,33 @@ const process = async function(interaction) {
 
 function autocomplete(interaction) {
   const {params, focused} = getargs(interaction);
+
+  if(focused === 'name') {
+    return {
+      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+      data: {
+        choices: completePokemon(params['name']),
+      },
+    };
+  }
+
+  if(focused === 'moves') {
+    return {
+      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+      data: {
+        choices: getMultiComplete(gens.data['natdex'].moves, completeMove, false)(params['moves']),
+      },
+    };
+  }
+
+  // should never be hit
   return {
     type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {
-      choices: focused === 'name' ? completePokemon(params['name']) : completeMove(params['move']),
+      choices: [{
+        name: params[params[focused]],
+        value: params[params[focused]],
+      }]
     },
   };
 }
