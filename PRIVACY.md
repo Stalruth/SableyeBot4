@@ -99,9 +99,16 @@ requests made of it, as follows:
 
 ## What the Application stores for an extended period
 
-The Application stores some data for an extended period of time to assist in
-development and debugging.  This data will be used to examine the popularity
-of commands and the popularity of different paramters:
+The Application stores all collected data for an extended period of
+time to assist in development and debugging.  This data will be used to
+examine the popularity of commands and the popularity of different
+paramters.
+
+This data is shared with Sentry (https.sentry.io) to help provide
+analysis on error rates and performance.
+
+Aside from the data listed below, all data collected is deleted after
+30 days.
 
   - Guild ID
 

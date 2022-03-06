@@ -15,9 +15,9 @@ Sableye Bot currently accepts two different kinds of commands:
 
 ## What's Changing?
 
-On the 31st of March 2022, Sableye Bot will no longer be able to respond to
-Message Commands - from this date onwards Sableye Bot will only respond to
-Slash Commands.
+Starting on the 30th of April 2022, Sableye Bot will no longer be able to
+respond to Message Commands - from this date onwards Sableye Bot will only
+respond to Slash Commands.
 
 This means that the usage of the bot changes dramatically, however the new
 commands come with built-in help text to describe the function of each command.
@@ -96,23 +96,19 @@ It's my hope that many of the new commands are easier for people to use,
 especially with the addition of Autocomplete options, though there are also
 definitely some commands which suffer such as `/filter`.
 
-## Why disable the commands a month early?
-
-I want to make the cut early so that the new bot can be tested under production
-conditions while I still have the option of going back if needed.
-
 ## Workarounds
 
-Speaking of those other commands, some command parameters mention in their
-descriptions that they are "Comma delimited lists".  This means that if you
-wish to pass multiple values to them you can - just separate different values
-with commas.
+Speaking of those other commands, some command parameters mention in
+their descriptions that they take multiple values "separated by commas".
+This means that if you wish to pass multiple values to them you can -
+just separate different values with commas.
 
-For example, where the old command would take `//coverage Dark, Fire` the new
-command works with `/coverage types:Dark, Fire`.
+For example, where the old command would take `//coverage Dark, Fire`
+the new command works with `/coverage types:Dark, Fire`.
 
 This isn't perfect and I'll definitely be keeping my eyes open for any
-improvements I can make to these commands, but this is the workaround for now.
+improvements I can make to these commands, but this is the workaround
+for now.
 
 [hatemail]: https://github.com/Stalruth/SableyeBot4/issues/new
 
