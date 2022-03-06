@@ -29,7 +29,7 @@ const process = function(interaction) {
           {
             name: 'Support Server',
             value: 'https://discord.gg/etUxhVfA7u',
-            inline: 'true',
+            inline: true,
           },
           {
             name: 'Language',
