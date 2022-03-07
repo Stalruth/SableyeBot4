@@ -2,8 +2,9 @@
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
 
-const { buildEmbed, buildError } = require('embed-builder');
+const db = require('db-service');
 const getargs = require('discord-getarg');
+const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const { completeAbility, completeFilterType, completeMove, completeType, completePokemon, getMultiComplete } = require('pokemon-complete');
 const { filterFactory, applyFilters } = require('pokemon-filters');
@@ -198,8 +199,6 @@ const definition = {
 };
 
 async function validate(interaction) {
-  const db = require('db-service');
-
   const args = getargs(interaction).params;
 
   const gen = args.gen ?? 'natdex';
@@ -410,7 +409,7 @@ async function validate(interaction) {
     }
   };
 
-  db.filters.insert(config);
+  db.getFilterCollection().insert(config);
 
   return {
     type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
@@ -418,10 +417,9 @@ async function validate(interaction) {
 }
 
 async function followUp(interaction) {
-  const db = require('db-service');
   const fetch = (await import('node-fetch')).default;
 
-  const commandData = db.filters.findOne({interactionId: interaction.id});
+  const commandData = db.getFilterCollection().findOne({interactionId: interaction.id});
   if(!commandData) { return; }
   const { threshold, gen, isVgc, sortKey } = commandData.parameters;
   const filters = commandData.filters.map(
@@ -441,9 +439,9 @@ async function followUp(interaction) {
   const pages = paginate(results.map((el)=>{return el.name}), 1000);
   if (pages.length > 1) {
     commandData.pages = pages;
-    db.filters.update(commandData);
+    db.getFilterCollection().update(commandData);
   } else {
-    db.filters.remove(commandData);
+    db.getFilterCollection().remove(commandData);
   }
 
   const fields = [

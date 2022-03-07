@@ -26,7 +26,7 @@ async function getPage(interaction, respond) {
     });
   }
 
-  const pages = db.filters.findOne({interactionId: interaction.message.interaction.id})?.pages;
+  const pages = db.getFilterCollection().findOne({interactionId: interaction.message.interaction.id})?.pages;
 
   // cache miss
   if(!pages) {

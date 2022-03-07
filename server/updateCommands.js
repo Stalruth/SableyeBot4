@@ -1,6 +1,7 @@
 'use strict';
 
 const { getCommandDefinitions } = require('./src/handlers/AppCommandHandler.js');
+const { sableye } = require('./src/sableye');
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const APP_ID = process.env.APP_ID;

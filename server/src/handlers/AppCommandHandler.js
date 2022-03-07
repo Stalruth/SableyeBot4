@@ -10,33 +10,18 @@ const commands = {};
 const modulePaths = {};
 
 function initCommand(name) {
+}
+
+function addCommand(name, module) {
   if(commands[name]) {
     // Command already added.
     return;
   }
-  const {definition, command} = require(modulePaths[name]);
+  const {definition, command} = module;
   definition['name'] = name;
   definitions.push(definition);
   commands[name] = command;
 }
-
-function addCommand(name, modulePath) {
-  modulePaths[name] = modulePath;
-}
-
-addCommand('about', './ChatInputCommands/about.js');
-addCommand('calculator', './ChatInputCommands/calculator.js');
-addCommand('coverage', './ChatInputCommands/coverage.js');
-addCommand('dt', './ChatInputCommands/dt.js');
-addCommand('event', './ChatInputCommands/event.js');
-addCommand('filter', './ChatInputCommands/filter.js');
-addCommand('hiddenpower', './ChatInputCommands/hiddenpower.js');
-addCommand('learn', './ChatInputCommands/learn.js');
-addCommand('nature', './ChatInputCommands/nature.js');
-addCommand('sprite', './ChatInputCommands/sprite.js');
-addCommand('weakness', './ChatInputCommands/weakness.js');
-
-addCommand('Search', './ContextMenuCommands/Search.js');
 
 function getCommandData(commandPath) {
   if(commandPath.length === 1) {
@@ -53,8 +38,6 @@ async function onApplicationCommand(req, res) {
   const commandPath = [req.body.data?.name, ...info.subcommand];
 
   try {
-    initCommand(commandPath[0]);
-
     console.log(req.body.type, req.body.guild_id, req.body.id, ...[0,1,2].map(e=>commandPath[e] ?? null), JSON.stringify(info.params));
 
     const commandData = getCommandData(commandPath);
@@ -102,5 +85,5 @@ function getCommandDefinitions() {
   return definitions;
 }
 
-module.exports = { onApplicationCommand, onAutocomplete, getCommandDefinitions };
+module.exports = { addCommand, onApplicationCommand, onAutocomplete, getCommandDefinitions };
 

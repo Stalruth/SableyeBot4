@@ -3,27 +3,18 @@
 const processes = {};
 const modulePaths = {};
 
-function initComponent(name) {
-  processes[name] = require(modulePaths[name]);
+function addComponent(name, module) {
+  processes[name] = module;
 };
-
-function addComponent(name, modulePath) {
-  modulePaths[name] = modulePath;
-};
-
-addComponent('filter', './MessageComponents/filter.js');
-addComponent('dt', './MessageComponents/dt.js');
-addComponent('Search', './MessageComponents/dt.js');
 
 async function onComponentInteraction(req, res) {
-  console.log(req.body.type, req.body.id, req.body.message.interaction.name, req.body.data.custom_id, JSON.stringify(req.body.data.values));
+  console.log(req.body.type, req.body.guild_id, req.body.id, req.body.message.interaction.name, req.body.data.custom_id, JSON.stringify(req.body.data.values));
 
   const respond = (response) => {
     res.json(response)
   }
 
   try {
-    initComponent(req.body.message.interaction.name);
     await processes[req.body.message.interaction.name](req.body, respond);
   } catch (e) {
     console.error(e);
@@ -33,5 +24,5 @@ async function onComponentInteraction(req, res) {
   return;
 }
 
-module.exports = onComponentInteraction;
+module.exports = { addComponent, onComponentInteraction };
 
