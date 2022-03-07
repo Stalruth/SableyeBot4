@@ -1,7 +1,5 @@
 'use strict';
 
-const { getCommandDefinitions } = require('./src/handlers/AppCommandHandler.js');
-
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const APP_ID = process.env.APP_ID;
 const GUILD_ID = process.env.GUILD_ID;
@@ -21,7 +19,7 @@ async function main() {
   const result = await fetch(`https://discord.com/api/v10/applications/${APP_ID}`
     + (GUILD_ID ? `/guilds/${GUILD_ID}` : '') + `/commands`, options);
   if(result.ok) {
-    console.log('Updated!');
+    console.log('Commands deleted!');
   } else {
     console.log('Oh no!');
     console.log(await result.json());
