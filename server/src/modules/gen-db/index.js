@@ -4,7 +4,7 @@ const Sim = require('@pkmn/sim');
 
 const existedEver = (d) => {
   if (!d.exists) return false;
-  if ('isNonstandard' in d && ![null, 'Past', 'Future'].includes(d.isNonstandard)) return false;
+  if ('isNonstandard' in d && ![null, 'Past', 'Future', 'LGPE'].includes(d.isNonstandard)) return false;
   if (d.kind === 'Ability' && d.id === 'noability') return false;
   return !('tier' in d && d.tier === 'Unreleased');
 };
