@@ -21,11 +21,11 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-app.use(Sentry.Handlers.requestHandler());
+app.use('/sableye', Sentry.Handlers.requestHandler());
 
-app.use(Sentry.Handlers.tracingHandler());
+app.use('/sableye', Sentry.Handlers.tracingHandler());
 
-app.post('/', verifyKeyMiddleware(PUBLIC_KEY), sableye);
+app.post('/sableye', verifyKeyMiddleware(PUBLIC_KEY), sableye);
 
 app.use(Sentry.Handlers.errorHandler());
 
