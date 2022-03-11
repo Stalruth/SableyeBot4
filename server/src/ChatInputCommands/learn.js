@@ -85,7 +85,7 @@ async function listMoves(data, pokemon, restriction) {
 function getPrevo(data, pokemon, stages) {
   let currentStage = pokemon;
   for(let i = 0; i < stages; i++) {
-    currentStage = data.species.get(currentStage.prevo);
+    currentStage = data.species.get(currentStage.battleOnly ?? currentStage.baseSpecies ?? currentStage.prevo);
   }
   return currentStage;
 }
