@@ -96,7 +96,7 @@ async function checkMove(data, pokemon, move) {
   let loopCount = -1;
   for await (const learnset of data.learnsets.all(pokemon)) {
     loopCount++;
-    const sources = (learnset.learnset[move.id] ?? []).filter(el => {
+    const sources = (learnset?.learnset?.[move.id] ?? []).filter(el => {
         return Number(el[0] <= data.num);
     });
 
