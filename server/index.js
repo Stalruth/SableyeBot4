@@ -19,6 +19,8 @@ Sentry.init({
     new Tracing.Integrations.Express({ app }),
   ],
   tracesSampleRate: 1.0,
+  release: process.env.npm_package_version,
+  autoSessionTracking: false,
 });
 
 app.use('/sableye', Sentry.Handlers.requestHandler());
