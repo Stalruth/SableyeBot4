@@ -1,12 +1,12 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const db = require('db-service');
+const fetch = require('node-fetch');
 
+const db = require('db-service');
 const { buildEmbed, buildError } = require('embed-builder');
 
 async function getPage(interaction, respond) {
-  const fetch = (await import('node-fetch')).default;
   if(interaction.member.user.id !== interaction.message.interaction.user.id) {
     return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

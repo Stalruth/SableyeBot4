@@ -1,6 +1,7 @@
 'use strict';
 
 const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
+const fetch = require('node-fetch');
 
 const db = require('db-service');
 const getargs = require('discord-getarg');
@@ -417,8 +418,6 @@ async function validate(interaction) {
 }
 
 async function followUp(interaction) {
-  const fetch = (await import('node-fetch')).default;
-
   const commandData = db.getFilterCollection().findOne({interactionId: interaction.id});
   if(!commandData) { return; }
   const { threshold, gen, isVgc, sortKey } = commandData.parameters;

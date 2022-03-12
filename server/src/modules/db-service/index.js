@@ -1,6 +1,7 @@
 'use strict';
 
 const loki = require('lokijs');
+const fetch = require('node-fetch');
 
 let filters = undefined;
 
@@ -13,7 +14,6 @@ function getFilterCollection() {
 
   filters = db.addCollection('filters', {indices: ['interactionId'], ttl: (10 * 60 * 1000), ttlInterval: (2.5 * 60 * 1000)});
   filters.on('delete', async (data) => {
-    const fetch = (await import('node-fetch')).default;
     try {
       const originalMessage = await fetch(`https://discord.com/api/v10/webhooks/${data.webhook.appId}/${data.webhook.token}/messages/@original`, {
         headers: {
