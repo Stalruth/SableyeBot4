@@ -69,7 +69,10 @@ async function onAutocomplete(req, res) {
       type: 8,
       data: {
         choices: [
-          info.params[info.focused],
+          {
+            name: info.params[info.focused],
+            value: info.params[info.focused],
+          },
         ],
       },
     });
