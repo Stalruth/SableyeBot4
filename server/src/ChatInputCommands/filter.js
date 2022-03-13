@@ -7,8 +7,10 @@ const db = require('db-service');
 const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
-const { completeAbility, completeFilterType, completeMove, completeType, completePokemon, getMultiComplete } = require('pokemon-complete');
+const { completeAbility, completeFilterType, completeMove, completeType, completePokemon, getMultiComplete, getAutocompleteHandler } = require('pokemon-complete');
 const { filterFactory, applyFilters } = require('pokemon-filters');
+
+const natdex = gens.data['natdex'];
 
 function paginate(array, limit) {
   const results = [''];
@@ -530,26 +532,14 @@ async function followUp(interaction) {
   );
 }
 
-function autocomplete(interaction) {
-  const {params, focused} = getargs(interaction);
-
-  const autoArg = params[focused];
-  const completers = {
-    'abilities': getMultiComplete(gens.data['natdex'].abilities, completeAbility, false),
-    'types': getMultiComplete(gens.data['natdex'].types, completeType, true),
-    'moves': getMultiComplete(gens.data['natdex'].moves, completeMove, true),
-    'weaknesses': getMultiComplete(gens.data['natdex'].types, completeType, false),
-    'resists': getMultiComplete(gens.data['natdex'].types, completeType, false),
-    'breeds-with': completePokemon,
-  };
-
-  return {
-    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-    data: {
-      choices: completers[focused](autoArg)
-    },
-  };
-}
+const autocomplete = {
+  abilities: getAutocompleteHandler(getMultiComplete(natdex.abilities, completeAbility, false), 'abilities'),
+  types: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, true), 'types'),
+  moves: getAutocompleteHandler(getMultiComplete(natdex.moves, completeMove, true), 'moves'),
+  weaknesses: getAutocompleteHandler(getMultiComplete(natdex.moves, completeType, false), 'weaknesses'),
+  resists: getAutocompleteHandler(getMultiComplete(natdex.resists, completeType, false), 'resists'),
+  'breeds-with': getAutocompleteHandler(completePokemon, 'breeds-with'),
+};
 
 module.exports = {
   definition,

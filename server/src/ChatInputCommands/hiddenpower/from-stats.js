@@ -18,7 +18,6 @@ const definition = {
       required: true,
       min_value: 0,
       max_value: 31,
-      
     },
     {
       name: 'atk',

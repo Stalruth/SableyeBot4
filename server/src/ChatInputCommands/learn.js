@@ -8,7 +8,7 @@ const { buildEmbed, buildError } = require('embed-builder');
 const decodeSource = require('learnsetutils');
 const gens = require('gen-db');
 const colours = require('pokemon-colours');
-const { completePokemon, completeMove, getMultiComplete } = require('pokemon-complete');
+const { completePokemon, completeMove, getMultiComplete, getAutocompleteHandler } = require('pokemon-complete');
 
 const definition = {
   description: 'Returns the learnset of the Pokémon given, or how it learns a given move.',
@@ -199,38 +199,10 @@ const process = async function(interaction) {
 
 };
 
-function autocomplete(interaction) {
-  const {params, focused} = getargs(interaction);
-
-  if(focused === 'pokemon') {
-    return {
-      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-      data: {
-        choices: completePokemon(params['pokemon']),
-      },
-    };
-  }
-
-  if(focused === 'moves') {
-    return {
-      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-      data: {
-        choices: getMultiComplete(gens.data['natdex'].moves, completeMove, false)(params['moves']),
-      },
-    };
-  }
-
-  // should never be hit
-  return {
-    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-    data: {
-      choices: [{
-        name: params[params[focused]],
-        value: params[params[focused]],
-      }]
-    },
-  };
-}
+const autocomplete = {
+  pokemon: getAutocompleteHandler(completePokemon, 'pokemon'),
+  moves: getAutocompleteHandler(completeMove, 'moves'),
+};
 
 module.exports = {
   definition,

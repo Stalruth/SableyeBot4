@@ -55,7 +55,7 @@ const process = (interaction) => {
   const args = getargs(interaction).params;
 
   const gen = new Data.Generations(Sim.Dex).get(8);
-  
+
   // Uh oh sisters! hardcoding!
   const neutralNatures = {
     atk: 'Hardy',
@@ -64,7 +64,7 @@ const process = (interaction) => {
     spd: 'Quirky',
     spe: 'Serious',
   };
-  
+
   const fullNames = {
     'atk': 'Attack',
     'def': 'Defence',
@@ -72,7 +72,7 @@ const process = (interaction) => {
     'spd': 'Special Defence',
     'spe': 'Speed',
   };
-  
+
   let title = '';
   let fields = [
     {
@@ -86,7 +86,7 @@ const process = (interaction) => {
       inline: true,
     }
   ]
-  
+
   if(args.boosted === args.lowered) {
     title = neutralNatures[args.boosted];
   }

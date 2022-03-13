@@ -6,7 +6,7 @@ const getargs = require('discord-getarg');
 const { dt, getData } = require('dt-utils');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
-const { completeAll } = require('pokemon-complete');
+const { completeAll, getAutocompleteHandler } = require('pokemon-complete');
 
 const definition = {
   description: 'Return information on the given Pokemon, Ability, Move, Item, or Nature.',
@@ -81,15 +81,9 @@ async function process(interaction) {
   }
 };
 
-function autocomplete(interaction) {
-  const args = getargs(interaction).params;
-  return {
-    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-    data: {
-      choices: completeAll(args['name']),
-    },
-  };
-}
+const autocomplete = {
+  name: getAutocompleteHandler(completeAll, 'name'),
+};
 
 module.exports = {
   definition,

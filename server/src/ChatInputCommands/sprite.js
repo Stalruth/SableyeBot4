@@ -7,7 +7,7 @@ const Sim = require('@pkmn/sim');
 
 const getargs = require('discord-getarg');
 const { buildError } = require('embed-builder');
-const { completeSprite } = require('pokemon-complete');
+const { completeSprite, getAutocompleteHandler } = require('pokemon-complete');
 
 const definition = {
   description: 'Shows the Pokémon Showdown sprite requested.',
@@ -121,15 +121,9 @@ const process = function(interaction) {
   };
 };
 
-function autocomplete(interaction) {
-  const args = getargs(interaction).params;
-  return {
-    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-    data: {
-      choices: completeSprite(args['pokemon']),
-    },
-  };
-}
+const autocomplete = {
+  pokemon: getAutocompleteHandler(completeSprite, 'pokemon'),
+};
 
 module.exports = {
   definition,

@@ -2,8 +2,10 @@
 
 const Sim = require('@pkmn/sim');
 const Data = require('@pkmn/data');
+const { InteractionResponseType } = require('discord-interactions');
 
 const gens = require('gen-db');
+const getargs = require('discord-getarg');
 
 function graphGetter(type) {
   const graph = Array.from(gens.data['natdex'][type])
@@ -151,6 +153,18 @@ function getMultiComplete(resolver, completer, canNegate) {
   };
 }
 
+function getAutocompleteHandler(completer, option) {
+  return function(interaction) {
+    const { params } = getargs(interaction);
+    return {
+      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+      data: {
+        choices: completer(params[option]),
+      },
+    };
+  };
+}
+
 module.exports = {
   graphs,
   completeAbility: getCompleter([getAbilityMatches]),
@@ -161,5 +175,6 @@ module.exports = {
   completeSprite: getCompleter([getSpriteMatches]),
   completeAll: getCompleter([getAbilityMatches, getMoveMatches, getItemMatches, getNatureMatches, getPokemonMatches]),
   getMultiComplete,
+  getAutocompleteHandler,
 };
 

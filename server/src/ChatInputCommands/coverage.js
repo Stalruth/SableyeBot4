@@ -7,7 +7,7 @@ const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pokemon-colours');
-const { completePokemon, completeType, getMultiComplete } = require('pokemon-complete');
+const { completePokemon, completeType, getMultiComplete, getAutocompleteHandler } = require('pokemon-complete');
 
 const definition = {
   description: 'Returns type coverage based on a Pokémon\'s STAB and/or types.',
@@ -139,38 +139,10 @@ function process(interaction) {
   };
 };
 
-function autocomplete(interaction) {
-  const {params, focused} = getargs(interaction);
-
-  if(focused === 'pokemon') {
-    return {
-      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-      data: {
-        choices: completePokemon(params['pokemon']),
-      },
-    };
-  }
-
-  if(focused === 'types') {
-    return {
-      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-      data: {
-        choices: getMultiComplete(gens.data['natdex'].types, completeType, false)(params['types']),
-      },
-    };
-  }
-
-  // should never be hit
-  return {
-    type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-    data: {
-      choices: [{
-        name: params[params[focused]],
-        value: params[params[focused]],
-      }]
-    },
-  };
-}
+const autocomplete = {
+  pokemon: getAutocompleteHandler(completePokemon, 'pokemon'),
+  types: getAutocompleteHandler(getMultiComplete(gens.data['natdex'].types, completeType, false), 'types'),
+};
 
 module.exports = {
   definition,

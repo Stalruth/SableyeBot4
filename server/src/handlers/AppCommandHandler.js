@@ -61,7 +61,7 @@ async function onAutocomplete(req, res) {
     initCommand(commandPath[0]);
 
     const commandData = getCommandData(commandPath);
-    const autocompleteProcess = commandData.autocomplete ?? (()=>({type:8,choices:[info.params[info.focused]]}));
+    const autocompleteProcess = commandData.autocomplete[info.focused] ?? (()=>({type:8,choices:[info.params[info.focused]]}));
 
     res.json(await autocompleteProcess(req.body));
   } catch(e) {

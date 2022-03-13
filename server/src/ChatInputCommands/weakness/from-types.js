@@ -6,7 +6,7 @@ const getargs = require('discord-getarg');
 const { buildEmbed, buildError } = require('embed-builder');
 const gens = require('gen-db');
 const colours = require('pokemon-colours');
-const { completeType, getMultiComplete } = require('pokemon-complete');
+const { completeType, getMultiComplete, getAutocompleteHandler } = require('pokemon-complete');
 
 const definition = {
   description: 'Returns the resistances and weaknesses of a Pokémon with the given types.',
@@ -107,16 +107,9 @@ const process = (interaction) => {
   };
 }
 
-function autocomplete(interaction) {
-  const { params } = getargs(interaction);
-
-  return {
-      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-      data: {
-        choices: getMultiComplete(gens.data['natdex'].types, completeType, false)(params['types']),
-      },
-    };
-}
+const autocomplete = {
+  'types': getAutocompleteHandler(getMultiComplete(gens.data['natdex'].types, completeType, false), 'types'),
+};
 
 module.exports = {
   definition,
