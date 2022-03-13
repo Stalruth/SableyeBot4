@@ -14,7 +14,7 @@ const definition = {
   description: 'Returns the learnset of the Pokémon given, or how it learns a given move.',
   options: [
     {
-      name: 'name',
+      name: 'pokemon',
       type: 3,
       description: 'Name of the Pokémon',
       required: true,
@@ -142,14 +142,14 @@ const process = async function(interaction) {
 
   const data = gens.data[args.gen ? args.gen : 'natdex'];
 
-  const pokemon = data.species.get(Data.toID(args.name));
+  const pokemon = data.species.get(Data.toID(args.pokemon));
 
   if(!pokemon?.exists) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
-          buildError(`Could not find a Pokémon named ${args.name} in the given generation.`)
+          buildError(`Could not find a Pokémon named ${args.pokemon} in the given generation.`)
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
@@ -202,11 +202,11 @@ const process = async function(interaction) {
 function autocomplete(interaction) {
   const {params, focused} = getargs(interaction);
 
-  if(focused === 'name') {
+  if(focused === 'pokemon') {
     return {
       type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
       data: {
-        choices: completePokemon(params['name']),
+        choices: completePokemon(params['pokemon']),
       },
     };
   }

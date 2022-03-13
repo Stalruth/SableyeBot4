@@ -13,7 +13,7 @@ const definition = {
   description: 'Return the number of events a Pokémon has or the details of a specific event.',
   options: [
     {
-      name: 'name',
+      name: 'pokemon',
       type: 3,
       description: 'Name of the Pokémon',
       required: true,
@@ -31,14 +31,14 @@ const definition = {
 const process = async function(interaction) {
   const args = getargs(interaction).params;
 
-  const pokemon = gens.data['natdex'].species.get(Data.toID(args.name));
+  const pokemon = gens.data['natdex'].species.get(Data.toID(args.pokemon));
 
   if(!pokemon) {
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
-          buildError(`Could not find a Pokémon named ${args.name}.`)
+          buildError(`Could not find a Pokémon named ${args.pokemon}.`)
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
@@ -167,7 +167,7 @@ function autocomplete(interaction) {
   return {
     type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     data: {
-      choices: completePokemon(args['name']),
+      choices: completePokemon(args['pokemon']),
     },
   };
 }
