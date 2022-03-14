@@ -79,9 +79,9 @@ function getSpriteMatches(query) {
 const getAbilityMatches = getMatcher('abilities');
 const getMoveMatches = getMatcher('moves');
 const getItemMatches = getMatcher('items');
-const getNatureMatches = getMatcher('natures', 25);
+const getNatureMatches = getMatcher('natures');
 const getPokemonMatches = getMatcher('species');
-const getTypeMatches = getMatcher('types', 25);
+const getTypeMatches = getMatcher('types');
 
 function getMatchSorter(query) {
   return function matchSorter(lhs, rhs) {
@@ -171,7 +171,7 @@ module.exports = {
   completeMove: getCompleter([getMoveMatches]),
   completeItem: getCompleter([getItemMatches]),
   completePokemon: getCompleter([getPokemonMatches]),
-  completeType: getCompleter([getTypeMatches]),
+  completeType: getCompleter([getTypeMatches], 25),
   completeSprite: getCompleter([getSpriteMatches]),
   completeAll: getCompleter([getAbilityMatches, getMoveMatches, getItemMatches, getNatureMatches, getPokemonMatches]),
   getMultiComplete,
