@@ -23,6 +23,13 @@ const graphs = {
     delete graphs['moves'];
     return graphs['moves'] = graphGetter('moves');
   },
+  get ['attacks']() {
+    delete graphs['attacks'];
+    return graphs['attacks'] = Array.from(gens.data['natdex']['moves'])
+      .filter(e=>e.category !== 'Status')
+      .map(e=>e.id)
+      .sort();
+  },
   get ['items']() {
     delete graphs['items'];
     return graphs['items'] = graphGetter('items');
@@ -50,14 +57,14 @@ const graphs = {
   },
 };
 
-function getMatcher(type) {
+function getMatcher(graphType, effectType) {
   function getMatches(query) {
     const id = Data.toID(query);
-    return graphs[type]
+    return graphs[graphType]
         .filter(e=>e.includes(id))
         .map((e,i) => {
           return {
-            name: gens.data['natdex'][type].get(e).name,
+            name: gens.data['natdex'][effectType ?? graphType].get(e).name,
             value: e,
           };
         });
@@ -78,6 +85,7 @@ function getSpriteMatches(query) {
 
 const getAbilityMatches = getMatcher('abilities');
 const getMoveMatches = getMatcher('moves');
+const getAttackMatches = getMatcher('attacks', 'moves');
 const getItemMatches = getMatcher('items');
 const getNatureMatches = getMatcher('natures');
 const getPokemonMatches = getMatcher('species');
@@ -169,6 +177,7 @@ module.exports = {
   graphs,
   completeAbility: getCompleter([getAbilityMatches]),
   completeMove: getCompleter([getMoveMatches]),
+  completeAttack: getCompleter([getAttackMatches]),
   completeItem: getCompleter([getItemMatches]),
   completePokemon: getCompleter([getPokemonMatches]),
   completeType: getCompleter([getTypeMatches], 25),
