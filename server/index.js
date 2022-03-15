@@ -18,7 +18,7 @@ Sentry.init({
     new Sentry.Integrations.Http({ tracing: true }),
     new Tracing.Integrations.Express({ app }),
   ],
-  tracesSampleRate: 1.0,
+  tracesSampleRate: 0.15,
   release: process.env.npm_package_version,
   autoSessionTracking: false,
 });
