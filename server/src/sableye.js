@@ -15,7 +15,7 @@ addCommand('nature', require('./ChatInputCommands/nature.js'));
 addCommand('sprite', require('./ChatInputCommands/sprite.js'));
 addCommand('weakness', require('./ChatInputCommands/weakness.js'));
 
-addCommand('Pokémon Term Search', require('./ContextMenuCommands/Pokémon Term Search.js'));
+addCommand('Pokémon Term Search', require('./ContextMenuCommands/Pokémon Glossary.js'));
 
 addComponent('filter', require('./MessageComponents/filter.js'));
 addComponent('dt', require('./MessageComponents/dt.js'));
