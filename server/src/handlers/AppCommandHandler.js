@@ -38,7 +38,7 @@ async function onApplicationCommand(req, res) {
   const commandPath = [req.body.data?.name, ...info.subcommand];
 
   try {
-    console.log(req.body.type, req.body.guild_id, req.body.id, ...[0,1,2].map(e=>commandPath[e] ?? null), JSON.stringify(info.params));
+    console.log(req.body.type, req.body.guild_id, req.body.id, `'${[0,1,2].map(e=>commandPath[e] ?? null).join(' ')}'`, JSON.stringify(info.params));
 
     const commandData = getCommandData(commandPath);
     const process = (commandData.process ?? (()=>{}))(req.body);
@@ -48,7 +48,7 @@ async function onApplicationCommand(req, res) {
 
     await followUp(req.body);
   } catch (e) {
-    console.error(req.body.type, req.body.guild_id, req.body.id, ...[0,1,2].map(e=>commandPath[e] ?? null), JSON.stringify(info.params));
+    console.error(req.body.type, req.body.guild_id, req.body.id, `'${[0,1,2].map(e=>commandPath[e] ?? null).join(' ')}'`, JSON.stringify(info.params));
     throw(e)
   }
 }
