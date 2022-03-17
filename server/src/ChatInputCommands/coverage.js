@@ -195,7 +195,7 @@ function process(interaction) {
       embeds: [buildEmbed({
         title: titleParts.join(' + '),
         fields,
-        color: colours.types[allTypes[0].type.toLowerCase() ?? allTypes[0].id]
+        color: colours.types[allTypes[0].type?.toLowerCase() ?? allTypes[0].id]
       })],
     },
   };
