@@ -15,11 +15,11 @@ addCommand('nature', require('./ChatInputCommands/nature.js'));
 addCommand('sprite', require('./ChatInputCommands/sprite.js'));
 addCommand('weakness', require('./ChatInputCommands/weakness.js'));
 
-addCommand('Pokémon Term Search', require('./ContextMenuCommands/Pokémon Glossary.js'));
+addCommand('Pokémon Glossary', require('./ContextMenuCommands/Pokémon Glossary.js'));
 
 addComponent('filter', require('./MessageComponents/filter.js'));
 addComponent('dt', require('./MessageComponents/dt.js'));
-addComponent('Pokémon Term Search', require('./MessageComponents/dt.js'));
+addComponent('Pokémon Glossary', require('./MessageComponents/dt.js'));
 
 const handlers = {
   2: onApplicationCommand,
