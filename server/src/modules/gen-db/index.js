@@ -4,11 +4,17 @@ const Sim = require('@pkmn/sim');
 
 const existedEver = (d) => {
   if (!d.exists) return false;
-  if ('isNonstandard' in d && ![null, 'Past', 'Future', 'LGPE'].includes(d.isNonstandard)) return false;
+  if ('isNonstandard' in d && ![null, 'Past', 'Future', 'LGPE', 'Gigantamax'].includes(d.isNonstandard)) return false;
   if (d.kind === 'Ability' && d.id === 'noability') return false;
   return !('tier' in d && d.tier === 'Unreleased');
 };
 
+const existsInGen = (d) => {
+  if (!d.exists) return false;
+  if ('isNonstandard' in d && ![null, 'Gigantamax'].includes(d.isNonstandard)) return false;
+  if (d.kind === 'Ability' && d.id === 'noability') return false;
+  return !('tier' in d && ['Illegal', 'Unreleased'].includes(d.tier));
+}
 
 const genNames = [
   {
@@ -65,35 +71,35 @@ function getGen(dex, gen, existsFn) {
 const genData = {
   get ['gen1']() {
     delete genData['gen1'];
-    return genData['gen1'] = getGen(Sim.Dex, 1);
+    return genData['gen1'] = getGen(Sim.Dex, 1, existsInGen);
   },
   get ['gen2']() {
     delete genData['gen2'];
-    return genData['gen2'] = getGen(Sim.Dex, 2);
+    return genData['gen2'] = getGen(Sim.Dex, 2, existsInGen);
   },
   get ['gen3']() {
     delete genData['gen3'];
-    return genData['gen3'] = getGen(Sim.Dex, 3);
+    return genData['gen3'] = getGen(Sim.Dex, 3, existsInGen);
   },
   get ['gen4']() {
     delete genData['gen4'];
-    return genData['gen4'] = getGen(Sim.Dex, 4);
+    return genData['gen4'] = getGen(Sim.Dex, 4, existsInGen);
   },
   get ['gen5']() {
     delete genData['gen5'];
-    return genData['gen5'] = getGen(Sim.Dex, 5);
+    return genData['gen5'] = getGen(Sim.Dex, 5, existsInGen);
   },
   get ['gen6']() {
     delete genData['gen6'];
-    return genData['gen6'] = getGen(Sim.Dex, 6);
+    return genData['gen6'] = getGen(Sim.Dex, 6, existsInGen);
   },
   get ['gen7']() {
     delete genData['gen7'];
-    return genData['gen7'] = getGen(Sim.Dex, 7);
+    return genData['gen7'] = getGen(Sim.Dex, 7, existsInGen);
   },
   get ['gen8']() {
     delete genData['gen8'];
-    return genData['gen8'] = getGen(Sim.Dex, 8);
+    return genData['gen8'] = getGen(Sim.Dex, 8, existsInGen);
   },
   get ['gen8bdsp']() {
     const Mods = require('@pkmn/mods');
