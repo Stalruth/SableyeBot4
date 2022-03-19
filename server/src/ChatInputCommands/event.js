@@ -46,15 +46,17 @@ const process = async function(interaction) {
   }
 
   const learnset = await gens.data['natdex'].learnsets.get(pokemon['id']);
-  const event = args.event ?? (learnset.eventData?.length === 1 ? 1 : undefined);
+  const event = args.event ?? (learnset?.eventData?.length === 1 ? 1 : undefined);
 
   if(!event) {
-    const description = learnset['eventData']?.length ? `Set the \`event\` option to a number between 1 and ${learnset['eventData'].length} for more information.` : '';
+    const eventCount = learnset?.eventData?.length ?? 0;
+    const title = `${pokemon['name']} has ${eventCount > 0 ? eventCount : 'no'} event${ eventCount !== 1 ? 's' : ''}.`;
+    const description = eventCount > 0 ? `Set the \`event\` option to a number between 1 and ${learnset.eventData.length} for more information.` : '';
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
-          title: `${pokemon['name']} has ${learnset['eventData']?.length ?? 'no'} events.`,
+          title,
           description,
           color: colours.types[Data.toID(pokemon.types[0])]
         })],
