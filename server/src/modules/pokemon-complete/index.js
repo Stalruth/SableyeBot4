@@ -51,8 +51,12 @@ const graphs = {
     delete graphs['sprites'];
     const graph = Sim.Dex.species.all()
         .filter(el=>!['Custom','CAP'].includes(el.isNonstandard))
-        .map(el=>el.id)
-        .sort()
+        .reduce((acc, cur)=>[
+          ...acc,
+          cur.id,
+          ...(cur.cosmeticFormes?.map(Data.toID) ?? [])
+        ], [])
+        .sort();
     return graphs['sprites'] = graph;
   },
 };
