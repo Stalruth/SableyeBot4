@@ -536,8 +536,8 @@ const autocomplete = {
   abilities: getAutocompleteHandler(getMultiComplete(natdex.abilities, completeAbility, false), 'abilities'),
   types: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, true), 'types'),
   moves: getAutocompleteHandler(getMultiComplete(natdex.moves, completeMove, true), 'moves'),
-  weaknesses: getAutocompleteHandler(getMultiComplete(natdex.moves, completeType, false), 'weaknesses'),
-  resists: getAutocompleteHandler(getMultiComplete(natdex.resists, completeType, false), 'resists'),
+  weaknesses: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, false), 'weaknesses'),
+  resists: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, false), 'resists'),
   'breeds-with': getAutocompleteHandler(completePokemon, 'breeds-with'),
 };
 
