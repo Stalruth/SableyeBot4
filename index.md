@@ -16,23 +16,23 @@ competitive Pokémon.  For example:
 
 ### Data Lookup
 
-The `/dt`/`//dt` command allows the user to obtain information on any Move, Item,
+The `/dt` command allows the user to obtain information on any Move, Item,
 Ability, Pokemon, or Nature in the game.  The `gen` parameter can be used to
 look up data from previous generations.
 
 ### Pokémon Filter
 
-The `/filter`/`//filter` command offers a wide range of search parameters that allow you
+The `/filter` command offers a wide range of search parameters that allow you
 to find the perfect Pokémon, including filtering by Type, Ability or Move.
 
 ### Coverage Checker
 
-The `/coverage`/`//coverage` command allows you to check coverage based either on a
+The `/coverage` command allows you to check coverage based either on a
 Pokémon's STAB or the Types of its attacks.
 
 ### Weakness Checker
 
-The `/weakness`/`//weakness` command shows you the weaknesses of the Pokémon or types
+The `/weakness` command shows you the weaknesses of the Pokémon or types
 provided.
 
 ### Autocomplete
@@ -62,7 +62,7 @@ See [Sableye Bot's Terms of Use][TERMS].
 
 See [Sableye Bot's Privacy Policy][PRIVACY].
 
-This bot doesn't collect much though.
+This bot limits its data collection and retention as much as it reasonably can.
 
 ## Credits
 
