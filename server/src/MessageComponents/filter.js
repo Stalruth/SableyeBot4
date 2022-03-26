@@ -7,7 +7,7 @@ const db = require('db-service');
 const { buildEmbed, buildError } = require('embed-builder');
 
 async function getPage(interaction, respond) {
-  if(interaction.member.user.id !== interaction.message.interaction.user.id) {
+  if((interaction.member?.user ?? interaction.user).id !== interaction.message.interaction.user.id) {
     return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {

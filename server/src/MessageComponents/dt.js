@@ -8,7 +8,7 @@ const { buildError } = require('embed-builder');
 const gens = require('gen-db');
 
 async function process(interaction, respond) {
-  if(interaction.member.user.id !== interaction.message.interaction.user.id) {
+  if((interaction.member?.user ?? interaction.user).id !== interaction.message.interaction.user.id) {
     return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
