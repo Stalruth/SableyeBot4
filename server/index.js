@@ -23,11 +23,11 @@ Sentry.init({
   autoSessionTracking: false,
 });
 
-app.use('/sableye', Sentry.Handlers.requestHandler());
+app.use('/', Sentry.Handlers.requestHandler());
 
-app.use('/sableye', Sentry.Handlers.tracingHandler());
+app.use('/', Sentry.Handlers.tracingHandler());
 
-app.post('/sableye', verifyKeyMiddleware(PUBLIC_KEY), sableye);
+app.post('/', verifyKeyMiddleware(PUBLIC_KEY), sableye);
 
 app.use(Sentry.Handlers.errorHandler());
 
