@@ -41,7 +41,6 @@
     "node-fetch": "^2.6.7",
     "pokemon-colours": "file:src/modules/pokemon-colours",
     "pokemon-complete": "file:src/modules/pokemon-complete",
-    "pokemon-filters": "file:src/modules/pokemon-filters",
-    "typecheck": "file:src/modules/typecheck"
+    "pokemon-filters": "file:src/modules/pokemon-filters"
   }
 }
