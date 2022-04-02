@@ -27,8 +27,6 @@ const process = function(interaction) {
       ], []).filter(el=>!!el),
     ].map(value => value.toLowerCase().replace(/[^a-z0-9]+/g, ' '));
 
-    console.log({searchSpace});
-
     const effectTypes = {
       'species': 'Pokemon',
       'moves': 'Move',
