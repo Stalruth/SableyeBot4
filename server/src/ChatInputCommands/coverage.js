@@ -1,13 +1,11 @@
-'use strict';
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import Data from '@pkmn/data';
 
-const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const Data = require('@pkmn/data');
-
-const getargs = require('discord-getarg');
-const { buildEmbed, buildError } = require('embed-builder');
-const gens = require('gen-db');
-const colours = require('pokemon-colours');
-const { completePokemon, completeAttack, completeType, getMultiComplete, getAutocompleteHandler } = require('pokemon-complete');
+import getargs from 'discord-getarg';
+import { buildEmbed, buildError } from 'embed-builder';
+import gens from 'gen-db';
+import colours from 'pokemon-colours';
+import { completePokemon, completeAttack, completeType, getMultiComplete, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
   description: 'Returns type coverage based on a Pokémon\'s STAB and/or types.',
@@ -207,7 +205,7 @@ const autocomplete = {
   moves: getAutocompleteHandler(getMultiComplete(gens.data['natdex'].moves, completeAttack, false), 'moves'),
 };
 
-module.exports = {
+export default {
   definition,
   command: {
     process,

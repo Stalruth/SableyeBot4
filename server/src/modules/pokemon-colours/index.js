@@ -1,5 +1,3 @@
-'use strict';
-
 const types = {
   normal: 0xA8A878,
   fighting: 0xC03028,
@@ -30,5 +28,5 @@ const stats = {
   spe: 0xf85888,
 };
 
-module.exports = { types, stats };
+export default { types, stats };
 

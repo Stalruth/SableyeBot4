@@ -23,4 +23,4 @@ const decodeSource = (source) => {
   return result;
 };
 
-module.exports = decodeSource;
+export default decodeSource;

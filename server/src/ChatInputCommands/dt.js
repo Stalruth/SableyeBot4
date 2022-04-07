@@ -1,12 +1,10 @@
-'use strict';
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 
-const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-
-const getargs = require('discord-getarg');
-const { dt, getData } = require('dt-utils');
-const { buildEmbed, buildError } = require('embed-builder');
-const gens = require('gen-db');
-const { completeAll, getAutocompleteHandler } = require('pokemon-complete');
+import getargs from 'discord-getarg';
+import { dt, getData } from 'dt-utils';
+import { buildEmbed, buildError } from 'embed-builder';
+import gens from 'gen-db';
+import { completeAll, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
   description: 'Return information on the given Pokemon, Ability, Move, Item, or Nature.',
@@ -85,7 +83,7 @@ const autocomplete = {
   name: getAutocompleteHandler(completeAll, 'name'),
 };
 
-module.exports = {
+export default {
   definition,
   command: {
     process,

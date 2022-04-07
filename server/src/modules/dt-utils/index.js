@@ -1,10 +1,8 @@
-'use strict';
-
-const abilityInfo = require('./abilityInfo.js');
-const itemInfo = require('./itemInfo.js');
-const moveInfo = require('./moveInfo.js');
-const natureInfo = require('./natureInfo.js');
-const pokemonInfo = require('./pokemonInfo.js');
+import abilityInfo from './abilityInfo.js';
+import itemInfo from './itemInfo.js';
+import moveInfo from './moveInfo.js';
+import natureInfo from './natureInfo.js';
+import pokemonInfo from './pokemonInfo.js';
 
 const dt = {
   Ability: abilityInfo,
@@ -26,5 +24,5 @@ function getData(data, id) {
   return results;
 }
 
-module.exports = { dt, getData };
+export { dt, getData };
 

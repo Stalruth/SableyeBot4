@@ -1,9 +1,7 @@
-'use strict';
+import fetch from 'node-fetch';
 
-const fetch = require('node-fetch');
-
-const { getCommandDefinitions } = require('./src/handlers/AppCommandHandler.js');
-const { sableye } = require('./src/sableye');
+import { getCommandDefinitions } from './src/handlers/AppCommandHandler.js';
+import { sableye } from './src/sableye.js';
 
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const APP_ID = process.env.APP_ID;
@@ -53,5 +51,5 @@ async function main() {
   }
 }
 
-main();
+await main();
 

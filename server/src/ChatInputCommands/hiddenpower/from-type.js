@@ -1,12 +1,10 @@
-'use strict';
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import Data from '@pkmn/data';
+import Sim from '@pkmn/sim';
 
-const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const Data = require('@pkmn/data');
-const Sim = require('@pkmn/sim');
-
-const getargs = require('discord-getarg');
-const { buildEmbed } = require('embed-builder');
-const colours = require('pokemon-colours');
+import getargs from 'discord-getarg';
+import { buildEmbed } from 'embed-builder';
+import colours from 'pokemon-colours';
 
 const types = new Data.Generations(Sim.Dex).get(7).types;
 
@@ -152,7 +150,7 @@ const process = (interaction) => {
   };
 }
 
-module.exports = {
+export default {
   definition,
   command: {
     process

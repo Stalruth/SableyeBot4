@@ -1,10 +1,8 @@
-'use strict';
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import fetch from 'node-fetch';
 
-const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const fetch = require('node-fetch');
-
-const db = require('db-service');
-const { buildEmbed, buildError } = require('embed-builder');
+import db from 'db-service';
+import { buildEmbed, buildError } from 'embed-builder';
 
 async function getPage(interaction, respond) {
   if((interaction.member?.user ?? interaction.user).id !== interaction.message.interaction.user.id) {
@@ -101,4 +99,4 @@ async function getPage(interaction, respond) {
   });
 }
 
-module.exports = getPage;
+export default getPage;

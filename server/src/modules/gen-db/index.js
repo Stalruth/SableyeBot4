@@ -1,6 +1,5 @@
-'use strict';
-const Data = require('@pkmn/data');
-const Sim = require('@pkmn/sim');
+import Data from '@pkmn/data';
+import Sim from '@pkmn/sim';
 
 const existedEver = (d) => {
   if (!d.exists) return false;
@@ -114,5 +113,5 @@ const genData = {
   },
 }
 
-module.exports = {names: genNames, data: genData};
+export default {names: genNames, data: genData};
 

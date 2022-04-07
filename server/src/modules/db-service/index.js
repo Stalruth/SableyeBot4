@@ -1,7 +1,5 @@
-'use strict';
-
-const loki = require('lokijs');
-const fetch = require('node-fetch');
+import loki from 'lokijs';
+import fetch from 'node-fetch';
 
 let filters = undefined;
 
@@ -38,4 +36,4 @@ function getFilterCollection() {
   return filters;
 }
 
-module.exports = { getFilterCollection };
+export default { getFilterCollection };

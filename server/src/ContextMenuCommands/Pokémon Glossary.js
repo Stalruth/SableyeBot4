@@ -1,12 +1,10 @@
-'use strict';
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { toID } from '@pkmn/data';
 
-const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const { toID } = require('@pkmn/data');
-
-const { dt, getData } = require('dt-utils');
-const { buildEmbed, buildError } = require('embed-builder');
-const gens = require('gen-db');
-const { graphs } = require('pokemon-complete');
+import { dt, getData } from 'dt-utils';
+import { buildEmbed, buildError } from 'embed-builder';
+import gens from 'gen-db';
+import { graphs } from 'pokemon-complete';
 
 const definition = {
   type: 3,
@@ -100,7 +98,7 @@ const process = function(interaction) {
   };
 };
 
-module.exports = {
+export default {
   definition,
   command: {
     process

@@ -1,8 +1,6 @@
-'use strict';
+import { InteractionResponseType } from 'discord-interactions';
 
-const { InteractionResponseType } = require('discord-interactions');
-
-const { buildEmbed } = require('embed-builder');
+import { buildEmbed } from 'embed-builder';
 
 const definition = {
   description: 'About SableyeBot',
@@ -51,7 +49,7 @@ const process = function(interaction) {
   };
 };
 
-module.exports = {
+export default {
   definition,
   command: {
     process,

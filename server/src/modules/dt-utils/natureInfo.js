@@ -1,8 +1,6 @@
-'use strict';
-
-const { buildEmbed } = require('embed-builder');
-const gens = require('gen-db');
-const colours = require('pokemon-colours');
+import { buildEmbed } from 'embed-builder';
+import gens from 'gen-db';
+import colours from 'pokemon-colours';
 
 // Uh oh sisters! hardcoding!
 const neutralNatures = {
@@ -45,4 +43,4 @@ function natureInfo(nature, gen, verbose) {
   };
 }
 
-module.exports = natureInfo;
+export default natureInfo;

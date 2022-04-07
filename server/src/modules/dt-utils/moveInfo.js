@@ -1,11 +1,9 @@
-'use strict';
+import { InteractionResponseFlags } from 'discord-interactions';
+import { toID } from '@pkmn/data';
 
-const { InteractionResponseFlags } = require('discord-interactions');
-const { toID } = require('@pkmn/data');
-
-const { buildEmbed } = require('embed-builder');
-const gens = require('gen-db');
-const colours = require('pokemon-colours');
+import { buildEmbed } from 'embed-builder';
+import gens from 'gen-db';
+import colours from 'pokemon-colours';
 
 function moveInfo(move, gen, verbose) {
   const title = `${move['name']}`;
@@ -270,4 +268,4 @@ function moveInfo(move, gen, verbose) {
   };
 }
 
-module.exports = moveInfo;
+export default moveInfo;

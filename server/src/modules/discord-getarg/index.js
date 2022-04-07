@@ -1,5 +1,3 @@
-'use strict';
-
 function getargs(interaction) {
   const subcommand = [];
   const params = {};
@@ -22,5 +20,5 @@ function getargs(interaction) {
   return {subcommand, params, focused};
 }
 
-module.exports = getargs;
+export default getargs;
 

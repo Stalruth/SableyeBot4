@@ -1,14 +1,12 @@
-'use strict';
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import fetch from 'node-fetch';
 
-const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const fetch = require('node-fetch');
-
-const db = require('db-service');
-const getargs = require('discord-getarg');
-const { buildEmbed, buildError } = require('embed-builder');
-const gens = require('gen-db');
-const { completeAbility, completeFilterType, completeMove, completeType, completePokemon, getMultiComplete, getAutocompleteHandler } = require('pokemon-complete');
-const { filterFactory, applyFilters } = require('pokemon-filters');
+import db from 'db-service';
+import getargs from 'discord-getarg';
+import { buildEmbed, buildError } from 'embed-builder';
+import gens from 'gen-db';
+import { completeAbility, completeMove, completeType, completePokemon, getMultiComplete, getAutocompleteHandler } from 'pokemon-complete';
+import { filterFactory, applyFilters } from 'pokemon-filters';
 
 const natdex = gens.data['natdex'];
 
@@ -541,7 +539,7 @@ const autocomplete = {
   'breeds-with': getAutocompleteHandler(completePokemon, 'breeds-with'),
 };
 
-module.exports = {
+export default {
   definition,
   command: {
     process: validate,

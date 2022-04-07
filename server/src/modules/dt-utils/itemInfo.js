@@ -1,9 +1,7 @@
-'use strict';
+import { InteractionResponseFlags } from 'discord-interactions';
 
-const { InteractionResponseFlags } = require('discord-interactions');
-
-const { buildEmbed } = require('embed-builder');
-const gens = require('gen-db');
+import { buildEmbed } from 'embed-builder';
+import gens from 'gen-db';
 
 function itemInfo(item, gen, verbose) {
   const title = item['name'];
@@ -48,4 +46,4 @@ function itemInfo(item, gen, verbose) {
   };
 }
 
-module.exports = itemInfo;
+export default itemInfo;

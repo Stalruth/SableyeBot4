@@ -1,9 +1,7 @@
-'use strict';
+import { InteractionResponseFlags } from 'discord-interactions';
 
-const { InteractionResponseFlags } = require('discord-interactions');
-
-const { buildEmbed } = require('embed-builder');
-const gens = require('gen-db');
+import { buildEmbed } from 'embed-builder';
+import gens from 'gen-db';
 
 function abilityInfo(ability, gen, verbose) {
   return {
@@ -14,4 +12,4 @@ function abilityInfo(ability, gen, verbose) {
   };
 }
 
-module.exports = abilityInfo;
+export default abilityInfo;

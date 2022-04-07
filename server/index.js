@@ -1,11 +1,11 @@
 'use strict';
 
-const { verifyKeyMiddleware } = require('discord-interactions');
-const express = require('express');
-const Sentry = require('@sentry/node');
-const Tracing = require('@sentry/tracing');
+import { verifyKeyMiddleware } from 'discord-interactions';
+import express from 'express';
+import Sentry from '@sentry/node';
+import Tracing from '@sentry/tracing';
 
-const { sableye } = require('./src/sableye.js');
+import { sableye } from './src/sableye.js';
 
 const PUBLIC_KEY = process.env.PUBLIC_KEY;
 const PORT = process.env.PORT;

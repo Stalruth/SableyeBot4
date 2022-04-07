@@ -1,5 +1,5 @@
-const fromStats = require('./hiddenpower/from-stats.js');
-const fromType = require('./hiddenpower/from-type.js');
+import fromStats from './hiddenpower/from-stats.js';
+import fromType from './hiddenpower/from-type.js';
 
 const definition = {
   description: 'Retrieve information about Hidden Power.',
@@ -15,7 +15,7 @@ const definition = {
   ],
 };
 
-module.exports = {
+export default {
   definition,
   command: {
     'from-stats': fromStats.command,

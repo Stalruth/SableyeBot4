@@ -1,13 +1,11 @@
-'use strict';
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import Data from '@pkmn/data';
+import Img from '@pkmn/img';
+import Sim from '@pkmn/sim';
 
-const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-const Data = require('@pkmn/data');
-const Img = require('@pkmn/img');
-const Sim = require('@pkmn/sim');
-
-const getargs = require('discord-getarg');
-const { buildError } = require('embed-builder');
-const { completeSprite, getAutocompleteHandler } = require('pokemon-complete');
+import getargs from 'discord-getarg';
+import { buildError } from 'embed-builder';
+import { completeSprite, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
   description: 'Shows the Pokémon Showdown sprite requested.',
@@ -125,7 +123,7 @@ const autocomplete = {
   pokemon: getAutocompleteHandler(completeSprite, 'pokemon'),
 };
 
-module.exports = {
+export default {
   definition,
   command: {
     process,

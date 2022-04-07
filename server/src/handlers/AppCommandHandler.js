@@ -1,9 +1,7 @@
-'use strict';
+import { InteractionResponseType } from 'discord-interactions';
+import getargs from 'discord-getarg';
 
-const { InteractionResponseType } = require('discord-interactions');
-const getargs = require('discord-getarg');
-
-const { buildError } = require('embed-builder');
+import { buildError } from 'embed-builder';
 
 const definitions = [];
 const commands = {};
@@ -17,7 +15,7 @@ function addCommand(name, module) {
     // Command already added.
     return;
   }
-  const {definition, command} = module;
+  const {definition, command} = module.default;
   definition['name'] = name;
   definitions.push(definition);
   commands[name] = command;
@@ -88,5 +86,5 @@ function getCommandDefinitions() {
   return definitions;
 }
 
-module.exports = { addCommand, onApplicationCommand, onAutocomplete, getCommandDefinitions };
+export { addCommand, onApplicationCommand, onAutocomplete, getCommandDefinitions };
 

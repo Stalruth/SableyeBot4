@@ -1,25 +1,23 @@
-'use strict';
+import { addCommand, onApplicationCommand, onAutocomplete } from './handlers/AppCommandHandler.js';
+import { addComponent, onComponentInteraction } from './handlers/MessageComponentHandler.js';
 
-const { addCommand, onApplicationCommand, onAutocomplete } = require('./handlers/AppCommandHandler.js');
-const { addComponent, onComponentInteraction } = require('./handlers/MessageComponentHandler.js');
+addCommand('about', await import('./ChatInputCommands/about.js'));
+addCommand('calculator', await import('./ChatInputCommands/calculator.js'));
+addCommand('coverage', await import('./ChatInputCommands/coverage.js'));
+addCommand('dt', await import('./ChatInputCommands/dt.js'));
+addCommand('event', await import('./ChatInputCommands/event.js'));
+addCommand('filter', await import('./ChatInputCommands/filter.js'));
+addCommand('hiddenpower', await import('./ChatInputCommands/hiddenpower.js'));
+addCommand('learn', await import('./ChatInputCommands/learn.js'));
+addCommand('nature', await import('./ChatInputCommands/nature.js'));
+addCommand('sprite', await import('./ChatInputCommands/sprite.js'));
+addCommand('weakness', await import('./ChatInputCommands/weakness.js'));
 
-addCommand('about', require('./ChatInputCommands/about.js'));
-addCommand('calculator', require('./ChatInputCommands/calculator.js'));
-addCommand('coverage', require('./ChatInputCommands/coverage.js'));
-addCommand('dt', require('./ChatInputCommands/dt.js'));
-addCommand('event', require('./ChatInputCommands/event.js'));
-addCommand('filter', require('./ChatInputCommands/filter.js'));
-addCommand('hiddenpower', require('./ChatInputCommands/hiddenpower.js'));
-addCommand('learn', require('./ChatInputCommands/learn.js'));
-addCommand('nature', require('./ChatInputCommands/nature.js'));
-addCommand('sprite', require('./ChatInputCommands/sprite.js'));
-addCommand('weakness', require('./ChatInputCommands/weakness.js'));
+addCommand('Pokémon Glossary', await import('./ContextMenuCommands/Pokémon Glossary.js'));
 
-addCommand('Pokémon Glossary', require('./ContextMenuCommands/Pokémon Glossary.js'));
-
-addComponent('filter', require('./MessageComponents/filter.js'));
-addComponent('dt', require('./MessageComponents/dt.js'));
-addComponent('Pokémon Glossary', require('./MessageComponents/dt.js'));
+addComponent('filter', await import('./MessageComponents/filter.js'));
+addComponent('dt', await import('./MessageComponents/dt.js'));
+addComponent('Pokémon Glossary', await import('./MessageComponents/dt.js'));
 
 const handlers = {
   2: onApplicationCommand,
@@ -27,7 +25,9 @@ const handlers = {
   4: onAutocomplete
 };
 
-module.exports.sableye = (req, res) => {
+const sableye = (req, res) => {
   handlers[req.body['type']](req, res);
 };
+
+export { sableye };
 

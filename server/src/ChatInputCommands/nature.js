@@ -1,12 +1,10 @@
-'use strict';
+import { InteractionResponseType } from 'discord-interactions';
+import Data from '@pkmn/data';
+import Sim from '@pkmn/sim';
 
-const { InteractionResponseType } = require('discord-interactions');
-const Data = require('@pkmn/data');
-const Sim = require('@pkmn/sim');
-
-const colours = require('pokemon-colours');
-const getargs = require('discord-getarg');
-const { buildEmbed } = require('embed-builder');
+import colours from 'pokemon-colours';
+import getargs from 'discord-getarg';
+import { buildEmbed } from 'embed-builder';
 
 const stats = [
   {
@@ -110,7 +108,7 @@ const process = (interaction) => {
   };
 }
 
-module.exports = {
+export default {
   definition,
   command: {
     process,

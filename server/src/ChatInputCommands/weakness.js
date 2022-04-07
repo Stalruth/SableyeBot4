@@ -1,5 +1,5 @@
-const fromPokemon = require('./weakness/from-pokemon.js');
-const fromTypes = require('./weakness/from-types.js');
+import fromPokemon from './weakness/from-pokemon.js';
+import fromTypes from './weakness/from-types.js';
 
 const definition = {
   description: 'Weaknesses based on a given Pokémon or types.',
@@ -25,7 +25,7 @@ const autocomplete = {
   'from-types': fromTypes.autocomplete,
 };
 
-module.exports = {
+export default {
   definition,
   command: {
     'from-pokemon': fromPokemon.command,

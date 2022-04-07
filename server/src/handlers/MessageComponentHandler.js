@@ -1,10 +1,8 @@
-'use strict';
-
 const processes = {};
 const modulePaths = {};
 
 function addComponent(name, module) {
-  processes[name] = module;
+  processes[name] = module.default;
 };
 
 async function onComponentInteraction(req, res) {
@@ -24,5 +22,5 @@ async function onComponentInteraction(req, res) {
   return;
 }
 
-module.exports = { addComponent, onComponentInteraction };
+export { addComponent, onComponentInteraction };
 

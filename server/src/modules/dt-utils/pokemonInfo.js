@@ -1,11 +1,9 @@
-'use strict';
+import { InteractionResponseFlags } from 'discord-interactions';
+import { toID } from '@pkmn/data';
 
-const { InteractionResponseFlags } = require('discord-interactions');
-const { toID } = require('@pkmn/data');
-
-const { buildEmbed } = require('embed-builder');
-const gens = require('gen-db');
-const colours = require('pokemon-colours');
+import { buildEmbed } from 'embed-builder';
+import gens from 'gen-db';
+import colours from 'pokemon-colours';
 
 function lowKickPower(weight) {
   if(weight < 10) return 20;
@@ -176,4 +174,4 @@ function pokemonInfo(pokemon, gen, verbose) {
   };
 }
 
-module.exports = pokemonInfo;
+export default pokemonInfo;

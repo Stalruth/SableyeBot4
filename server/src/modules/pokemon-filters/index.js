@@ -1,6 +1,4 @@
-'use strict';
-
-const genDb = require('gen-db');
+import genDb from 'gen-db';
 
 const genData = genDb.data;
 
@@ -311,4 +309,4 @@ async function applyFilters(genName, filters, threshold) {
   }))).filter(el=>!!el);
 }
 
-module.exports = { filterFactory, applyFilters };
+export { filterFactory, applyFilters };

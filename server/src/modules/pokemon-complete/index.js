@@ -1,11 +1,9 @@
-'use strict';
+import Sim from '@pkmn/sim';
+import Data from '@pkmn/data';
+import { InteractionResponseType } from 'discord-interactions';
 
-const Sim = require('@pkmn/sim');
-const Data = require('@pkmn/data');
-const { InteractionResponseType } = require('discord-interactions');
-
-const gens = require('gen-db');
-const getargs = require('discord-getarg');
+import gens from 'gen-db';
+import getargs from 'discord-getarg';
 
 function graphGetter(type) {
   const graph = Array.from(gens.data['natdex'][type])
@@ -177,16 +175,25 @@ function getAutocompleteHandler(completer, option) {
   };
 }
 
-module.exports = {
+const completeAbility = getCompleter([getAbilityMatches]);
+const completeMove = getCompleter([getMoveMatches]);
+const completeAttack = getCompleter([getAttackMatches]);
+const completeItem = getCompleter([getItemMatches]);
+const completePokemon = getCompleter([getPokemonMatches]);
+const completeType = getCompleter([getTypeMatches], 25);
+const completeSprite = getCompleter([getSpriteMatches]);
+const completeAll = getCompleter([getAbilityMatches, getMoveMatches, getItemMatches, getNatureMatches, getPokemonMatches]);
+
+export {
   graphs,
-  completeAbility: getCompleter([getAbilityMatches]),
-  completeMove: getCompleter([getMoveMatches]),
-  completeAttack: getCompleter([getAttackMatches]),
-  completeItem: getCompleter([getItemMatches]),
-  completePokemon: getCompleter([getPokemonMatches]),
-  completeType: getCompleter([getTypeMatches], 25),
-  completeSprite: getCompleter([getSpriteMatches]),
-  completeAll: getCompleter([getAbilityMatches, getMoveMatches, getItemMatches, getNatureMatches, getPokemonMatches]),
+  completeAbility,
+  completeMove,
+  completeAttack,
+  completeItem,
+  completePokemon,
+  completeType,
+  completeSprite,
+  completeAll,
   getMultiComplete,
   getAutocompleteHandler,
 };

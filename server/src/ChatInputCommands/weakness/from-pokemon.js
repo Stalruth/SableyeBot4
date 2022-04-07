@@ -1,12 +1,10 @@
-'use strict';
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 
-const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-
-const getargs = require('discord-getarg');
-const { buildEmbed, buildError } = require('embed-builder');
-const gens = require('gen-db');
-const colours = require('pokemon-colours');
-const { completePokemon, getAutocompleteHandler } = require('pokemon-complete');
+import getargs from 'discord-getarg';
+import { buildEmbed, buildError } from 'embed-builder';
+import gens from 'gen-db';
+import colours from 'pokemon-colours';
+import { completePokemon, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
   description: 'Returns the given Pokémon\'s weaknesses and resistances.',
@@ -95,7 +93,7 @@ const autocomplete = {
   pokemon: getAutocompleteHandler(completePokemon, 'pokemon'),
 };
 
-module.exports = {
+export default {
   definition,
   command: {
     process,

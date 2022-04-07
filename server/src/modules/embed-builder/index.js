@@ -1,5 +1,3 @@
-'use strict';
-
 function buildEmbed(options) {
   const defaults = {
     color: 0x5F32AB,
@@ -19,5 +17,5 @@ function buildError(description) {
   });
 }
 
-module.exports = { buildEmbed, buildError };
+export { buildEmbed, buildError };
 

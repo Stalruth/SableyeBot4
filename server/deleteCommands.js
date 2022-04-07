@@ -1,6 +1,4 @@
-'use strict';
-
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const APP_ID = process.env.APP_ID;
@@ -50,5 +48,5 @@ async function main() {
   }
 }
 
-main();
+await main();
 

@@ -1,11 +1,9 @@
-'use strict';
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 
-const { InteractionResponseFlags, InteractionResponseType } = require('discord-interactions');
-
-const getargs = require('discord-getarg');
-const { dt, getData } = require('dt-utils');
-const { buildError } = require('embed-builder');
-const gens = require('gen-db');
+import getargs from 'discord-getarg';
+import { dt, getData } from 'dt-utils';
+import { buildError } from 'embed-builder';
+import gens from 'gen-db';
 
 async function process(interaction, respond) {
   if((interaction.member?.user ?? interaction.user).id !== interaction.message.interaction.user.id) {
@@ -38,5 +36,5 @@ async function process(interaction, respond) {
   });
 };
 
-module.exports = process;
+export default process;
 
