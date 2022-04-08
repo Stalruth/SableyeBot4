@@ -11,6 +11,7 @@ addCommand('hiddenpower', await import('./ChatInputCommands/hiddenpower.js'));
 addCommand('learn', await import('./ChatInputCommands/learn.js'));
 addCommand('nature', await import('./ChatInputCommands/nature.js'));
 addCommand('sprite', await import('./ChatInputCommands/sprite.js'));
+addCommand('usage', await import('./ChatInputCommands/usage.js'));
 addCommand('weakness', await import('./ChatInputCommands/weakness.js'));
 
 addCommand('Pokémon Glossary', await import('./ContextMenuCommands/Pokémon Glossary.js'));
@@ -18,6 +19,7 @@ addCommand('Pokémon Glossary', await import('./ContextMenuCommands/Pokémon Glo
 addComponent('filter', await import('./MessageComponents/filter.js'));
 addComponent('dt', await import('./MessageComponents/dt.js'));
 addComponent('Pokémon Glossary', await import('./MessageComponents/dt.js'));
+addComponent('usage', await import('./MessageComponents/usage.js'));
 
 const handlers = {
   2: onApplicationCommand,

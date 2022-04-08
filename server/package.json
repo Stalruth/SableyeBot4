@@ -27,6 +27,7 @@
     "@pkmn/img": "^0.1.16",
     "@pkmn/mods": "^0.5.10",
     "@pkmn/sim": "^0.5.10",
+    "@pkmn/smogon": "^0.0.15",
     "@sentry/node": "^6.19.1",
     "@sentry/tracing": "^6.19.1",
     "db-service": "file:src/modules/db-service",
@@ -41,7 +42,8 @@
     "node-fetch": "^3.2.3",
     "pokemon-colours": "file:src/modules/pokemon-colours",
     "pokemon-complete": "file:src/modules/pokemon-complete",
-    "pokemon-filters": "file:src/modules/pokemon-filters"
+    "pokemon-filters": "file:src/modules/pokemon-filters",
+    "usage-formatter": "file:src/modules/usage-formatter"
   },
   "type": "module",
   "engines": {
