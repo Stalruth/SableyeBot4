@@ -100,15 +100,13 @@ requests made of it, as follows:
 ## What the Application stores for an extended period
 
 The Application stores all collected data for an extended period of
-time to assist in development and debugging.  This data will be used to
-examine the popularity of commands and the popularity of different
-paramters.
+time to assist in development and debugging.  This data is shared with Sentry
+(https://sentry.io) to help provide analysis on error rates and performance.
 
-This data is shared with Sentry (https.sentry.io) to help provide
-analysis on error rates and performance.
+This data is deleted after 30 days.
 
-Aside from the data listed below, all data collected is deleted after
-30 days.
+The data listed below is also shared with Logtail (https://logtail.com) for
+the purposes of analysing command popularity and usage.
 
   - Guild ID
 
@@ -138,6 +136,4 @@ database for up to 15 minutes to facilitate pagination of query results:
 No personal information is processed or retained for any length of time.  While
 this data is received from Discord, it is not used in the provision of the
 Application's functionality.
-
-[PRIVACY-v3]: /PRIVACY-v3/
 
