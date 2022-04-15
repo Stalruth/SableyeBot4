@@ -89,6 +89,14 @@ function statFilterFactory(stat) {
     const compValue = Number(query.substr(1));
     if(!isNaN(compValue)) {
       const operator = query[0];
+      if(operator === '=') {
+        return {
+          description: `Has ${statData[stat].article} ${statData[stat].fullName} ${statData[stat].suffix}of ${compValue}`,
+          predicate: (pokemon) => {
+            return getStat(pokemon, stat) === compValue;
+          },
+        };
+      }
       if(operator === '>') {
         return {
           description: `Has ${statData[stat].article} ${statData[stat].fullName} ${statData[stat].suffix}greater than ${compValue}`,

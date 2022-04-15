@@ -102,47 +102,47 @@ const definition = {
     {
       name: 'weight-kg',
       type: 3,
-      description: "Weight in kg. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
+      description: "Weight in kg. (Supports `<STAT`, `>STAT`, `=STAT`, `STAT-STAT`)",
     },
     {
       name: 'height-m',
       type: 3,
-      description: "Height in metres. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
+      description: "Height in metres. (Supports `<STAT`, `>STAT`, `=STAT`, `STAT-STAT`)",
     },
     {
       name: 'hp',
       type: 3,
-      description: "Base HP. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
+      description: "Base HP. (Supports `<STAT`, `>STAT`, `=STAT`, `STAT-STAT`)",
     },
     {
       name: 'atk',
       type: 3,
-      description: "Base Attack. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
+      description: "Base Attack. (Supports `<STAT`, `>STAT`, `=STAT`, `STAT-STAT`)",
     },
     {
       name: 'def',
       type: 3,
-      description: "Base Defence. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
+      description: "Base Defence. (Supports `<STAT`, `>STAT`, `=STAT`, `STAT-STAT`)",
     },
     {
       name: 'spa',
       type: 3,
-      description: "Base Special Attack. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
+      description: "Base Special Attack. (Supports `<STAT`, `>STAT`, `=STAT`, `STAT-STAT`)",
     },
     {
       name: 'spd',
       type: 3,
-      description: "Base Special Defence. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
+      description: "Base Special Defence. (Supports `<STAT`, `>STAT`, `=STAT`, `STAT-STAT`)",
     },
     {
       name: 'spe',
       type: 3,
-      description: "Base Speed. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
+      description: "Base Speed. (Supports `<STAT`, `>STAT`, `=STAT`, `STAT-STAT`)",
     },
     {
       name: 'bst',
       type: 3,
-      description: "Base Stat Total. (Supports `<STAT`, `>STAT`, `STAT-STAT`)",
+      description: "Base Stat Total. (Supports `<STAT`, `>STAT`, `=STAT`, `STAT-STAT`)",
     },
     {
       name: 'gen',
@@ -267,7 +267,7 @@ async function validate(interaction) {
   for (const stat of ['hp','atk','def','spa','spd','spe','bst']) {
     if(args[stat]) {
       let match = false;
-      if(args[stat].startsWith('<') || args[stat].startsWith('>')) {
+      if(args[stat].startsWith('<') || args[stat].startsWith('>') || args[stat].startsWith('=')) {
         match = !isNaN(args[stat].slice(1));
       } else {
         match = !(args[stat].split('-').some(e => isNaN(e)));
@@ -291,7 +291,7 @@ async function validate(interaction) {
   for (const stat of ['weight-kg','height-m']) {
     if(args[stat]) {
       let match = false;
-      if(args[stat].startsWith('<') || args[stat].startsWith('>')) {
+      if(args[stat].startsWith('<') || args[stat].startsWith('>') || args[stat].startsWith('=')) {
         match = !isNaN(args[stat].slice(1));
       } else {
         match = !(args[stat].split('-').some(e => isNaN(e)));
