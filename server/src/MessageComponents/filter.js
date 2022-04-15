@@ -64,6 +64,16 @@ async function getPage(interaction, respond) {
     return field;
   });
 
+  const threePages = [];
+
+  if(pageNumber < 3) {
+    threePages.push(2,3,4);
+  } else if(pageNumber > pages.length - 2) {
+    threePages.push(pages.length - 3, pages.length - 2, pages.length - 1);
+  } else {
+    threePages.push(pageNumber - 1, pageNumber, pageNumber + 1);
+  }
+
   const pageList = pages.length <= 5 ?
     new Array(pages.length)
       .fill(0)
@@ -71,9 +81,7 @@ async function getPage(interaction, respond) {
     :
     [...(new Set([
       1,
-      Math.max(pageNumber - 1, 1),
-      pageNumber,
-      Math.min(pageNumber + 1, pages.length),
+      ...threePages.map(el=>Math.min(Math.max(1, el), pages.length)),
       pages.length
     ]))];
 

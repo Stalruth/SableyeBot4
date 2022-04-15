@@ -497,6 +497,8 @@ async function followUp(interaction) {
     [...(new Set([
       1,
       Math.min(2, pages.length),
+      Math.min(3, pages.length),
+      Math.min(4, pages.length),
       pages.length
     ]))];
 
