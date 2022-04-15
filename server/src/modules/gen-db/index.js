@@ -1,5 +1,7 @@
 import Data from '@pkmn/data';
 import Sim from '@pkmn/sim';
+import Mods from '@pkmn/mods';
+import ModBdsp from '@pkmn/mods/gen8bdsp';
 
 const existedEver = (d) => {
   if (!d.exists) return false;
@@ -101,9 +103,6 @@ const genData = {
     return genData['gen8'] = getGen(Sim.Dex, 8, existsInGen);
   },
   get ['gen8bdsp']() {
-    const Mods = require('@pkmn/mods');
-    const ModBdsp = require('@pkmn/mods/gen8bdsp');
-
     delete genData['gen8bdsp'];
     return genData['gen8bdsp'] = getGen(new Mods.ModdedDex(Sim.Dex.mod('gen8bdsp', ModBdsp)), 8);
   },
