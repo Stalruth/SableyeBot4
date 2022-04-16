@@ -21,6 +21,20 @@ function pokemonInfo(pokemon, gen, verbose) {
     value: pokemon['types'].join('/'),
   });
 
+  if(gen >= 3) {
+    const abilities = [pokemon['abilities'][0]]
+    if(pokemon['abilities'][1]) {
+      abilities.push(pokemon['abilities'][1]);
+    }
+    if(pokemon['abilities']['H'] && !pokemon['unreleasedHidden']) {
+      abilities.push(pokemon['abilities']['H'] + ' (Hidden)');
+    }
+    fields.push({
+      name: 'Abilities',
+      value: abilities.join(', '),
+    });
+  }
+
   const statNames = ['HP', 'Atk', 'Def', ...(gen <= 2 ? ['Spc'] : ['SpA', 'SpD']), 'Spe']
   const stats = [
     pokemon.baseStats.hp,
@@ -44,20 +58,6 @@ function pokemonInfo(pokemon, gen, verbose) {
     value: stats.reduce((ac, el) => ac + el),
     inline: true,
   });
-
-  if(gen >= 3) {
-    const abilities = [pokemon['abilities'][0]]
-    if(pokemon['abilities'][1]) {
-      abilities.push(pokemon['abilities'][1]);
-    }
-    if(pokemon['abilities']['H'] && !pokemon['unreleasedHidden']) {
-      abilities.push(pokemon['abilities']['H'] + ' (Hidden)');
-    }
-    fields.push({
-      name: 'Abilities',
-      value: abilities.join(', '),
-    });
-  }
 
   if(verbose) {
     fields.push({
@@ -120,7 +120,7 @@ function pokemonInfo(pokemon, gen, verbose) {
       }
     });
     
-    fields.join({
+    fields.push({
       name: 'Egg groups',
       value: pokemon['eggGroups'].join(', '),
       inline: true,
