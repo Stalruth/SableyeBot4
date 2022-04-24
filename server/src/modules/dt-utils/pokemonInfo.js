@@ -11,6 +11,7 @@ function lowKickPower(weight) {
   if(weight < 50) return 60;
   if(weight < 100) return 80;
   if(weight < 200) return 100;
+  return 120;
 }
 
 function pokemonInfo(pokemon, gen, verbose) {
