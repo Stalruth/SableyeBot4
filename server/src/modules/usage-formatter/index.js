@@ -38,7 +38,6 @@ const formatterOverrides = {
 };
 
 async function formatter(format, pokemonId, statNames) {
-  console.log({format, pokemonId, statNames});
   const smogon = new Smogon(fetch, true);
   const natdex = gens.data['natdex'];
   const pokemon = natdex.species.get(pokemonId);
