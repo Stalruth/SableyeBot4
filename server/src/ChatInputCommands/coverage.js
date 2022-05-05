@@ -201,8 +201,8 @@ function process(interaction) {
 
 const autocomplete = {
   pokemon: getAutocompleteHandler(completePokemon, 'pokemon'),
-  types: getAutocompleteHandler(getMultiComplete(gens.data['natdex'].types, completeType, false), 'types'),
-  moves: getAutocompleteHandler(getMultiComplete(gens.data['natdex'].moves, completeAttack, false), 'moves'),
+  types: getAutocompleteHandler(getMultiComplete(gens.data['natdex'].types, completeType, {canNegate: false, canRepeat: false}), 'types'),
+  moves: getAutocompleteHandler(getMultiComplete(gens.data['natdex'].moves, completeAttack, {canNegate: false, canRepeat: false}), 'moves'),
 };
 
 export default {

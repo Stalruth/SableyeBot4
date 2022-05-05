@@ -106,7 +106,7 @@ const process = (interaction) => {
 }
 
 const autocomplete = {
-  'types': getAutocompleteHandler(getMultiComplete(gens.data['natdex'].types, completeType, false), 'types'),
+  'types': getAutocompleteHandler(getMultiComplete(gens.data['natdex'].types, completeType, {canNegate: false, canRepeat: false}), 'types'),
 };
 
 export default {

@@ -533,11 +533,11 @@ async function followUp(interaction) {
 }
 
 const autocomplete = {
-  abilities: getAutocompleteHandler(getMultiComplete(natdex.abilities, completeAbility, false), 'abilities'),
-  types: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, true), 'types'),
-  moves: getAutocompleteHandler(getMultiComplete(natdex.moves, completeMove, true), 'moves'),
-  weaknesses: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, false), 'weaknesses'),
-  resists: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, false), 'resists'),
+  abilities: getAutocompleteHandler(getMultiComplete(natdex.abilities, completeAbility, {canNegate: false, canRepeat: true}), 'abilities'),
+  types: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, {canNegate: true, canRepeat: true}), 'types'),
+  moves: getAutocompleteHandler(getMultiComplete(natdex.moves, completeMove, {canNegate: true, canRepeat: true}), 'moves'),
+  weaknesses: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, {canNegate: false, canRepeat: true}), 'weaknesses'),
+  resists: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, {canNegate: false, canRepeat: true}), 'resists'),
   'breeds-with': getAutocompleteHandler(completePokemon, 'breeds-with'),
 };
 

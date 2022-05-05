@@ -199,7 +199,7 @@ const process = async function(interaction) {
 
 const autocomplete = {
   pokemon: getAutocompleteHandler(completePokemon, 'pokemon'),
-  moves: getAutocompleteHandler(completeMove, 'moves'),
+  moves: getAutocompleteHandler(getMultiComplete(gens.data['natdex'].moves, completeMove, {canNegate: false, canRepeat: false}), 'moves'),
 };
 
 export default {

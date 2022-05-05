@@ -120,10 +120,11 @@ function getCompleter(matchers, matchCount=10) {
   }
 }
 
-function getMultiComplete(resolver, completer, canNegate) {
+function getMultiComplete(resolver, completer, {canNegate, canRepeat}) {
   return function multiCompleter(query) {
     const terms = query.split(',');
     const currentTerm = terms.pop();
+
     const resolved = terms.map(e=>{
       const effect = resolver.get(e);
       if (!effect) {
@@ -147,18 +148,28 @@ function getMultiComplete(resolver, completer, canNegate) {
 
     const negated = (canNegate && currentTerm.trim()[0] === '!') ? '!' : '';
 
-    const results = completer(currentTerm).map(choice => ({
-      name: `${prefix.name}${negated}${choice.name}`,
-      value: `${prefix.value}${negated}${choice.value}`
-    }));
+    const results = completer(currentTerm)
+      .filter(choice => (resolved.every(e => e.value !== `${negated}${choice.value}`) || canRepeat))
 
     if (results.length !== 1) {
-      return results;
+      return results.map(choice => ({
+        name: `${prefix.name}${negated}${choice.name}`,
+        value: `${prefix.value}${negated}${choice.value}`
+      }));
     } else {
-      return [results[0], ...completer('').map(choice => ({
-        name: `${results[0]['name']}, ${choice.name}`,
-        value: `${results[0]['value']},${choice.value}`,
-      }))];
+      return [
+        {
+          name: `${prefix.name}${negated}${results[0].name}`,
+          value:`${prefix.value}${negated}${results[0].value}`,
+        },
+        ...completer('')
+        .filter(choice => ([results[0], ...resolved].every(e => e.value !== `${negated}${choice.value}`) || canRepeat))
+        .map(
+          choice => ({
+            name: `${results[0]['name']}, ${choice.name}`,
+            value: `${results[0]['value']},${choice.value}`,
+          })
+        )];
     }
   };
 }
