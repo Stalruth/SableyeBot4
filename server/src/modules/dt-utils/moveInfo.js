@@ -8,7 +8,7 @@ import colours from 'pokemon-colours';
 function moveInfo(move, gen, verbose) {
   const title = `${move['name']}`;
   const fields = [];
-  
+
   fields.push({
     name: 'Type',
     value: move.type,
@@ -29,7 +29,7 @@ function moveInfo(move, gen, verbose) {
     if(move['isZ']) {
       fields.push({
         name: 'Z Crystal',
-        value: data.items.get(move['isZ'])['name'],
+        value: gens.data.natdex.items.get(move['isZ'])['name'],
         inline: true
       });
     } else if (move['zMove']['effect']) {
