@@ -108,7 +108,7 @@ function getMatchSorter(query) {
   }
 }
 
-function getCompleter(matchers, matchCount=10) {
+function getCompleter(matchers, matchCount=25) {
   return function completer(query) {
     return matchers
     .reduce((acc, cur) => {
@@ -191,7 +191,7 @@ const completeMove = getCompleter([getMoveMatches]);
 const completeAttack = getCompleter([getAttackMatches]);
 const completeItem = getCompleter([getItemMatches]);
 const completePokemon = getCompleter([getPokemonMatches]);
-const completeType = getCompleter([getTypeMatches], 25);
+const completeType = getCompleter([getTypeMatches]);
 const completeSprite = getCompleter([getSpriteMatches]);
 const completeAll = getCompleter([getAbilityMatches, getMoveMatches, getItemMatches, getNatureMatches, getPokemonMatches]);
 
