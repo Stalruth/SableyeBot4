@@ -97,9 +97,26 @@ function moveInfo(move, gen, verbose) {
   }
 
   if(verbose) {
+    const targetTypes = {
+      'normal': 'Any adjacent Pokémon',
+      'allAdjacentFoes': 'All adjacent opponents',
+      'self': 'Self',
+      'any': 'Any Pokémon',
+      'adjacentAllyOrSelf': 'Adjacent ally or self',
+      'allyTeam': 'Ally Team',
+      'adjacentAlly': 'Any adjacent ally',
+      'allySide': 'Ally side',
+      'allAdjacent': 'All adjacent Pokémon',
+      'scripted': 'Special targeting',
+      'all': 'Field',
+      'randomNormal': 'Random adjacent opponent',
+      'allies': 'All allies',
+      'adjacentFoe': 'Any adjacent opponent',
+      'foeSide': 'Opponent\'s side',
+    };
     fields.push({
       name: 'Targets',
-      value: move['target'],
+      value: targetTypes[move['target']],
       inline: true
     });
     fields.push({
