@@ -169,7 +169,7 @@ function getMultiComplete(resolver, completer, {canNegate, canRepeat}) {
             name: `${results[0]['name']}, ${choice.name}`,
             value: `${results[0]['value']},${choice.value}`,
           })
-        )];
+        )].slice(0,25);
     }
   };
 }
