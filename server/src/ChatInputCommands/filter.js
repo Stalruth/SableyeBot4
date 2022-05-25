@@ -520,7 +520,7 @@ async function followUp(interaction) {
     ]),
   };
 
-  await fetch(`https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`,
+  const response = await fetch(`https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`,
     {
       method: 'PATCH',
       body: JSON.stringify(message),
@@ -530,6 +530,10 @@ async function followUp(interaction) {
       },
     }
   );
+
+  if(!response.ok) {
+    throw new Error(`${response.status} ${await response.text()}`);
+  }
 }
 
 const autocomplete = {
