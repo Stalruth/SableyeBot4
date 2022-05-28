@@ -7,7 +7,7 @@ import { buildEmbed } from 'embed-builder';
 import colours from 'pokemon-colours';
 
 const definition = {
-  description: 'Returns the Hidden Power produced by the given IVs.',
+  description: 'Display the Hidden Power produced by the given IVs.',
   options: [
     {
       name: 'hp',

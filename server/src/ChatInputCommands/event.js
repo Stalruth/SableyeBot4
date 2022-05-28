@@ -8,7 +8,7 @@ import colours from 'pokemon-colours';
 import { completePokemon, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
-  description: 'Return the number of events a Pokémon has or the details of a specific event.',
+  description: 'Display the number of events a Pokémon has or the details of a specific event.',
   options: [
     {
       name: 'pokemon',

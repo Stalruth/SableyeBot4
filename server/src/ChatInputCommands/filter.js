@@ -27,7 +27,7 @@ function paginate(array, limit) {
 }
 
 const definition = {
-  description: 'Get all Pokémon fitting the given conditions.',
+  description: 'Search for Pokémon fitting the given conditions.',
   options: [
     {
       name: 'abilities',

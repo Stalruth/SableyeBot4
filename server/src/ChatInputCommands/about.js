@@ -3,7 +3,7 @@ import { InteractionResponseType } from 'discord-interactions';
 import { buildEmbed } from 'embed-builder';
 
 const definition = {
-  description: 'About SableyeBot',
+  description: 'About Sableye Bot',
 };
 
 const process = function(interaction) {
@@ -11,7 +11,7 @@ const process = function(interaction) {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
-        title: 'About SableyeBot',
+        title: 'About Sableye Bot',
         description: 'Competitive Pokemon Discord Bot',
         url: 'https://sableye-bot.xyz/',
         author: {

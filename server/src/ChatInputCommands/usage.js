@@ -6,7 +6,7 @@ import { buildError } from 'embed-builder';
 import { completePokemon, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
-  description: 'Get usage statistics of a given Pokémon in a given metagame.',
+  description: 'Display usage statistics of a given Pokémon in a given metagame.',
   options: [
     {
       name: 'format',

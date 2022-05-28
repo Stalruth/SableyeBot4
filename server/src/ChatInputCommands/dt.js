@@ -7,7 +7,7 @@ import gens from 'gen-db';
 import { completeAll, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
-  description: 'Return information on the given Pokemon, Ability, Move, Item, or Nature.',
+  description: 'Display information on the given Pokemon, Ability, Move, Item, or Nature.',
   options: [
     {
       name: 'name',

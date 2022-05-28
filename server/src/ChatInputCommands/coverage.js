@@ -8,7 +8,7 @@ import colours from 'pokemon-colours';
 import { completePokemon, completeAttack, completeType, getMultiComplete, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
-  description: 'Returns type coverage based on a Pokémon\'s STAB and/or types.',
+  description: 'Display type coverage based on a Pokémon\'s STAB and/or types.',
   options: [
     {
       name: 'pokemon',

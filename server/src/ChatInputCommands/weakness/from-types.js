@@ -7,7 +7,7 @@ import colours from 'pokemon-colours';
 import { completeType, getMultiComplete, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
-  description: 'Returns the resistances and weaknesses of a Pokémon with the given types.',
+  description: 'Display the resistances and weaknesses of a Pokémon with the given types.',
   options: [
     {
       name: 'types',

@@ -30,7 +30,7 @@ const stats = [
 ];
 
 const definition = {
-  description: 'Returns the Nature that affects the stats provided.',
+  description: 'Search for a Nature with the effect described.',
   options: [
     {
       name: 'boosted',

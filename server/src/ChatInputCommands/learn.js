@@ -9,7 +9,7 @@ import colours from 'pokemon-colours';
 import { completePokemon, completeMove, getMultiComplete, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
-  description: 'Returns the learnset of the Pokémon given, or how it learns a given move.',
+  description: 'Display the learnset of the Pokémon given, or how it learns a given move.',
   options: [
     {
       name: 'pokemon',

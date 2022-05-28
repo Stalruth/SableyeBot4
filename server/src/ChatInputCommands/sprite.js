@@ -8,12 +8,12 @@ import { buildError } from 'embed-builder';
 import { completeSprite, getAutocompleteHandler } from 'pokemon-complete';
 
 const definition = {
-  description: 'Shows the Pokémon Showdown sprite requested.',
+  description: 'Show the sprite for the given Pokémon on Pokémon Showdown.',
   options: [
     {
       name: 'pokemon',
       type: 3,
-      description: 'Pokemon to show.',
+      description: 'Pokémon to show.',
       required: true,
       autocomplete: true
     },

@@ -20,7 +20,7 @@ const listTypes = function(typeList) {
 }
 
 const definition = {
-  description: 'Returns the "best" IVs that result in a Hidden Power of the given Type.',
+  description: 'Display the "best" IVs that result in a Hidden Power of the given Type.',
   options: [
     {
       name: 'type',

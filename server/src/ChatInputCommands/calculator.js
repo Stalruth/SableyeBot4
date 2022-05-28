@@ -3,7 +3,7 @@ import { InteractionResponseType } from 'discord-interactions';
 import { buildEmbed } from 'embed-builder';
 
 const definition = {
-  description: 'Link to Damage Calculators.',
+  description: 'Get links to Damage Calculators.',
 };
 
 const process = function(interaction) {
