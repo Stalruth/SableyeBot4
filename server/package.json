@@ -36,6 +36,7 @@
     "express": "^4.17.2",
     "gen-db": "file:src/modules/gen-db",
     "learnsetutils": "file:src/modules/learnsetutils",
+    "link-code": "file:src/modules/link-code",
     "lokijs": "^1.5.12",
     "node-fetch": "^3.2.3",
     "pokemon-colours": "file:src/modules/pokemon-colours",

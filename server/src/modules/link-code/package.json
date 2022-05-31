@@ -1,0 +1,13 @@
+{
+  "name": "link-code",
+  "version": "1.0.0",
+  "description": "Link code generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "author": "Stalruth",
+  "license": "MIT",
+  "private": true
+}

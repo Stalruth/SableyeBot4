@@ -9,12 +9,14 @@ addCommand('event', await import('./ChatInputCommands/event.js'));
 addCommand('filter', await import('./ChatInputCommands/filter.js'));
 addCommand('hiddenpower', await import('./ChatInputCommands/hiddenpower.js'));
 addCommand('learn', await import('./ChatInputCommands/learn.js'));
+addCommand('linkcode', await import('./ChatInputCommands/linkcode.js'));
 addCommand('nature', await import('./ChatInputCommands/nature.js'));
 addCommand('sprite', await import('./ChatInputCommands/sprite.js'));
 addCommand('usage', await import('./ChatInputCommands/usage.js'));
 addCommand('weakness', await import('./ChatInputCommands/weakness.js'));
 
 addCommand('Pokémon Glossary', await import('./ContextMenuCommands/Pokémon Glossary.js'));
+addCommand('Get Linking Code', await import('./ContextMenuCommands/Get Linking Code.js'));
 
 addComponent('filter', await import('./MessageComponents/filter.js'));
 addComponent('dt', await import('./MessageComponents/dt.js'));
