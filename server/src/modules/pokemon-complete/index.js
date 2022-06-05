@@ -166,8 +166,8 @@ function getMultiComplete(resolver, completer, {canNegate, canRepeat}) {
         .filter(choice => ([results[0], ...resolved].every(e => e.value !== `${negated}${choice.value}`) || canRepeat))
         .map(
           choice => ({
-            name: `${results[0]['name']}, ${choice.name}`,
-            value: `${results[0]['value']},${choice.value}`,
+            name: `${prefix.name}${negated}${results[0]['name']}, ${choice.name}`,
+            value: `${prefix.value}${negated}${results[0]['value']},${choice.value}`,
           })
         )].slice(0,25);
     }
