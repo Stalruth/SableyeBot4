@@ -520,19 +520,26 @@ async function followUp(interaction) {
     ]),
   };
 
-  const response = await fetch(`https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`,
-    {
-      method: 'PATCH',
-      body: JSON.stringify(message),
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': `DiscordBot (https://github.com/Stalruth/SableyeBot4, v${process.env.npm_package_version})`,
-      },
-    }
-  );
+  const url = `https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`;
+  const options = {
+    method: 'PATCH',
+    body: JSON.stringify(message),
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': `DiscordBot (https://github.com/Stalruth/SableyeBot4, v${process.env.npm_package_version})`,
+    },
+  };
+
+  let response = await fetch(url, options);
 
   if(!response.ok) {
-    throw new Error(`${response.status} ${await response.text()}`);
+    if(response.status === 404) {
+      await new Promise(() => setTimeout(()=>{}, 200));
+      response = await fetch(url, options);
+    }
+    else {
+      throw new Error(`${response.status} ${await response.text()}`);
+    }
   }
 }
 
