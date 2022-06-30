@@ -1,87 +1,25 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { buildEmbed } from 'embed-builder';
 
-import getargs from 'discord-getarg';
-import { dt, getData } from 'dt-utils';
-import { buildEmbed, buildError } from 'embed-builder';
-import gens from 'gen-db';
-import { completeAll, getAutocompleteHandler } from 'pokemon-complete';
+import Data from './data.js';
 
 const definition = {
-  description: 'Display information on the given Pokemon, Ability, Move, Item, or Nature.',
-  options: [
-    {
-      name: 'name',
-      type: 3,
-      description: 'Name of the Pokemon, Ability, Move, Item, or Nature to look up.',
-      required: true,
-      autocomplete: true,
-    },
-    {
-      name: 'verbose',
-      type: 5,
-      description: 'Return extra information.',
-    },
-    {
-      name: 'gen',
-      type: 3,
-      description: 'The Generation to check against.',
-      choices: gens.names,
-    },
-  ],
+  description: 'Deprecated; use `/data` instead.',
+  options: Data.definition.options,
 };
 
 async function process(interaction) {
-  const args = getargs(interaction);
-  const { params } = args;
-
-  const data = gens.data[params.gen ? params.gen : 'natdex'];
-
-  const results = getData(data, params.name);
-
-  if(results.length === 0) {
-    return {
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [buildError(`Could not find a result matching ${params.name} in the given generation.`)],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
-    };
-  }
-  
-  if(results.length === 1) {
-    return {
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: dt[results[0].effectType](results[0], data.num, params.verbose),
-    };
-  }
-
-  if(results.length === 2) {
-    return {
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [buildEmbed({
-          title: "Disambiguation",
-          description: `There are multiple results matching ${params.name}.  Please pick the entity you are looking up below.`,
-        })],
-        components: [{
-          type: 1,
-          components: [{
-            type: 3,
-            custom_id: `${results[0].id}|${params.gen ?? 'natdex'}|${params.verbose ? 'true' : ''}`,
-            options: results.map(entity => ({
-              label: entity.effectType,
-              value: entity.effectType,
-            })),
-          }],
-        }]
-      },
-    };
-  }
+  const result = await Data.command.process(interaction);
+  result.data.embeds.unshift(
+    buildEmbed({
+      title: "The `/dt` command has been renamed to `/data`.",
+      description: `Please use \`/data\` instead of \`/dt\`; the \`/dt\` name will be removed in a future update.\n\nAll parameters remain the same otherwise.`,
+      color: 0xffaa00,
+    })
+  );
+  return result;
 };
 
-const autocomplete = {
-  name: getAutocompleteHandler(completeAll, 'name'),
-};
+const autocomplete = Data.command.autocomplete;
 
 export default {
   definition,

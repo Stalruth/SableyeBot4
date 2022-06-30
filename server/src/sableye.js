@@ -4,6 +4,7 @@ import { addComponent, onComponentInteraction } from './handlers/MessageComponen
 addCommand('about', await import('./ChatInputCommands/about.js'));
 addCommand('calculator', await import('./ChatInputCommands/calculator.js'));
 addCommand('coverage', await import('./ChatInputCommands/coverage.js'));
+addCommand('data', await import('./ChatInputCommands/data.js'));
 addCommand('dt', await import('./ChatInputCommands/dt.js'));
 addCommand('event', await import('./ChatInputCommands/event.js'));
 addCommand('filter', await import('./ChatInputCommands/filter.js'));
@@ -19,6 +20,7 @@ addCommand('Pokémon Glossary', await import('./ContextMenuCommands/Pokémon Glo
 addCommand('Get Linking Code', await import('./ContextMenuCommands/Get Linking Code.js'));
 
 addComponent('filter', await import('./MessageComponents/filter.js'));
+addComponent('data', await import('./MessageComponents/data.js'));
 addComponent('dt', await import('./MessageComponents/dt.js'));
 addComponent('Pokémon Glossary', await import('./MessageComponents/dt.js'));
 addComponent('usage', await import('./MessageComponents/usage.js'));
