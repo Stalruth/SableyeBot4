@@ -88,7 +88,7 @@ function moveInfo(move, gen, verbose) {
 
   const description = move['desc'] || move['shortDesc'];
 
-  if(move.priority > 0) {
+  if(move.priority !== 0) {
     fields.push({
       name: 'Priority',
       value: move['priority'],
