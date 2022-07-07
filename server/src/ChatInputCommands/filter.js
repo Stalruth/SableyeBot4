@@ -398,7 +398,6 @@ async function process(interaction, respond) {
   const threshold = args.threshold ?? filters.length;
 
   const sortKey = args['sort'];
-
   // TODO: clean up
 
   const results = (await applyFilters(gen, filters, threshold)).sort((lhs, rhs) => {
