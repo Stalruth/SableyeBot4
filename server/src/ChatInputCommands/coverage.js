@@ -123,11 +123,8 @@ function process(interaction) {
 
   if (args.moves) {
     const invalidMoves = [];
-    types.forEach((el, i) => {
-      if(!el) {
-        invalidMoves.push(args.moves.split(',')[i]);
-      }
-      if(el.category === 'Status') {
+    moves.forEach((el, i) => {
+      if(!el || el.category === 'Status') {
         invalidMoves.push(args.moves.split(',')[i]);
       }
     });
