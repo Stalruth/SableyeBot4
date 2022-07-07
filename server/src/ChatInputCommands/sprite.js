@@ -71,7 +71,7 @@ const definition = {
   ]
 };
 
-const process = function(interaction) {
+async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
   const gen = args['april-fools'] ? 'gen5' : (args.gen ?? 'ani');
@@ -79,13 +79,13 @@ const process = function(interaction) {
   const pokemon = Sim.Dex.species.get(Data.toID(args.pokemon));
 
   if(!pokemon?.exists || ['Custom','CAP'].includes([pokemon.isNonstandard])) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildError(`Could not find a Pokemon named ${args.pokemon}.`)],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   const options = {};
@@ -102,21 +102,21 @@ const process = function(interaction) {
   const spriteUrl = Img.Sprites.getPokemon(pokemon['id'], options).url;
 
   if(spriteUrl.endsWith('0.png')) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildError(`Could not find a Pokemon named ${args.pokemon}.`)],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
-  return {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       content: args['april-fools'] ? spriteUrl.replace('gen5', 'afd') : spriteUrl,
     },
-  };
+  });
 };
 
 const autocomplete = {

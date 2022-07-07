@@ -65,11 +65,11 @@ const effectivenessModifier = new Proxy(overrides, {
   get: (target, name) => name in target ? target[name] : ((base, types, data) => base),
 });
 
-function process(interaction) {
+async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
   if (!args.pokemon && !args.types && !args.moves) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -77,7 +77,7 @@ function process(interaction) {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   const data = gens.data[args.gen ? args.gen : 'natdex'];
@@ -85,7 +85,7 @@ function process(interaction) {
   const pokemon = data.species.get(args.pokemon ?? '');
 
   if (args.pokemon && !pokemon) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -93,7 +93,7 @@ function process(interaction) {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   const types = args.types?.split(',')?.map(t=>data.types.get(t)) ?? [];
@@ -107,7 +107,7 @@ function process(interaction) {
     });
     if (invalidTypes.length > 0) {
       const plural = invalidTypes.length > 1;
-      return {
+      return await respond({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           embeds: [
@@ -115,7 +115,7 @@ function process(interaction) {
           ],
           flags: InteractionResponseFlags.EPHEMERAL,
         },
-      };
+      });
     }
   }
 
@@ -130,7 +130,7 @@ function process(interaction) {
     });
     if (invalidMoves.length > 0) {
       const plural = invalidMoves.length > 1;
-      return {
+      return await respond({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           embeds: [
@@ -138,7 +138,7 @@ function process(interaction) {
           ],
           flags: InteractionResponseFlags.EPHEMERAL,
         },
-      };
+      });
     }
   }
 
@@ -184,7 +184,7 @@ function process(interaction) {
     }
   }
 
-  return {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -193,7 +193,7 @@ function process(interaction) {
         color: colours.types[allTypes[0].type?.toLowerCase() ?? allTypes[0].id]
       })],
     },
-  };
+  });
 };
 
 const autocomplete = {

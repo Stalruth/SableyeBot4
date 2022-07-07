@@ -6,8 +6,8 @@ const definition = {
   description: 'About Sableye Bot',
 };
 
-const process = function(interaction) {
-  return {
+async function process(interaction, respond) {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -46,7 +46,7 @@ const process = function(interaction) {
         ],
       })],
     },
-  };
+  });
 };
 
 export default {

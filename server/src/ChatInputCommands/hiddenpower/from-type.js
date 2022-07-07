@@ -63,7 +63,7 @@ const definition = {
   ],
 }
 
-const process = (interaction) => {
+async function process(interaction, respond) {
   const args = getargs(interaction).params;
   args.gen ??= 7;
 
@@ -71,7 +71,7 @@ const process = (interaction) => {
   const type = types.get(args.type);
 
   if(['normal','fairy'].includes(type['id'])) {
-    return {
+    return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
@@ -80,7 +80,7 @@ const process = (interaction) => {
           color: colours.types[Data.toID(type['name'])],
         })],
       },
-    };
+    });
   }
 
   const stats = {...{
@@ -94,7 +94,7 @@ const process = (interaction) => {
   }, ...(args.gen == 2 ? type.HPdvs : type.HPivs)};
 
   const title = `Hidden Power ${type['name']}`;
-  return {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -147,7 +147,7 @@ const process = (interaction) => {
         color: colours.types[Data.toID(type['name'])]
       })],
     },
-  };
+  });
 }
 
 export default {

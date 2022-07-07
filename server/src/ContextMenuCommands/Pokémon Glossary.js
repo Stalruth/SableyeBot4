@@ -10,7 +10,7 @@ const definition = {
   type: 3,
 };
 
-const process = function(interaction) {
+async function process(interaction, respond) {
   const contents = [];
   const results = new Set();
   const genData = gens.data['natdex'];
@@ -47,7 +47,7 @@ const process = function(interaction) {
   }
 
   if(results.size === 0) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -55,17 +55,17 @@ const process = function(interaction) {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   if(results.size === 1) {
     const data = [...results][0];
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: Object.assign(dt[data.effectType](data, genData.num, false), {
         flags: InteractionResponseFlags.EPHEMERAL,
       }),
-    };
+    });
   }
 
   const cmp = (lhs, rhs) => {
@@ -75,7 +75,7 @@ const process = function(interaction) {
     return rhs.label === lhs.label ? 0 : 1;
   };
 
-  return {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -95,7 +95,7 @@ const process = function(interaction) {
       }],
       flags: InteractionResponseFlags.EPHEMERAL,
     },
-  };
+  });
 };
 
 export default {

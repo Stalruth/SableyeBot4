@@ -133,7 +133,7 @@ async function checkMove(data, pokemon, move) {
   }
 }
 
-const process = async function(interaction) {
+async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
   const vgcNotes = [,,,,,'Pentagon','Plus','Galar'];
@@ -143,7 +143,7 @@ const process = async function(interaction) {
   const pokemon = data.species.get(Data.toID(args.pokemon));
 
   if(!pokemon?.exists) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -151,13 +151,13 @@ const process = async function(interaction) {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   const restriction = args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined;
 
   if(!args.moves) {
-    return await listMoves(data, pokemon, restriction);
+    return await respond(await listMoves(data, pokemon, restriction));
   }
 
   const moves = args.moves.split(',').map(e=>data.moves.get(e));
@@ -169,7 +169,7 @@ const process = async function(interaction) {
         invalidMoves.push(args.moves.split(',')[i]);
       }
     });
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -177,14 +177,14 @@ const process = async function(interaction) {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   const fields = await Promise.all(moves.map(async (move) => {
     return await checkMove(data, pokemon, move);
   }));
 
-  return {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -193,7 +193,7 @@ const process = async function(interaction) {
         color: colours.types[Data.toID(pokemon.types[0])],
       })],
     },
-  };
+  });
 
 };
 
