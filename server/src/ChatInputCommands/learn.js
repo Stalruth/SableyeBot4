@@ -188,7 +188,7 @@ async function process(interaction, respond) {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
-        title: pokemon.name,
+        title: `[${args.gen}] ${pokemon.name}`,
         fields,
         color: colours.types[Data.toID(pokemon.types[0])],
       })],
