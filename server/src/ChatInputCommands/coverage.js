@@ -134,7 +134,7 @@ function process(interaction) {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           embeds: [
-            buildError(`The Move${plural ? 's' : ''} ${invalidMoves.join(', ')} do${plural ? '' : 'es'} not exist in the given generation or ${plural ? 'are' : 'is'} Status move${plural ? 's' : ''}.`),
+            buildError(`The Move${plural ? 's' : ''} ${invalidMoves.join(', ')} do${plural ? '' : 'es'} not exist in the given generation or ${plural ? 'are' : 'is a'} Status move${plural ? 's' : ''}.`),
           ],
           flags: InteractionResponseFlags.EPHEMERAL,
         },
