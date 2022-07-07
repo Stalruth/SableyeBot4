@@ -25,7 +25,7 @@ const definition = {
   ],
 }
 
-const process = (interaction) => {
+async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
   const data = gens.data[args.gen ? args.gen : 'natdex'];
@@ -33,7 +33,7 @@ const process = (interaction) => {
   const pokemon = data.species.get(args.pokemon);
 
   if(!pokemon?.exists) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -41,7 +41,7 @@ const process = (interaction) => {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   const title = `${pokemon['name']} [${pokemon['types'].join('/')}]`;
@@ -77,7 +77,7 @@ const process = (interaction) => {
     });
   }
 
-  return {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -86,7 +86,7 @@ const process = (interaction) => {
         color: colours.types[data.types.get(pokemon.types[0]).id]
       })]
     },
-  };
+  });
 }
 
 const autocomplete = {

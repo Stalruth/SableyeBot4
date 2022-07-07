@@ -62,11 +62,11 @@ const definition = {
   ],
 };
 
-const process = async function(interaction) {
+async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
   try {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: await formatter(`[Gen 8] ${args['format']}`, args['pokemon'], [
         {
@@ -78,9 +78,9 @@ const process = async function(interaction) {
           field: 'moves',
         }
       ])
-    };
+    });
   } catch (e) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -88,7 +88,7 @@ const process = async function(interaction) {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 };
 

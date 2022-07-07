@@ -1,6 +1,7 @@
 import { InteractionResponseType } from 'discord-interactions';
-import getargs from 'discord-getarg';
+import fetch from 'node-fetch';
 
+import getargs from 'discord-getarg';
 import { buildError } from 'embed-builder';
 
 const definitions = [];
@@ -35,19 +36,47 @@ async function onApplicationCommand(req, res) {
   const info = getargs(req.body);
   const commandPath = [req.body.data?.name, ...info.subcommand];
 
+  let isFirstResponse = true;
+  const respond = async (response) => {
+    if(isFirstResponse) {
+      isFirstResponse = false;
+      res.json(response)
+    } else {
+      const url = `https://discord.com/api/v10/webhooks/${req.body.application_id}/${req.body.token}/messages/@original`;
+      const options = {
+        method: 'PATCH',
+        body: JSON.stringify(response),
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': `DiscordBot (https://github.com/Stalruth/SableyeBot4, v${process.env.npm_package_version})`,
+        },
+      };
+
+      let serverResponse = await fetch(url, options);
+
+      if(!serverResponse.ok) {
+        if(serverResponse.status === 404) {
+          await new Promise(() => setTimeout(()=>{}, 200));
+          serverResponse = await fetch(url, options);
+        }
+        else {
+          throw new Error(`${serverResponse.status} ${await serverResponse.text()}`);
+        }
+      }
+    }
+  }
+
   try {
     console.log(req.body.type, req.body.guild_id, req.body.id, `'${[0,1,2].map(e=>commandPath[e] ?? null).join(' ').trim()}'`, JSON.stringify(info.params));
 
     const commandData = getCommandData(commandPath);
-    const process = (commandData.process ?? (()=>{}))(req.body);
+    const process = (commandData.process ?? (()=>{}))(req.body, respond);
     const followUp = commandData.followUp ?? (()=>{});
 
-    res.json(await process);
-
-    await followUp(req.body);
+    await process;
   } catch (e) {
     console.error(req.body.type, req.body.guild_id, req.body.id, `'${[0,1,2].map(e=>commandPath[e] ?? null).join(' ').trim()}'`, JSON.stringify(info.params));
-    throw(e)
+    throw(e);
   }
 }
 

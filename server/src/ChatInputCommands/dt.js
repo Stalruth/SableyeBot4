@@ -7,16 +7,19 @@ const definition = {
   options: Data.definition.options,
 };
 
-async function process(interaction) {
-  const result = await Data.command.process(interaction);
-  result.data.embeds.unshift(
-    buildEmbed({
-      title: "The `/dt` command has been renamed to `/data`.",
-      description: `Please use \`/data\` instead of \`/dt\`; the \`/dt\` name will be removed in a future update.\n\nAll parameters remain the same otherwise.`,
-      color: 0xffaa00,
-    })
-  );
-  return result;
+async function process(interaction, respond) {
+  const responder = (response) => {
+    response.data.embeds.push(
+      buildEmbed({
+        title: "The `/dt` command has been renamed to `/data`.",
+        description: `Please use \`/data\` instead of \`/dt\`; the \`/dt\` name will be removed in a future update.\n\nAll parameters remain the same otherwise.`,
+        color: 0xffaa00,
+      })
+    );
+    respond(response);
+  };
+
+  await Data.command.process(interaction, responder);
 };
 
 const autocomplete = Data.command.autocomplete;

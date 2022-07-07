@@ -91,7 +91,7 @@ const definition = {
   ],
 }
 
-const process = (interaction) => {
+async function process(interaction, respond) {
   const args = getargs(interaction).params;
   args.gen ??= 7;
 
@@ -99,7 +99,7 @@ const process = (interaction) => {
 
   const result = types.getHiddenPower(args);
 
-  return {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -118,7 +118,7 @@ const process = (interaction) => {
         color: colours.types[Data.toID(result['type'])]
       })],
     },
-  };
+  });
 }
 
 export default {

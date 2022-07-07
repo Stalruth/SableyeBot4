@@ -26,13 +26,13 @@ const definition = {
   ],
 };
 
-const process = async function(interaction) {
+async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
   const pokemon = gens.data['natdex'].species.get(Data.toID(args.pokemon));
 
   if(!pokemon) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -40,7 +40,7 @@ const process = async function(interaction) {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   const learnset = await gens.data['natdex'].learnsets.get(pokemon['id']);
@@ -50,7 +50,7 @@ const process = async function(interaction) {
   if(!event) {
     const title = `${pokemon['name']} has ${eventCount > 0 ? eventCount : 'no'} event${ eventCount !== 1 ? 's' : ''}.`;
     const description = eventCount > 0 ? `Set the \`event\` option to a number between 1 and ${learnset.eventData.length} for more information.` : '';
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
@@ -59,14 +59,14 @@ const process = async function(interaction) {
           color: colours.types[Data.toID(pokemon.types[0])]
         })],
       },
-    };
+    });
   }
 
 
   let title = '';
   const fields = [];
   if (event < 1 || event > eventCount) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -74,7 +74,7 @@ const process = async function(interaction) {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   const eventData = learnset['eventData'][event - 1];
@@ -150,7 +150,7 @@ const process = async function(interaction) {
     value: eventData['moves'].map(el=>gens.data['natdex'].moves.get(el).name).join(', '),
   });
 
-  return {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -159,7 +159,7 @@ const process = async function(interaction) {
         color: colours.types[Data.toID(pokemon.types[0])]
       })],
     },
-  };
+  });
 };
 
 const autocomplete = {

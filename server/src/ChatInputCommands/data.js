@@ -30,7 +30,7 @@ const definition = {
   ],
 };
 
-async function process(interaction) {
+async function process(interaction, respond) {
   const args = getargs(interaction);
   const { params } = args;
 
@@ -39,23 +39,23 @@ async function process(interaction) {
   const results = getData(data, params.name);
 
   if(results.length === 0) {
-    return {
+    return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildError(`Could not find a result matching ${params.name} in the given generation.`)],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
-  }
-  
-  if(results.length === 1) {
-    return {
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: dt[results[0].effectType](results[0], data.num, params.verbose),
-    };
+    });
   }
 
-  return {
+  if(results.length === 1) {
+    return respond({
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: dt[results[0].effectType](results[0], data.num, params.verbose),
+    });
+  }
+
+  return respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -74,7 +74,7 @@ async function process(interaction) {
         }],
       }]
     },
-  };
+  });
 };
 
 const autocomplete = {

@@ -17,14 +17,14 @@ const definition = {
   ],
 };
 
-const process = function(interaction) {
+async function process(interaction, respond) {
   const { params } = getargs(interaction);
 
   const linkingCode = getLinkingCode([interaction.member.user.id, params.user]);
 
   const partnerName = interaction.data.resolved.members?.[params.user].nick ?? interaction.data.resolved.users?.[params.user].username;
 
-  return {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -32,7 +32,7 @@ const process = function(interaction) {
       })],
       flags: InteractionResponseFlags.EPHEMERAL,
     },
-  };
+  });
 };
 
 export default {

@@ -49,7 +49,7 @@ const definition = {
   ],
 }
 
-const process = (interaction) => {
+async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
   const gen = new Data.Generations(Sim.Dex).get(8);
@@ -96,7 +96,7 @@ const process = (interaction) => {
     }
   }
 
-  return {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -105,7 +105,7 @@ const process = (interaction) => {
         color: colours.stats[args.boosted],
       })],
     },
-  };
+  });
 }
 
 export default {

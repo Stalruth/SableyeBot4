@@ -1,5 +1,4 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
-import fetch from 'node-fetch';
 
 import db from 'db-service';
 import getargs from 'discord-getarg';
@@ -199,7 +198,7 @@ const definition = {
   ],
 };
 
-async function validate(interaction) {
+async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
   const gen = args.gen ?? 'natdex';
@@ -211,9 +210,9 @@ async function validate(interaction) {
     const abilities = args.abilities.split(',');
     for(const ability of abilities) {
       if(data.abilities.get(ability)?.exists) {
-        filters.push({'type':'ability','query':ability});
+        filters.push(filterFactory['ability'](gen, ability, isVgc));
       } else {
-        return {
+        return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [
@@ -221,7 +220,7 @@ async function validate(interaction) {
             ],
             flags: InteractionResponseFlags.EPHEMERAL,
           },
-        };
+        });
       }
     }
   }
@@ -230,9 +229,9 @@ async function validate(interaction) {
     const types = args.types.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filters.push({'type':'type','query':type});
+        filters.push(filterFactory['type'](gen, type, isVgc));
       } else {
-        return {
+        return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [
@@ -240,7 +239,7 @@ async function validate(interaction) {
             ],
             flags: InteractionResponseFlags.EPHEMERAL,
           },
-        };
+        });
       }
     }
   }
@@ -249,9 +248,9 @@ async function validate(interaction) {
     const moves = args.moves.split(',');
     for(const move of moves) {
       if(data.moves.get(move)?.exists) {
-        filters.push({'type':'move','query':move});
+        filters.push(filterFactory['move'](gen, move, isVgc));
       } else {
-        return {
+        return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [
@@ -259,7 +258,7 @@ async function validate(interaction) {
             ],
             flags: InteractionResponseFlags.EPHEMERAL,
           },
-        };
+        });
       }
     }
   }
@@ -273,9 +272,9 @@ async function validate(interaction) {
         match = !(args[stat].split('-').some(e => isNaN(e)));
       }
       if(match) {
-        filters.push({'type':stat,'query':args[stat]});
+        filters.push(filterFactory[stat](gen, args[stat], isVgc));
       } else {
-        return {
+        return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [
@@ -283,7 +282,7 @@ async function validate(interaction) {
             ],
             flags: InteractionResponseFlags.EPHEMERAL,
           },
-        };
+        });
       }
     }
   }
@@ -297,9 +296,9 @@ async function validate(interaction) {
         match = !(args[stat].split('-').some(e => isNaN(e)));
       }
       if(match) {
-        filters.push({'type':stat,'query':args[stat]});
+        filters.push(filterFactory[stat](gen, args[stat], isVgc));
       } else {
-        return {
+        return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [
@@ -307,7 +306,7 @@ async function validate(interaction) {
             ],
             flags: InteractionResponseFlags.EPHEMERAL,
           },
-        };
+        });
       }
     }
   }
@@ -316,9 +315,9 @@ async function validate(interaction) {
     const types = args.weaknesses.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filters.push({type:'weakness',query:type});
+        filters.push(filterFactory['weakness'](gen, type, isVgc));
       } else {
-        return {
+        return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [
@@ -326,7 +325,7 @@ async function validate(interaction) {
             ],
             flags: InteractionResponseFlags.EPHEMERAL,
           },
-        };
+        });
       }
     }
   }
@@ -335,9 +334,9 @@ async function validate(interaction) {
     const types = args.resists.split(',');
     for(const type of types) {
       if(data.types.get(type)?.exists) {
-        filters.push({type:'resist',query:type});
+        filters.push(filterFactory['resist'](gen, type, isVgc));
       } else {
-        return {
+        return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             embeds: [
@@ -345,16 +344,16 @@ async function validate(interaction) {
             ],
             flags: InteractionResponseFlags.EPHEMERAL,
           }
-        };
+        });
       }
     }
   }
 
   if(args['breeds-with']) {
     if(data.species.get(args['breeds-with'])?.exists) {
-      filters.push({type:'breeds-with',query:args['breeds-with']});
+      filters.push(filterFactory['breeds-with'](gen, args['breeds-with'], isVgc));
     } else {
-      return {
+      return await respond({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           embeds: [
@@ -362,24 +361,24 @@ async function validate(interaction) {
           ],
           flags: InteractionResponseFlags.EPHEMERAL,
         },
-      };
+      });
     }
   }
 
   if(args['has-evo'] !== undefined) {
-    filters.push({type:'has-evo',query:args['has-evo']});
+    filters.push(filterFactory['has-evo'](gen, args['has-evo'], isVgc));
   }
 
   if(args['has-prevo'] !== undefined) {
-    filters.push({type:'has-prevo',query:args['has-prevo']});
+    filters.push(filterFactory['has-prevo'](gen, args['has-prevo'], isVgc));
   }
 
   if(args['vgc-legality'] !== undefined) {
-    filters.push({type:'vgc-legality',query:args['vgc-legality']});
+    filters.push(filterFactory['vgc-legality'](gen, args['vgc-legality'], isVgc));
   }
 
   if(filters.length === 0) {
-    return {
+    return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
@@ -387,43 +386,18 @@ async function validate(interaction) {
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
-    };
+    });
   }
 
   const threshold = args.threshold ?? filters.length;
 
   const sortKey = args['sort'];
 
-  const config = {
-    interactionId: interaction.id,
-    timestamp: interaction.id / 4194304 + 1420070400000,
-    filters,
-    parameters: {
-      sortKey,
-      isVgc,
-      gen,
-      threshold,
-    },
-    webhook: {
-      token: interaction.token,
-      appId: interaction.application_id,
-    }
-  };
-
-  db.getFilterCollection().insert(config);
-
-  return {
+  await respond({
     type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
-  };
-}
+  });
 
-async function followUp(interaction) {
-  const commandData = db.getFilterCollection().findOne({interactionId: interaction.id});
-  if(!commandData) { return; }
-  const { threshold, gen, isVgc, sortKey } = commandData.parameters;
-  const filters = commandData.filters.map(
-    e=>filterFactory[e.type](gen, e.query, isVgc)
-  );
+  // TODO: clean up
 
   const results = (await applyFilters(gen, filters, threshold)).sort((lhs, rhs) => {
     if (!sortKey) {
@@ -437,10 +411,23 @@ async function followUp(interaction) {
 
   const pages = paginate(results.map((el)=>{return el.name}), 1000);
   if (pages.length > 1) {
-    commandData.pages = pages;
-    db.getFilterCollection().update(commandData);
-  } else {
-    db.getFilterCollection().remove(commandData);
+    const config = {
+      interactionId: interaction.id,
+      timestamp: interaction.id / 4194304 + 1420070400000,
+      filters,
+      parameters: {
+        sortKey,
+        isVgc,
+        gen,
+        threshold,
+      },
+      webhook: {
+        token: interaction.token,
+        appId: interaction.application_id,
+      }
+    };
+    config.pages = pages;
+    db.getFilterCollection().insert(config);
   }
 
   const fields = [
@@ -502,7 +489,7 @@ async function followUp(interaction) {
       pages.length
     ]))];
 
-  const message = {
+  await respond({
     embeds: [buildEmbed({
       fields: fields,
     })],
@@ -518,29 +505,7 @@ async function followUp(interaction) {
         }))
       }
     ]),
-  };
-
-  const url = `https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`;
-  const options = {
-    method: 'PATCH',
-    body: JSON.stringify(message),
-    headers: {
-      'Content-Type': 'application/json',
-      'User-Agent': `DiscordBot (https://github.com/Stalruth/SableyeBot4, v${process.env.npm_package_version})`,
-    },
-  };
-
-  let response = await fetch(url, options);
-
-  if(!response.ok) {
-    if(response.status === 404) {
-      await new Promise(() => setTimeout(()=>{}, 200));
-      response = await fetch(url, options);
-    }
-    else {
-      throw new Error(`${response.status} ${await response.text()}`);
-    }
-  }
+  });
 }
 
 const autocomplete = {
@@ -555,8 +520,7 @@ const autocomplete = {
 export default {
   definition,
   command: {
-    process: validate,
-    followUp,
+    process,
     autocomplete,
   }
 };

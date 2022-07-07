@@ -6,8 +6,8 @@ const definition = {
   description: 'Get links to Damage Calculators.',
 };
 
-const process = function(interaction) {
-  return {
+async function process(interaction, respond) {
+  return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       embeds: [buildEmbed({
@@ -15,7 +15,7 @@ const process = function(interaction) {
         description: '[Pokémon Showdown Damage Calculator](https://calc.pokemonshowdown.com/index.html)\n[Pikalytics Damage Calculator](https://www.pikalytics.com/calc)',
       })],
     },
-  };
+  });
 };
 
 export default {
