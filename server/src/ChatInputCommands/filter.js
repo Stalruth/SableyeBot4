@@ -389,13 +389,13 @@ async function process(interaction, respond) {
     });
   }
 
-  const threshold = args.threshold ?? filters.length;
-
-  const sortKey = args['sort'];
-
   await respond({
     type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
   });
+
+  const threshold = args.threshold ?? filters.length;
+
+  const sortKey = args['sort'];
 
   // TODO: clean up
 
@@ -411,23 +411,14 @@ async function process(interaction, respond) {
 
   const pages = paginate(results.map((el)=>{return el.name}), 1000);
   if (pages.length > 1) {
-    const config = {
+    db.getFilterCollection().insert({
       interactionId: interaction.id,
-      timestamp: interaction.id / 4194304 + 1420070400000,
-      filters,
-      parameters: {
-        sortKey,
-        isVgc,
-        gen,
-        threshold,
-      },
+      pages,
       webhook: {
         token: interaction.token,
         appId: interaction.application_id,
       }
-    };
-    config.pages = pages;
-    db.getFilterCollection().insert(config);
+    });
   }
 
   const fields = [
@@ -476,18 +467,7 @@ async function process(interaction, respond) {
     });
   }
 
-  const pageList = pages.length <= 5 ?
-    new Array(pages.length)
-    .fill(0)
-    .map((e,i)=>i+1)
-    :
-    [...(new Set([
-      1,
-      Math.min(2, pages.length),
-      Math.min(3, pages.length),
-      Math.min(4, pages.length),
-      pages.length
-    ]))];
+  const pageList = pages.map((e, i) => i + 1).filter(e => e <= 4 || e === pages.length);
 
   await respond({
     embeds: [buildEmbed({
