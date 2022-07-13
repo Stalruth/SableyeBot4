@@ -207,27 +207,37 @@ const filterFactory = {
   'height-m': statFilterFactory('height-m'),
   weakness: (dataSet, typeId, isVgc) => {
     const type = genData[dataSet].types.get(typeId);
+    const isNegated = typeId.startsWith('!');
     if(!type) {
       throw typeId;
     }
 
     return {
-      description: `Is weak to ${type.name}`,
+      description: `${isNegated ? 'Is not' : 'Is'} weak to ${type.name}`,
       predicate: (pokemon) => {
-        return type.totalEffectiveness(pokemon.types) > 1;
+        if(!isNegated) {
+          return type.totalEffectiveness(pokemon.types) > 1;
+        } else {
+          return type.totalEffectiveness(pokemon.types) <= 1;
+        }
       },
     };
   },
   resist: (dataSet, typeId, isVgc) => {
     const type = genData[dataSet].types.get(typeId);
+    const isNegated = typeId.startsWith('!');
     if(!type) {
       throw typeId;
     }
 
     return {
-      description: `Resists ${type.name}`,
+      description: `${isNegated ? 'Does not resist' : 'Resists'} ${type.name}`,
       predicate: (pokemon) => {
-        return type.totalEffectiveness(pokemon.types) < 1;
+        if(!isNegated) {
+          return type.totalEffectiveness(pokemon.types) < 1;
+        } else {
+          return type.totalEffectiveness(pokemon.types) >= 1;
+        }
       },
     };
   },

@@ -48,7 +48,7 @@ const definition = {
     {
       name: 'has-prevo',
       type: 5,
-      description: 'Has (or does not have) a pre-evolution',
+      description: 'Has (or does not have) a pre-evolution.',
     },
     {
       name: 'moves',
@@ -59,13 +59,12 @@ const definition = {
     {
       name: 'resists',
       type: 3,
-      description: 'Takes less than 1x damage from the types given (disregards Abilities), separated by commas.',
+      description: 'Resists damage from the types given (ignores Ability), separated by commas and negated with `!`.',
       autocomplete: true,
     },
     {
       name: 'types',
       type: 3,
-      description: 'Has all of the types given. (Comma-delimited list, prefix a type with `!` to negate)',
       description: 'Has all of the types given, separated by commas and negated with `!`.',
       autocomplete: true,
     },
@@ -95,7 +94,7 @@ const definition = {
     {
       name: 'weaknesses',
       type: 3,
-      description: 'Takes more than 1x damage from the types given (disregards Abilities), separated by commas.',
+      description: 'Is weak to damage from the types given (ignores Ability), separated by commas and negated with `!`.',
       autocomplete: true,
     },
     {
@@ -492,8 +491,8 @@ const autocomplete = {
   abilities: getAutocompleteHandler(getMultiComplete(natdex.abilities, completeAbility, {canNegate: false, canRepeat: true}), 'abilities'),
   types: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, {canNegate: true, canRepeat: true}), 'types'),
   moves: getAutocompleteHandler(getMultiComplete(natdex.moves, completeMove, {canNegate: true, canRepeat: true}), 'moves'),
-  weaknesses: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, {canNegate: false, canRepeat: true}), 'weaknesses'),
-  resists: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, {canNegate: false, canRepeat: true}), 'resists'),
+  weaknesses: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, {canNegate: true, canRepeat: true}), 'weaknesses'),
+  resists: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, {canNegate: true, canRepeat: true}), 'resists'),
   'breeds-with': getAutocompleteHandler(completePokemon, 'breeds-with'),
 };
 
