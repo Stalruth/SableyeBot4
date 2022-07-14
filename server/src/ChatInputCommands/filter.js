@@ -37,7 +37,7 @@ const definition = {
     {
       name: 'breeds-with',
       type: 3,
-      description: 'Can breed with the given Pokémon.',
+      description: 'Can breed with the given Pokémon, separated by commas.',
       autocomplete: true,
     },
     {
@@ -349,18 +349,21 @@ async function process(interaction, respond) {
   }
 
   if(args['breeds-with']) {
-    if(data.species.get(args['breeds-with'])?.exists) {
-      filters.push(filterFactory['breeds-with'](gen, args['breeds-with'], isVgc));
-    } else {
-      return await respond({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          embeds: [
-            buildError(`The Pokémon ${args['breeds-with']} could not be found in the given generation.`)
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
-        },
-      });
+    const partners = args['breeds-with'].split(',');
+    for(const partner of partners) {
+      if(data.species.get(partner)?.exists) {
+        filters.push(filterFactory['breeds-with'](gen, partner, isVgc));
+      } else {
+        return await respond({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            embeds: [
+              buildError(`The Pokémon ${partner} could not be found in the given generation.`)
+            ],
+            flags: InteractionResponseFlags.EPHEMERAL,
+          },
+        });
+      }
     }
   }
 
@@ -493,7 +496,7 @@ const autocomplete = {
   moves: getAutocompleteHandler(getMultiComplete(natdex.moves, completeMove, {canNegate: true, canRepeat: true}), 'moves'),
   weaknesses: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, {canNegate: true, canRepeat: true}), 'weaknesses'),
   resists: getAutocompleteHandler(getMultiComplete(natdex.types, completeType, {canNegate: true, canRepeat: true}), 'resists'),
-  'breeds-with': getAutocompleteHandler(completePokemon, 'breeds-with'),
+  'breeds-with': getAutocompleteHandler(getMultiComplete(natdex.species, completePokemon, {canNegate: false, canRepeat: true}), 'breeds-with'),
 };
 
 export default {
