@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import { toID } from '@pkmn/data';
 
 import { dt, getData } from 'dt-utils';
@@ -83,9 +83,9 @@ async function process(interaction, respond) {
         description: "Please select the item to look up",
       })],
       components: [{
-        type: 1,
+        type: MessageComponentTypes.ACTION_ROW,
         components: [{
-          type: 3,
+          type: MessageComponentTypes.STRING_SELECT,
           custom_id: '|natdex|',
           options: [...results].map(e=>({
             label: `${e.name} (${e.effectType})`,

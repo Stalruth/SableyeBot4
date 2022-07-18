@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import fetch from 'node-fetch';
 
 import db from 'db-service';
@@ -93,12 +93,12 @@ async function getPage(interaction, respond) {
       })],
       components: [
         {
-          type: 1,
+          type: MessageComponentTypes.ACTION_ROW,
           components: pageList.map(page => ({
-            type: 2,
+            type: MessageComponentTypes.BUTTON,
             custom_id: page === pageNumber ? '-' : `${page}`,
             disabled: page === pageNumber,
-            style: 2,
+            style: ButtonStyleTypes.SECONDARY,
             label: `Page ${page}`,
           }))
         }
