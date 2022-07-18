@@ -22,7 +22,7 @@ addCommand('Get Linking Code', await import('./ContextMenuCommands/Get Linking C
 addComponent('filter', await import('./MessageComponents/filter.js'));
 addComponent('data', await import('./MessageComponents/data.js'));
 addComponent('dt', await import('./MessageComponents/dt.js'));
-addComponent('Pokémon Glossary', await import('./MessageComponents/dt.js'));
+addComponent('Pokémon Glossary', await import('./MessageComponents/data.js'));
 addComponent('usage', await import('./MessageComponents/usage.js'));
 
 const handlers = {
