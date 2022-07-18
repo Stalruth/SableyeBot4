@@ -3,7 +3,7 @@ import Data from '@pkmn/data';
 
 import getargs from 'discord-getarg';
 import { buildEmbed, buildError } from 'embed-builder';
-import decodeSource from 'learnsetutils';
+import { decodeSource, listMoves, getPrevo, checkMove } from 'learnsetutils';
 import gens from 'gen-db';
 import colours from 'pokemon-colours';
 import { completePokemon, completeMove, getMultiComplete, getAutocompleteHandler } from 'pokemon-complete';
@@ -48,91 +48,6 @@ const definition = {
   ],
 };
 
-async function listMoves(data, pokemon, restriction) {
-  const learnables = await data.learnsets.learnable(pokemon.id, restriction);
-
-  const learnsets = [];
-  for await (const l of data.learnsets.all(pokemon)) {
-    learnsets.push(l);
-  }
-
-  const description = Object.keys(learnables)
-    .filter(id => learnsets.map(l => l['learnset']?.[id])
-        .flat()
-        .filter(source => !!source)
-        .filter(source => !restriction || (source.startsWith(String(data.num)) && !source.endsWith('V')))
-        .length > 0
-    )
-    .map(id=>data.moves.get(id))
-    .filter(el=>!!el)
-    .sort()
-    .join(', ');
-
-  return {
-    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-    data: {
-      embeds: [buildEmbed({
-        title: `${pokemon['name']}'s moveset:\n`,
-        description,
-        color: colours.types[Data.toID(pokemon.types[0])]
-      })],
-    },
-  };
-}
-
-function getPrevo(data, pokemon, stages) {
-  let currentStage = pokemon;
-  for(let i = 0; i < stages; i++) {
-    const nextId = currentStage.battleOnly ??
-        (Data.toID(currentStage.baseSpecies) === currentStage.id ? currentStage.prevo : currentStage.baseSpecies);
-    currentStage = data.species.get(nextId);
-  }
-  return currentStage;
-}
-
-async function checkMove(data, pokemon, move) {
-  const finalSources = [];
-  let latestGen = 0;
-  let loopCount = -1;
-  for await (const learnset of data.learnsets.all(pokemon)) {
-    loopCount++;
-    const sources = (learnset?.learnset?.[move.id] ?? []).filter(el => {
-        return Number(el[0] <= data.num);
-    });
-
-    if(!sources.length) {
-      continue;
-    }
-
-    if(Number(sources[0][0]) < data.num) {
-      latestGen = Number(sources[0][0]);
-      continue;
-    }
-
-    const currentStage = getPrevo(data, pokemon, loopCount);
-
-    finalSources.push(...sources.filter(el=>Number(el[0]) === data.num)
-        .map(el => `- As ${currentStage.name} ${decodeSource(el)}`));
-  }
-
-  if(finalSources.length) {
-    return {
-      name: `${move.name}:`,
-      value: finalSources.join('\n'),
-    };
-  } else if (latestGen > 0) {
-    return {
-      name: `${move.name}`,
-      value: `- when transferred from Generation ${latestGen}`,
-    }; 
-  } else {
-    return {
-      name: `${move.name}:`,
-      value: `- ${pokemon.name} does not learn ${move.name} in Generation ${data.num}`,
-    };
-  }
-}
-
 async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
@@ -157,7 +72,16 @@ async function process(interaction, respond) {
   const restriction = args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined;
 
   if(!args.moves) {
-    return await respond(await listMoves(data, pokemon, restriction));
+    return await respond({
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        embeds: [buildEmbed({
+          title: `${pokemon['name']}'s moveset:\n`,
+          description: await listMoves(data, pokemon, restriction),
+          color: colours.types[Data.toID(pokemon.types[0])]
+        })],
+      },
+    });
   }
 
   const moves = args.moves.split(',').map(e=>data.moves.get(e));
@@ -173,7 +97,7 @@ async function process(interaction, respond) {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
-          buildError(`Could not find ${invalidMoves.length === 1 ? 'a ' : ''}move${invalidMoves.length > 1 ? 's ' : ''} named ${invalidMoves.join(', ')}${args.gen ? ` in Generation ${args.gen}` : ''}.`)
+          buildError(`Could not find ${invalidMoves.length === 1 ? 'a move' : 'moves'} named ${invalidMoves.join(', ')}${args.gen ? ` in Generation ${args.gen}` : ''}.`)
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
@@ -194,7 +118,6 @@ async function process(interaction, respond) {
       })],
     },
   });
-
 };
 
 const autocomplete = {
