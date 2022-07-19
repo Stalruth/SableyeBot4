@@ -60,7 +60,7 @@ const definition = {
         },
         {
           name: 'BW',
-          value: 'gen5',
+          value: 'gen5ani',
         },
         {
           name: 'X/Y Onwards',
