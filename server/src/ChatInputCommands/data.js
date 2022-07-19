@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
 import getargs from 'discord-getarg';
 import { dt, getData } from 'dt-utils';
@@ -63,9 +63,9 @@ async function process(interaction, respond) {
         description: `There are multiple results matching ${params.name}.  Please pick the entity you are looking up below.`,
       })],
       components: [{
-        type: 1,
+        type: MessageComponentTypes.ACTION_ROW,
         components: [{
-          type: 3,
+          type: MessageComponentTypes.STRING_SELECT,
           custom_id: `${results[0].id}|${params.gen ?? 'natdex'}|${params.verbose ? 'true' : ''}`,
           options: results.map(entity => ({
             label: entity.effectType,

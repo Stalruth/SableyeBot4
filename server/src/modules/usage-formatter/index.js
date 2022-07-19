@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import { toID } from '@pkmn/data';
 import { Smogon } from '@pkmn/smogon';
 import fetch from 'node-fetch';
@@ -58,32 +58,32 @@ async function formatter(format, pokemonId, statNames) {
     ],
     components: [
       {
-        type: 1,
+        type: MessageComponentTypes.ACTION_ROW,
         components: [
           {
-            type: 2,
-            style: 2,
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.SECONDARY,
             label: 'Moves',
             custom_id: `${toID(format)}|${pokemon.id}|moves`,
             disabled: statNames.some(e => e.field === 'moves')
           },
           {
-            type: 2,
-            style: 2,
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.SECONDARY,
             label: 'Items',
             custom_id: `${toID(format)}|${pokemon.id}|items`,
             disabled: statNames.some(e => e.field === 'items')
           },
           {
-            type: 2,
-            style: 2,
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.SECONDARY,
             label: 'Spreads',
             custom_id: `${toID(format)}|${pokemon.id}|spreads`,
             disabled: statNames.some(e => e.field === 'spreads')
           },
           {
-            type: 2,
-            style: 2,
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.SECONDARY,
             label: 'Teammates',
             custom_id: `${toID(format)}|${pokemon.id}|teammates`,
             disabled: statNames.some(e => e.field === 'teammates')

@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
 import db from 'db-service';
 import getargs from 'discord-getarg';
@@ -476,12 +476,12 @@ async function process(interaction, respond) {
     })],
     components: (pages.length === 1 ? undefined : [
       {
-        type: 1,
+        type: MessageComponentTypes.ACTION_ROW,
         components: pageList.map(page => ({
-          type: 2,
+          type: MessageComponentTypes.BUTTON,
           custom_id: page === 1 ? '-' : `${page}`,
           disabled: page === 1,
-          style: 2,
+          style: ButtonStyleTypes.SECONDARY,
           label: `Page ${page}`,
         }))
       }

@@ -23,4 +23,78 @@ const decodeSource = (source) => {
   return result;
 };
 
-export default decodeSource;
+async function listMoves(data, pokemon, restriction) {
+  const learnables = await data.learnsets.learnable(pokemon.id, restriction);
+
+  const learnsets = [];
+  for await (const l of data.learnsets.all(pokemon)) {
+    learnsets.push(l);
+  }
+
+  return Object.keys(learnables)
+    .filter(id => learnsets.map(l => l['learnset']?.[id])
+        .flat()
+        .filter(source => !!source)
+        .filter(source => !restriction || (source.startsWith(String(data.num)) && !source.endsWith('V')))
+        .length > 0
+    )
+    .map(id=>data.moves.get(id))
+    .filter(el=>!!el)
+    .sort()
+    .join(', ');
+}
+
+function getPrevo(data, pokemon, stages) {
+  let currentStage = pokemon;
+  for(let i = 0; i < stages; i++) {
+    const nextId = currentStage.battleOnly ??
+        (Data.toID(currentStage.baseSpecies) === currentStage.id ? currentStage.prevo : currentStage.baseSpecies);
+    currentStage = data.species.get(nextId);
+  }
+  return currentStage;
+}
+
+async function checkMove(data, pokemon, move) {
+  const finalSources = [];
+  let latestGen = 0;
+  let loopCount = -1;
+  for await (const learnset of data.learnsets.all(pokemon)) {
+    loopCount++;
+    const sources = (learnset?.learnset?.[move.id] ?? []).filter(el => {
+        return Number(el[0] <= data.num);
+    });
+
+    if(!sources.length) {
+      continue;
+    }
+
+    if(Number(sources[0][0]) < data.num) {
+      latestGen = Number(sources[0][0]);
+      continue;
+    }
+
+    const currentStage = getPrevo(data, pokemon, loopCount);
+
+    finalSources.push(...sources.filter(el=>Number(el[0]) === data.num)
+        .map(el => `- As ${currentStage.name} ${decodeSource(el)}`));
+  }
+
+  if(finalSources.length) {
+    return {
+      name: `${move.name}:`,
+      value: finalSources.join('\n'),
+    };
+  } else if (latestGen > 0) {
+    return {
+      name: `${move.name}`,
+      value: `- when transferred from Generation ${latestGen}`,
+    }; 
+  } else {
+    return {
+      name: `${move.name}:`,
+      value: `- ${pokemon.name} does not learn ${move.name} in Generation ${data.num}`,
+    };
+  }
+}
+
+export { decodeSource, listMoves, getPrevo, checkMove };
