@@ -1,6 +1,6 @@
 {
   "name": "sableyebot-server",
-  "version": "4.10.1",
+  "version": "4.10.2",
   "description": "Server Package for SableyeBot 4",
   "main": "index.js",
   "scripts": {
@@ -19,15 +19,15 @@
   "bugs": {
     "url": "https://github.com/Stalruth/SableyeBot4/issues"
   },
-  "homepage": "https://sableye-bot.web.app",
+  "homepage": "https://sableye-bot.xyz",
   "dependencies": {
     "@pkmn/data": "^0.5.20",
     "@pkmn/img": "^0.1.18",
     "@pkmn/mods": "^0.5.20",
     "@pkmn/sim": "^0.5.20",
     "@pkmn/smogon": "^0.0.18",
-    "@sentry/node": "^6.19.7",
-    "@sentry/tracing": "^6.19.7",
+    "@sentry/node": "^7.7.0",
+    "@sentry/tracing": "^7.7.0",
     "db-service": "file:src/modules/db-service",
     "discord-getarg": "file:src/modules/discord-getarg",
     "discord-interactions": "^3.2.0",

@@ -1,3 +1,5 @@
+import Data from '@pkmn/data';
+
 const decodeSource = (source) => {
   const method = source[1];
   const extra = source.substr(2);
