@@ -19,7 +19,7 @@
   "bugs": {
     "url": "https://github.com/Stalruth/SableyeBot4/issues"
   },
-  "homepage": "https://sableye-bot.web.app",
+  "homepage": "https://sableye-bot.xyz",
   "dependencies": {
     "@pkmn/data": "^0.5.20",
     "@pkmn/img": "^0.1.18",
