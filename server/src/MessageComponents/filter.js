@@ -5,17 +5,7 @@ import db from 'db-service';
 import { buildEmbed, buildError } from 'embed-builder';
 
 async function getPage(interaction, respond) {
-  if((interaction.member?.user ?? interaction.user).id !== interaction.message.interaction.user.id) {
-    return respond({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [
-          buildError('Only the person who ran the command may change the page it displays.')
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
-    });
-  }
+  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;
 
   const pageNumber = parseInt(interaction.data.custom_id, 10);
   if(!pageNumber || isNaN(pageNumber)) {
@@ -86,12 +76,9 @@ async function getPage(interaction, respond) {
     ]))];
 
   return respond({
-    type: InteractionResponseType.UPDATE_MESSAGE,
+    type: isAuthor ? InteractionResponseType.UPDATE_MESSAGE : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        fields: fields,
-      })],
-      components: [
+      components: isAuthor ? [
         {
           type: MessageComponentTypes.ACTION_ROW,
           components: pageList.map(page => ({
@@ -102,7 +89,11 @@ async function getPage(interaction, respond) {
             label: `Page ${page}`,
           }))
         }
-      ],
+      ] : [],
+      embeds: [buildEmbed({
+        fields: fields,
+      })],
+      flags: isAuthor ? 0 : InteractionResponseFlags.EPHEMERAL,
     },
   });
 }

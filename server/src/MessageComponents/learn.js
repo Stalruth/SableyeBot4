@@ -5,17 +5,7 @@ import gens from 'gen-db';
 import { listMoves } from 'learnsetutils';
 
 async function process(interaction, respond) {
-  if((interaction.member?.user ?? interaction.user).id !== interaction.message.interaction.user.id) {
-    return respond({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [
-          buildError('Only the person who ran the command may change the page it displays.')
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
-    });
-  }
+  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;
 
   const [pokemonId, category, gen, restrictionId] = interaction.data.custom_id.split('|');
   const data = gens.data[gen] ?? gens.data['natdex'];
@@ -60,15 +50,16 @@ async function process(interaction, respond) {
   }));
 
   return respond({
-    type:  InteractionResponseType.UPDATE_MESSAGE,
+    type: isAuthor ? InteractionResponseType.UPDATE_MESSAGE : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [embed],
-      components: [
+      components: isAuthor ? [
         {
           type: MessageComponentTypes.ACTION_ROW,
           components: buttons,
         },
-      ],
+      ] : [],
+      embeds: [embed],
+      flags: isAuthor ? 0 : InteractionResponseFlags.EPHEMERAL,
     },
   });
 }

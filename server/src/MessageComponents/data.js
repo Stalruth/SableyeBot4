@@ -6,17 +6,8 @@ import { buildError } from 'embed-builder';
 import gens from 'gen-db';
 
 async function process(interaction, respond) {
-  if((interaction.member?.user ?? interaction.user).id !== interaction.message.interaction.user.id) {
-    return respond({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [
-          buildError('Only the person who ran the command may change the page it displays.')
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
-    });
-  }
+  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;
+
   const [ idOne, gen, verboseArg ] = interaction.data.custom_id.split('|');
   const [ effectType, idTwo ] = interaction.data.values[0].split('|');
 
@@ -31,8 +22,11 @@ async function process(interaction, respond) {
   result.components = [];
 
   return respond({
-    type: InteractionResponseType.UPDATE_MESSAGE,
-    data: result,
+    type: isAuthor ? InteractionResponseType.UPDATE_MESSAGE : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+    data: {
+      ...result,
+      flags: isAuthor ? 0 : InteractionResponseFlags.EPHEMERAL,
+    }
   });
 };
 
