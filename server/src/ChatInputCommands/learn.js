@@ -1,10 +1,10 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import Data from '@pkmn/data';
 
 import getargs from 'discord-getarg';
 import { buildEmbed, buildError } from 'embed-builder';
-import { decodeSource, listMoves, getPrevo, checkMove } from 'learnsetutils';
 import gens from 'gen-db';
+import { decodeSource, listMoves, getPrevo, checkMove } from 'learnsetutils';
 import colours from 'pokemon-colours';
 import { completePokemon, completeMove, getMultiComplete, getAutocompleteHandler } from 'pokemon-complete';
 
@@ -48,6 +48,110 @@ const definition = {
   ],
 };
 
+async function learnPokemon(data, pokemon, restriction, gen) {
+  const moveList = (await listMoves(data, pokemon, restriction));
+  const moveLists = {
+    'Physical': moveList.filter(el => el.category === 'Physical')
+      .sort()
+      .map(el => pokemon.types.includes(el.type) ? `**${el.name}**` : el.name)
+      .join(', '),
+    'Special': moveList.filter(el => el.category === 'Special')
+      .sort()
+      .map(el => pokemon.types.includes(el.type) ? `**${el.name}**` : el.name)
+      .join(', '),
+    'Status': moveList.filter(el => el.category === 'Status')
+      .sort()
+      .map(el => el.name)
+      .join(', '),
+  };
+
+  const threshold = 1024; // Maximum length of an Embed Field Value.
+  const allThreshold = 2048;
+
+  const allLength = moveLists['Physical'].length + moveLists['Special'].length
+    + moveLists['Status'].length;
+
+  const maxLength = Math.max(moveLists['Physical'].length, 
+    moveLists['Special'].length, moveLists['Status'].length);
+
+  const fields = [
+    {
+      name: 'Note',
+      value: `A move displayed with **Bold text** benefits from Same-Type Attack Bonus when used by ${pokemon.name}.`,
+    },
+  ]
+
+  if(allLength > allThreshold || maxLength > threshold) {
+    // split
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        embeds: [buildEmbed({
+          title: `${pokemon['name']}'s moveset: (Physical)`,
+          description: moveLists['Physical'],
+          fields,
+          color: colours.types[Data.toID(pokemon.types[0])],
+        })],
+        components: [
+          {
+            type: MessageComponentTypes.ACTION_ROW,
+            components: ['Physical','Special','Status'].map(category => ({
+              type: MessageComponentTypes.BUTTON,
+              custom_id: `${pokemon.id}|${category}|${gen ?? ''}|${restriction ?? ''}`,
+              disabled: category === 'Physical',
+              style: ButtonStyleTypes.SECONDARY,
+              label: category,
+            }))
+          },
+        ]
+      },
+    };
+  }
+
+  fields.unshift(
+    {
+      name: 'Physical Moves',
+      value: moveLists['Physical'],
+    },
+    {
+      name: 'Special Moves',
+      value: moveLists['Special'],
+    },
+    {
+      name: 'Status Moves',
+      value: moveLists['Status'],
+    },
+  );
+
+  return {
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+    data: {
+      embeds: [buildEmbed({
+        title: `${pokemon['name']}'s moveset:`,
+        fields,
+        color: colours.types[Data.toID(pokemon.types[0])]
+      })],
+    },
+  };
+}
+
+async function learnPokemonMove(data, pokemon, moves, restriction, gen) {
+  const fields = await Promise.all(moves.map(async (move) => {
+    return await checkMove(data, pokemon, move);
+  }));
+
+  return {
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+    data: {
+      embeds: [buildEmbed({
+        title: `[${gen ?? 'Latest Gen'}] ${pokemon.name}`,
+        fields,
+        color: colours.types[Data.toID(pokemon.types[0])],
+      })],
+    },
+  };
+}
+
 async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
@@ -72,16 +176,7 @@ async function process(interaction, respond) {
   const restriction = args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined;
 
   if(!args.moves) {
-    return await respond({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [buildEmbed({
-          title: `${pokemon['name']}'s moveset:\n`,
-          description: await listMoves(data, pokemon, restriction),
-          color: colours.types[Data.toID(pokemon.types[0])]
-        })],
-      },
-    });
+    return await respond(await learnPokemon(data, pokemon, restriction, args.gen));
   }
 
   const moves = args.moves.split(',').map(e=>data.moves.get(e));
@@ -104,20 +199,7 @@ async function process(interaction, respond) {
     });
   }
 
-  const fields = await Promise.all(moves.map(async (move) => {
-    return await checkMove(data, pokemon, move);
-  }));
-
-  return await respond({
-    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-    data: {
-      embeds: [buildEmbed({
-        title: `[${args.gen ?? 'Latest Gen'}] ${pokemon.name}`,
-        fields,
-        color: colours.types[Data.toID(pokemon.types[0])],
-      })],
-    },
-  });
+  return await respond(await learnPokemonMove(data, pokemon, moves, restriction, args.gen))
 };
 
 const autocomplete = {

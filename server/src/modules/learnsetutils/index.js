@@ -41,9 +41,7 @@ async function listMoves(data, pokemon, restriction) {
         .length > 0
     )
     .map(id=>data.moves.get(id))
-    .filter(el=>!!el)
-    .sort()
-    .join(', ');
+    .filter(el=>!!el);
 }
 
 function getPrevo(data, pokemon, stages) {
