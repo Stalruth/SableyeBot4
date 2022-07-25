@@ -4,17 +4,7 @@ import formatter from 'usage-formatter';
 import { buildError } from 'embed-builder';
 
 async function process(interaction, respond) {
-  if((interaction.member?.user ?? interaction.user).id !== interaction.message.interaction.user.id) {
-    return respond({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        embeds: [
-          buildError('Only the person who ran the command may change the page it displays.')
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
-    });
-  }
+  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;
 
   const [format, pokemon, field] = interaction.data.custom_id.split('|');
 
@@ -35,9 +25,15 @@ async function process(interaction, respond) {
     fields.push({name: 'Teammates', field});
   }
 
+  const response = await formatter(format, pokemon, fields);
+
   return respond({
-    type:  InteractionResponseType.UPDATE_MESSAGE,
-    data: await formatter(format, pokemon, fields),
+    type: isAuthor ? InteractionResponseType.UPDATE_MESSAGE : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+    data: {
+      ...response,
+      components: isAuthor ? response.components : [],
+      flags: isAuthor ? 0 : InteractionResponseFlags.EPHEMERAL,
+    }
   });
 }
 
