@@ -1,8 +1,16 @@
 # Slash Command Migration
 
-## UPDATE:
+## UPDATE [30-Jul-2022]:
 
-Sableye Bot will now respond to Content Commands until the
+From the **14th of August 2022** Sableye Bot will respond to Message Content
+Commands with a reminder to migrate **instead of the actual command output**.
+
+This change should give users some time to get used to Slash Commands if they've
+been putting it off to the last minute by forcing them to switch.
+
+## UPDATE [1-Apr-2022]:
+
+Sableye Bot will now respond to Message Content Commands until the
 **31st of August 2022**.  This change reflects Discord's own movement on
 enforcement of the changes described below.
 
@@ -10,7 +18,7 @@ enforcement of the changes described below.
 
 Sableye Bot currently accepts two different kinds of commands:
 
-- Content Commands: These are the old commands we all know and love,
+- Message Content Commands: These are the old commands we all know and love,
     which would be sent as a message and the bot would respond to that message.
 
     Exacmples include `//dt Sableye` and `//sprite Yveltal`.
@@ -21,9 +29,9 @@ Sableye Bot currently accepts two different kinds of commands:
 
 ## What's Changing?
 
-Starting on the 31st of August 2022, Sableye Bot will no longer be able to
-respond to Content Commands - from this date onwards Sableye Bot will only
-respond to Slash Commands.
+Starting on the 14th of August 2022, Sableye Bot will no longer be able to
+respond to Message Content Commands - from this date onwards Sableye Bot will
+only respond to Slash Commands.
 
 This means that the usage of the bot changes dramatically, however the new
 commands come with built-in help text to describe the function of each command.
