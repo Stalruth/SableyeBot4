@@ -78,7 +78,7 @@ async function process(interaction, respond) {
 
   const pokemon = Sim.Dex.species.get(Data.toID(args.pokemon));
 
-  if(!pokemon?.exists || ['Custom','CAP'].includes([pokemon.isNonstandard])) {
+  if(!pokemon?.exists || ['Custom','CAP'].includes(pokemon.isNonstandard)) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
