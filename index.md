@@ -16,7 +16,7 @@ competitive Pokémon.  For example:
 
 ### Data Lookup
 
-The `/dt` command allows the user to obtain information on any Move, Item,
+The `/data` command allows the user to obtain information on any Move, Item,
 Ability, Pokemon, or Nature in the game.  The `gen` parameter can be used to
 look up data from previous generations.
 
