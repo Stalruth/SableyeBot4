@@ -1,8 +1,8 @@
-Accurate as of 00:00 03-Mar-2021 UTC
+Accurate as of 00:00 15-Mar-2021 UTC
 
 # Sableye Bot Privacy Policy
 
-This Privacy Policy is written to expand on the data collected by Sableye Bot
+This Privacy Policy is written to detail the data collected by Sableye Bot
 versions 4 and above (the "Application"), which of this data is processed or
 retained and the basis for such processing or retention.
 
@@ -97,6 +97,11 @@ requests made of it, as follows:
 
     Parameters passed to the command, their values, and any Subcommand invoked.
 
+  - Username and User ID
+
+    Some commands `/linkcode` and `Get Linking Code` process the Discord
+    Username and User ID in creating their results.
+
 ## What the Application stores for an extended period
 
 The Application stores all collected data for an extended period of
@@ -107,6 +112,8 @@ This data is deleted after 30 days.
 
 The data listed below is also shared with Logtail (https://logtail.com) for
 the purposes of analysing command popularity and usage.
+
+This data is deleted after 1 week.
 
   - Guild ID
 
