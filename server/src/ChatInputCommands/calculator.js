@@ -12,7 +12,7 @@ async function process(interaction, respond) {
     data: {
       embeds: [buildEmbed({
         title: 'Damage Calculator',
-        description: '[Pokémon Showdown Damage Calculator](https://calc.pokemonshowdown.com/index.html)\n[Pikalytics Damage Calculator](https://www.pikalytics.com/calc)',
+        description: '[Pokémon Showdown Damage Calculator](https://calc.pokemonshowdown.com/index.html)\n[Nimbasa City Post Damage Calculator (VGC)](https://nerd-of-now.github.io/NCP-VGC-Damage-Calculator/)',
       })],
     },
   });
