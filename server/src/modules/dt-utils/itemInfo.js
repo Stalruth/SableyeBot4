@@ -4,7 +4,7 @@ import { buildEmbed } from 'embed-builder';
 import gens from 'gen-db';
 
 function itemInfo(item, gen, verbose) {
-  const title = item['name'];
+  const title = `Item: ${item['name']}`;
   const description = item['desc'];
   
   const fields = [];

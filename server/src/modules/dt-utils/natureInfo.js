@@ -20,7 +20,7 @@ const fullNames = {
 };
 
 function natureInfo(nature, gen, verbose) {
-  const title = nature.name;
+  const title = `Nature: ${nature.name}`;
   const fields = [
     {
       name: 'Boosted',

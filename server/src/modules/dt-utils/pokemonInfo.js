@@ -15,7 +15,7 @@ function lowKickPower(weight) {
 }
 
 function pokemonInfo(pokemon, gen, verbose) {
-  const title = `No. ${pokemon['num']}: ${pokemon['name']}`;
+  const title = `Pokémon No. ${pokemon['num']}: ${pokemon['name']}`;
   const fields = [];
   fields.push({
     name: `Type${pokemon['types'].length > 1 ? 's' : ''}`,

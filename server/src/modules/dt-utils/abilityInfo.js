@@ -6,7 +6,7 @@ import gens from 'gen-db';
 function abilityInfo(ability, gen, verbose) {
   return {
     embeds: [buildEmbed({
-      title: ability['name'],
+      title: `Ability: ${ability['name']}`,
       description: ability['desc'],
     })],
   };

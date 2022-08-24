@@ -6,7 +6,7 @@ import gens from 'gen-db';
 import colours from 'pokemon-colours';
 
 function moveInfo(move, gen, verbose) {
-  const title = `${move['name']}`;
+  const title = `Move: ${move['name']}`;
   const fields = [];
 
   fields.push({
