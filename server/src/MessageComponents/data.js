@@ -17,7 +17,7 @@ async function process(interaction, respond) {
 
   const effect = getData(gens.data[gen], id).filter(e=>e.effectType === effectType)[0];
 
-  const result = dt[effectType](effect, gen, verboseArg);
+  const result = dt[effectType](effect, gens.data[gen].num, verboseArg);
 
   result.components = [];
 
