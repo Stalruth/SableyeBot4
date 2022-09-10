@@ -15,9 +15,6 @@ The Application collects data sent to it through the "Interactions" facilities
 offered by Discord to allow people ("Users") to utilise the Application's
 features.
 
-All data collection occurs through this facility, and the Application does not
-engage in any passive collection of information outside of this channel.
-
 ## What the Application Receives from Discord
 
 The application receives the following information from Discord when an
@@ -141,6 +138,6 @@ database for up to 15 minutes to facilitate pagination of query results:
 ## Personal Information
 
 No personal information is processed or retained for any length of time.  While
-this data is received from Discord, it is not used in the provision of the
-Application's functionality.
+some Personal Information is received from Discord, it is not used in the
+provision of the Application's functionality.
 
