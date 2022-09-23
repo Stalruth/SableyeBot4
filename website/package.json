@@ -1,0 +1,17 @@
+{
+  "name": "sableyebot4-site",
+  "version": "4.13.4",
+  "description": "Competitive Pokemon Discord Bot - website",
+  "scripts": {
+    "build-docs": "eleventy",
+    "serve-docs": "eleventy --serve"
+  },
+  "author": "Stuart Rutheford",
+  "license": "MIT",
+  "devDependencies": {
+    "@11ty/eleventy": "^1.0.0"
+  },
+  "dependencies": {
+    "mvp.css": "^1.8.0"
+  }
+}

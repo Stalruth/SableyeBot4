@@ -4,9 +4,6 @@
   "description": "Competitive Pokemon Discord Bot",
   "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build-docs": "eleventy",
-    "serve-docs": "eleventy --serve",
     "start": "node server/index.js",
     "debug": "node -r dotenv/config server/index.js",
     "update-commands": "node -r dotenv/config server/updateCommands.js",
@@ -15,9 +12,7 @@
   "author": "Stuart Rutheford",
   "license": "MIT",
   "devDependencies": {
-    "@11ty/eleventy": "^1.0.0",
-    "dotenv": "^10.0.0",
-    "mvp.css": "^1.8.0"
+    "dotenv": "^10.0.0"
   },
   "engines": {
     "node": "16.x"

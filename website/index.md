@@ -47,7 +47,7 @@ GitHub!][hatemail]
 
 ## Contributing / Self-Hosting
 
-See the [more technical README][README].
+See the [README in the GitHub repository][repo].
 
 ## License
 
@@ -77,7 +77,6 @@ This bot limits its data collection and retention as much as it reasonably can.
 [LICENSE]: LICENSE/
 [TERMS]: TERMS/
 [PRIVACY]: PRIVACY/
-[README]: README/
 [repo]: https://github.com/Stalruth/SableyeBot4/
 [1]: https://github.com/Zarel/Pokemon-Showdown
 [2]: https://github.com/pkmn/ps
