@@ -1,6 +1,6 @@
 import { InteractionResponseType } from 'discord-interactions';
 
-import { buildEmbed } from 'embed-builder';
+import { buildEmbed } from '#utils/embed-builder';
 
 const definition = {
   description: 'About Sableye Bot',

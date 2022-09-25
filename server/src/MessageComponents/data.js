@@ -1,9 +1,8 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 
-import getargs from 'discord-getarg';
-import { dt, getData } from 'dt-utils';
-import { buildError } from 'embed-builder';
-import gens from 'gen-db';
+import { dt, getData } from '#utils/dt-utils';
+import { buildError } from '#utils/embed-builder';
+import gens from '#utils/gen-db';
 
 async function process(interaction, respond) {
   const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;

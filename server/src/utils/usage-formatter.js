@@ -3,10 +3,10 @@ import { toID } from '@pkmn/data';
 import { Smogon } from '@pkmn/smogon';
 import fetch from 'node-fetch';
 
-import { buildEmbed, buildError } from 'embed-builder';
-import gens from 'gen-db';
-import colours from 'pokemon-colours';
-import { completePokemon, getAutocompleteHandler } from 'pokemon-complete';
+import { buildEmbed, buildError } from '#utils/embed-builder';
+import gens from '#utils/gen-db';
+import colours from '#utils/pokemon-colours';
+import { completePokemon, getAutocompleteHandler } from '#utils/pokemon-complete';
 
 function formatStats(stats) {
   return Object.keys(stats)

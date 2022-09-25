@@ -2,8 +2,8 @@ import Sim from '@pkmn/sim';
 import Data from '@pkmn/data';
 import { InteractionResponseType } from 'discord-interactions';
 
-import gens from 'gen-db';
-import getargs from 'discord-getarg';
+import gens from '#utils/gen-db';
+import getargs from '#utils/discord-getarg';
 
 function graphGetter(type) {
   const graph = Array.from(gens.data['natdex'][type])

@@ -1,8 +1,8 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 
-import getargs from 'discord-getarg';
-import getLinkingCode from 'link-code';
-import { buildEmbed } from 'embed-builder';
+import getargs from '#utils/discord-getarg';
+import getLinkingCode from '#utils/link-code';
+import { buildEmbed } from '#utils/embed-builder';
 
 const definition = {
   description: 'Generate a linking code for you and the user provided.',

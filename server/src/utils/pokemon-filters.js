@@ -1,4 +1,4 @@
-import genDb from 'gen-db';
+import genDb from '#utils/gen-db';
 
 const genData = genDb.data;
 

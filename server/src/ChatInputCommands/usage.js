@@ -1,9 +1,9 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 
-import getargs from 'discord-getarg';
-import formatter from 'usage-formatter';
-import { buildError } from 'embed-builder';
-import { completePokemon, getAutocompleteHandler } from 'pokemon-complete';
+import getargs from '#utils/discord-getarg';
+import formatter from '#utils/usage-formatter';
+import { buildError } from '#utils/embed-builder';
+import { completePokemon, getAutocompleteHandler } from '#utils/pokemon-complete';
 
 const definition = {
   description: 'Display usage statistics of a given Pokémon in a given metagame.',

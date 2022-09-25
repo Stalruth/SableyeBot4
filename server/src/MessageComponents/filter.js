@@ -1,8 +1,8 @@
 import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import fetch from 'node-fetch';
 
-import db from 'db-service';
-import { buildEmbed, buildError } from 'embed-builder';
+import db from '#utils/db-service';
+import { buildEmbed, buildError } from '#utils/embed-builder';
 
 async function getPage(interaction, respond) {
   const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;

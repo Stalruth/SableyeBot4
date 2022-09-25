@@ -2,9 +2,9 @@ import { InteractionResponseFlags, InteractionResponseType } from 'discord-inter
 import Data from '@pkmn/data';
 import Sim from '@pkmn/sim';
 
-import getargs from 'discord-getarg';
-import { buildEmbed } from 'embed-builder';
-import colours from 'pokemon-colours';
+import getargs from '#utils/discord-getarg';
+import { buildEmbed } from '#utils/embed-builder';
+import colours from '#utils/pokemon-colours';
 
 const types = new Data.Generations(Sim.Dex).get(7).types;
 

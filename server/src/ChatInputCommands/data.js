@@ -1,10 +1,10 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
-import getargs from 'discord-getarg';
-import { dt, getData } from 'dt-utils';
-import { buildEmbed, buildError } from 'embed-builder';
-import gens from 'gen-db';
-import { completeAll, getAutocompleteHandler } from 'pokemon-complete';
+import getargs from '#utils/discord-getarg';
+import { dt, getData } from '#utils/dt-utils';
+import { buildEmbed, buildError } from '#utils/embed-builder';
+import gens from '#utils/gen-db';
+import { completeAll, getAutocompleteHandler } from '#utils/pokemon-complete';
 
 const definition = {
   description: 'Display information on the given Pokemon, Ability, Move, Item, or Nature.',

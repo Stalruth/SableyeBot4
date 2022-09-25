@@ -1,10 +1,10 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 
-import getargs from 'discord-getarg';
-import { buildEmbed, buildError } from 'embed-builder';
-import gens from 'gen-db';
-import colours from 'pokemon-colours';
-import { completeType, getMultiComplete, getAutocompleteHandler } from 'pokemon-complete';
+import getargs from '#utils/discord-getarg';
+import { buildEmbed, buildError } from '#utils/embed-builder';
+import gens from '#utils/gen-db';
+import colours from '#utils/pokemon-colours';
+import { completeType, getMultiComplete, getAutocompleteHandler } from '#utils/pokemon-complete';
 
 const definition = {
   description: 'Display the resistances and weaknesses of a Pokémon with the given types.',

@@ -1,7 +1,7 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 
-import formatter from 'usage-formatter';
-import { buildError } from 'embed-builder';
+import formatter from '#utils/usage-formatter';
+import { buildError } from '#utils/embed-builder';
 
 async function process(interaction, respond) {
   const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;

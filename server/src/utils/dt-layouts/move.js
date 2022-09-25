@@ -1,9 +1,9 @@
 import { InteractionResponseFlags } from 'discord-interactions';
 import { toID } from '@pkmn/data';
 
-import { buildEmbed } from 'embed-builder';
-import gens from 'gen-db';
-import colours from 'pokemon-colours';
+import { buildEmbed } from '#utils/embed-builder';
+import gens from '#utils/gen-db';
+import colours from '#utils/pokemon-colours';
 
 function moveInfo(move, gen, verbose) {
   const title = `Move: ${move['name']}`;

@@ -2,9 +2,9 @@ import { InteractionResponseType } from 'discord-interactions';
 import Data from '@pkmn/data';
 import Sim from '@pkmn/sim';
 
-import colours from 'pokemon-colours';
-import getargs from 'discord-getarg';
-import { buildEmbed } from 'embed-builder';
+import colours from '#utils/pokemon-colours';
+import getargs from '#utils/discord-getarg';
+import { buildEmbed } from '#utils/embed-builder';
 
 const stats = [
   {

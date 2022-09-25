@@ -1,10 +1,10 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import { toID } from '@pkmn/data';
 
-import { dt, getData } from 'dt-utils';
-import { buildEmbed, buildError } from 'embed-builder';
-import gens from 'gen-db';
-import { graphs } from 'pokemon-complete';
+import { dt, getData } from '#utils/dt-utils';
+import { buildEmbed, buildError } from '#utils/embed-builder';
+import gens from '#utils/gen-db';
+import { graphs } from '#utils/pokemon-complete';
 
 const definition = {
   type: 3,

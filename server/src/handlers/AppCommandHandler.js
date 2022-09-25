@@ -1,8 +1,7 @@
 import { InteractionResponseType } from 'discord-interactions';
 import fetch from 'node-fetch';
 
-import getargs from 'discord-getarg';
-import { buildError } from 'embed-builder';
+import getargs from '#utils/discord-getarg';
 
 const definitions = [];
 const commands = {};

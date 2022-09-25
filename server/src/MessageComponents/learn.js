@@ -1,8 +1,8 @@
 import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
-import { buildError } from 'embed-builder';
-import gens from 'gen-db';
-import { listMoves } from 'learnsetutils';
+import { buildError } from '#utils/embed-builder';
+import gens from '#utils/gen-db';
+import { listMoves } from '#utils/learnset-utils';
 
 async function process(interaction, respond) {
   const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;

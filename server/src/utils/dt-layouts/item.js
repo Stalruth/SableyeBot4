@@ -1,7 +1,7 @@
 import { InteractionResponseFlags } from 'discord-interactions';
 
-import { buildEmbed } from 'embed-builder';
-import gens from 'gen-db';
+import { buildEmbed } from '#utils/embed-builder';
+import gens from '#utils/gen-db';
 
 function itemInfo(item, gen, verbose) {
   const title = `Item: ${item['name']}`;

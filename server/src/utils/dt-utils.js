@@ -1,8 +1,8 @@
-import abilityInfo from './abilityInfo.js';
-import itemInfo from './itemInfo.js';
-import moveInfo from './moveInfo.js';
-import natureInfo from './natureInfo.js';
-import pokemonInfo from './pokemonInfo.js';
+import abilityInfo from './dt-layouts/ability.js';
+import itemInfo from './dt-layouts/item.js';
+import moveInfo from './dt-layouts/move.js';
+import natureInfo from './dt-layouts/nature.js';
+import pokemonInfo from './dt-layouts/pokemon.js';
 
 const dt = {
   Ability: abilityInfo,

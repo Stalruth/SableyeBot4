@@ -1,8 +1,7 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 
-import getargs from 'discord-getarg';
-import getLinkingCode from 'link-code';
-import { buildEmbed } from 'embed-builder';
+import getLinkingCode from '#utils/link-code';
+import { buildEmbed } from '#utils/embed-builder';
 
 const definition = {
   type: 2,

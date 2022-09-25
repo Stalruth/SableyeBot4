@@ -1,12 +1,12 @@
 import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import Data from '@pkmn/data';
 
-import getargs from 'discord-getarg';
-import { buildEmbed, buildError } from 'embed-builder';
-import gens from 'gen-db';
-import { decodeSource, listMoves, getPrevo, checkMove } from 'learnsetutils';
-import colours from 'pokemon-colours';
-import { completePokemon, completeMove, getMultiComplete, getAutocompleteHandler } from 'pokemon-complete';
+import getargs from '#utils/discord-getarg';
+import { buildEmbed, buildError } from '#utils/embed-builder';
+import gens from '#utils/gen-db';
+import { decodeSource, listMoves, getPrevo, checkMove } from '#utils/learnset-utils';
+import colours from '#utils/pokemon-colours';
+import { completePokemon, completeMove, getMultiComplete, getAutocompleteHandler } from '#utils/pokemon-complete';
 
 const definition = {
   description: 'Display the learnset of the Pokémon given, or how it learns a given move.',

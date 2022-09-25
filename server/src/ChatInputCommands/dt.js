@@ -1,4 +1,4 @@
-import { buildEmbed } from 'embed-builder';
+import { buildEmbed } from '#utils/embed-builder';
 
 import Data from './data.js';
 

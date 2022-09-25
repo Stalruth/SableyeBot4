@@ -3,9 +3,9 @@ import Data from '@pkmn/data';
 import Img from '@pkmn/img';
 import Sim from '@pkmn/sim';
 
-import getargs from 'discord-getarg';
-import { buildError } from 'embed-builder';
-import { completeSprite, getAutocompleteHandler } from 'pokemon-complete';
+import getargs from '#utils/discord-getarg';
+import { buildError } from '#utils/embed-builder';
+import { completeSprite, getAutocompleteHandler } from '#utils/pokemon-complete';
 
 const definition = {
   description: 'Show the sprite for the given Pokémon on Pokémon Showdown.',

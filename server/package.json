@@ -3,6 +3,10 @@
   "version": "4.13.5",
   "description": "Server Package for SableyeBot 4",
   "main": "index.js",
+  "imports": {
+    "#utils/*": "./src/utils/*.js",
+    "#utils/layouts/*": null
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
@@ -28,22 +32,11 @@
     "@pkmn/smogon": "^0.0.18",
     "@sentry/node": "^7.12.1",
     "@sentry/tracing": "^7.12.1",
-    "db-service": "file:src/modules/db-service",
-    "discord-getarg": "file:src/modules/discord-getarg",
     "discord-interactions": "^3.2.0",
     "discord-verify": "^1.0.0",
-    "dt-utils": "file:src/modules/dt-utils",
-    "embed-builder": "file:src/modules/embed-builder",
     "express": "^4.18.1",
-    "gen-db": "file:src/modules/gen-db",
-    "learnsetutils": "file:src/modules/learnsetutils",
-    "link-code": "file:src/modules/link-code",
     "lokijs": "^1.5.12",
-    "node-fetch": "^3.2.10",
-    "pokemon-colours": "file:src/modules/pokemon-colours",
-    "pokemon-complete": "file:src/modules/pokemon-complete",
-    "pokemon-filters": "file:src/modules/pokemon-filters",
-    "usage-formatter": "file:src/modules/usage-formatter"
+    "node-fetch": "^3.2.10"
   },
   "type": "module",
   "engines": {

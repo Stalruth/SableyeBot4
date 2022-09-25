@@ -1,6 +1,6 @@
 import { InteractionResponseType } from 'discord-interactions';
 
-import { buildEmbed } from 'embed-builder';
+import { buildEmbed } from '#utils/embed-builder';
 
 const definition = {
   description: 'Get links to Damage Calculators.',
