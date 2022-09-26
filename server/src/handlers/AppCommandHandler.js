@@ -66,7 +66,13 @@ async function onApplicationCommand(req, res) {
   }
 
   try {
-    console.log(req.body.type, req.body.guild_id, req.body.id, `'${[0,1,2].map(e=>commandPath[e] ?? null).join(' ').trim()}'`, JSON.stringify(info.params));
+    console.log(JSON.stringify({
+      interactionType: req.body.type,
+      guildId: req.body.guild_id,
+      id: req.body.id,
+      command: `${[0,1,2].map(e=>commandPath[e] ?? null).join(' ').trim()}`,
+      params: info.params
+    }));
 
     const commandData = getCommandData(commandPath);
     const process = (commandData.process ?? (()=>{}))(req.body, respond);
@@ -74,7 +80,14 @@ async function onApplicationCommand(req, res) {
 
     await process;
   } catch (e) {
-    console.error(req.body.type, req.body.guild_id, req.body.id, `'${[0,1,2].map(e=>commandPath[e] ?? null).join(' ').trim()}'`, JSON.stringify(info.params));
+    console.error(JSON.stringify({
+      interactionType: req.body.type,
+      guildId: req.body.guild_id,
+      id: req.body.id,
+      command: `'${[0,1,2].map(e=>commandPath[e] ?? null).join(' ').trim()}'`,
+      params: info.params
+    }));
+    console.error(e);
     throw(e);
   }
 }
