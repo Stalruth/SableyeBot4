@@ -1,4 +1,4 @@
-Accurate as of 00:00 15-Aug-2021 UTC
+Accurate as of 00:00 01-Sep-2021 UTC
 
 # Sableye Bot Privacy Policies
 
@@ -9,7 +9,7 @@ Each element of the bot is designed to collect as little data as possible while
 performing its functions, with logging and retention limited to diagnostic data
 to assist in development.
 
-  - [Sableye Bot v4 (Slash Commands)][PRIVACY]
+  - [Sableye Bot][PRIVACY]
   - [This Website][PRIVACY-site]
 
 [PRIVACY]: /PRIVACY
