@@ -1,4 +1,4 @@
-import { InteractionResponseType } from 'discord-interactions';
+import { ButtonStyleTypes, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
 import { buildEmbed } from '#utils/embed-builder';
 
@@ -20,31 +20,40 @@ async function process(interaction, respond) {
         },
         fields: [
           {
-            name: 'Invite Link',
-            value: '[Click Here](https://discord.com/api/oauth2/authorize?client_id=211522070620667905&permissions=0&scope=bot%20applications.commands)',
-            inline: true,
-          },
-          {
             name: 'Support Server',
             value: 'https://discord.gg/etUxhVfA7u',
-            inline: true,
           },
           {
             name: 'Language',
             value: 'JavaScript (Powered by [express.js](https://expressjs.com/))',
           },
-          {
-            name: 'Privacy Policy',
-            value: 'https://sableye-bot.xyz/PRIVACY',
-            inline: true,
-          },
-          {
-            name: 'Terms of Use',
-            value: 'https://sableye-bot.xyz/TERMS',
-            inline: true,
-          },
         ],
       })],
+      components: [{
+        type: MessageComponentTypes.ACTION_ROW,
+        components: [
+          {
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.LINK,
+            label: 'Add to Server',
+            url: 'https://discord.com/api/oauth2/authorize?client_id=211522070620667905&permissions=0&scope=bot%20applications.commands',
+          },
+          
+          {
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.LINK,
+            label: 'Terms of Use',
+            url: 'https://sableye-bot.xyz/TERMS',
+          },
+          
+          {
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.LINK,
+            label: 'Privacy Policy',
+            url: 'https://sableye-bot.xyz/PRIVACY',
+          },
+        ],
+      }],
     },
   });
 };
