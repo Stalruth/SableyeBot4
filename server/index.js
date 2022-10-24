@@ -17,7 +17,7 @@ const app = express();
 
 function verifyKeyMiddleware(clientPublicKey) {
   if (!clientPublicKey) {
-    throw new Error('You must specify a Discord client public key');
+    throw new Error('Missing Public Key');
   }
 
   return async function (req, res, next) {
@@ -33,22 +33,11 @@ function verifyKeyMiddleware(clientPublicKey) {
       const rawBody = Buffer.concat(chunks);
       if (!await verify(rawBody, signature, timestamp, clientPublicKey, webcrypto.subtle)) {
         res.statusCode = 401;
-        res.end('[discord-interactions] Invalid signature');
+        res.end('Invalid signature');
         return;
       }
 
-      const body = JSON.parse(rawBody.toString('utf-8')) || {};
-      if (body.type === InteractionType.PING) {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(
-          JSON.stringify({
-            type: InteractionResponseType.PONG,
-          }),
-        );
-        return;
-      }
-
-      req.body = body;
+      req.body = JSON.parse(rawBody);
       next();
     });
   };
