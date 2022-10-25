@@ -1,7 +1,7 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import { toID } from '@pkmn/data';
 
-import { dt, getData } from '#utils/dt-utils';
+import { dt, getData } from '#utils/dt-formatter';
 import { buildEmbed, buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 import { graphs } from '#utils/pokemon-complete';

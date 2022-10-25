@@ -1,7 +1,7 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
 import getargs from '#utils/discord-getarg';
-import { dt, getData } from '#utils/dt-utils';
+import { dt, getData } from '#utils/dt-formatter';
 import { buildEmbed, buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 import { completeAll, getAutocompleteHandler } from '#utils/pokemon-complete';

@@ -1,6 +1,6 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 
-import { dt, getData } from '#utils/dt-utils';
+import { dt, getData } from '#utils/dt-formatter';
 import { buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 
