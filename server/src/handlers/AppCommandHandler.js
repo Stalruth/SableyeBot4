@@ -97,6 +97,13 @@ async function onAutocomplete(req, res) {
   const commandPath = [req.body.data?.name, ...info.subcommand];
 
   try {
+    console.log(JSON.stringify({
+      interactionType: req.body.type,
+      guildId: req.body.guild_id,
+      id: req.body.id,
+      command: `${[0,1,2].map(e=>commandPath[e] ?? null).join(' ').trim()}`,
+      params: info.params
+    }));
     initCommand(commandPath[0]);
 
     const commandData = getCommandData(commandPath);
