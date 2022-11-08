@@ -1,5 +1,4 @@
 import { InteractionResponseType } from 'discord-interactions';
-import fetch from 'node-fetch';
 
 import getargs from '#utils/discord-getarg';
 

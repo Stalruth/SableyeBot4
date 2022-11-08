@@ -1,5 +1,4 @@
 import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
-import fetch from 'node-fetch';
 
 import db from '#utils/db-service';
 import { buildEmbed, buildError } from '#utils/embed-builder';

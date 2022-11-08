@@ -1,7 +1,6 @@
 import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import { toID } from '@pkmn/data';
 import { Smogon } from '@pkmn/smogon';
-import fetch from 'node-fetch';
 
 import { buildEmbed, buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';

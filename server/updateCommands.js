@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 import { getCommandDefinitions } from './src/handlers/AppCommandHandler.js';
 import { sableye } from './src/sableye.js';
 

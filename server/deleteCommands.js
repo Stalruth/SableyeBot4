@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const APP_ID = process.env.APP_ID;
 const GUILD_ID = process.env.GUILD_ID;
