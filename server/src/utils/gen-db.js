@@ -1,7 +1,5 @@
 import Data from '@pkmn/data';
 import Sim from '@pkmn/sim';
-import Mods from '@pkmn/mods';
-import ModBdsp from '@pkmn/mods/gen8bdsp';
 
 const existedEver = (d) => {
   if (!d.exists) return false;
@@ -51,10 +49,6 @@ const genNames = [
     value: 'gen8',
   },
   {
-    name: 'Brilliant Diamond/Shining Pearl',
-    value: 'gen8bdsp',
-  },
-  {
     name: 'National Dex',
     value: 'natdex',
   },
@@ -101,10 +95,6 @@ const genData = {
   get ['gen8']() {
     delete genData['gen8'];
     return genData['gen8'] = getGen(Sim.Dex, 8, existsInGen);
-  },
-  get ['gen8bdsp']() {
-    delete genData['gen8bdsp'];
-    return genData['gen8bdsp'] = getGen(new Mods.ModdedDex(Sim.Dex.mod('gen8bdsp', ModBdsp)), 8);
   },
   get ['natdex']() {
     delete genData['natdex'];
