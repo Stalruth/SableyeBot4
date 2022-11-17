@@ -14,7 +14,6 @@ addCommand('learn', await import('./ChatInputCommands/learn.js'));
 addCommand('linkcode', await import('./ChatInputCommands/linkcode.js'));
 addCommand('nature', await import('./ChatInputCommands/nature.js'));
 addCommand('sprite', await import('./ChatInputCommands/sprite.js'));
-addCommand('usage', await import('./ChatInputCommands/usage.js'));
 addCommand('weakness', await import('./ChatInputCommands/weakness.js'));
 
 addCommand('Pokémon Glossary', await import('./ContextMenuCommands/Pokémon Glossary.js'));
