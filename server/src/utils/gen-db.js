@@ -45,8 +45,12 @@ const genNames = [
     value: 'gen7',
   },
   {
-    name: 'Crown Tundra',
+    name: 'Sword/Shield: Crown Tundra',
     value: 'gen8',
+  },
+  {
+    name: 'Scarlet/Violet',
+    value: 'gen9',
   },
   {
     name: 'National Dex',
@@ -96,9 +100,13 @@ const genData = {
     delete genData['gen8'];
     return genData['gen8'] = getGen(Sim.Dex, 8, existsInGen);
   },
+  get ['gen9']() {
+    delete genData['gen9'];
+    return genData['gen9'] = getGen(Sim.Dex, 9, existsInGen);
+  },
   get ['natdex']() {
     delete genData['natdex'];
-    return genData['natdex'] = getGen(Sim.Dex, 8, existedEver);
+    return genData['natdex'] = getGen(Sim.Dex, 9, existedEver);
   },
 }
 

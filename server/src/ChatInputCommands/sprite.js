@@ -1,6 +1,6 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 import Data from '@pkmn/data';
-import Img from '@pkmn/img';
+import { Sprites } from '@pkmn/img';
 import Sim from '@pkmn/sim';
 
 import getargs from '#utils/discord-getarg';
@@ -99,7 +99,7 @@ async function process(interaction, respond) {
   if(args.female) {
     options['gender'] = 'F';
   }
-  const spriteUrl = Img.Sprites.getPokemon(pokemon['id'], options).url;
+  const spriteUrl = Sprites.getPokemon(pokemon['id'], options).url;
 
   if(spriteUrl.endsWith('0.png')) {
     return await respond({
