@@ -149,7 +149,7 @@ function moveInfo(move, gen, verbose) {
       inline: true,
     });
   }
-  if(move['flags']['authentic']) {
+  if(move['flags']['bypasssub']) {
     fields.push({
       name: 'Authentic',
       value: 'Bypasses substitute.',
@@ -260,6 +260,13 @@ function moveInfo(move, gen, verbose) {
       inline: true,
     });
   }
+  if(move['flags']['slicing']) {
+    fields.push({
+      name: 'Slicing',
+      value: 'Boosted by Sharpness.',
+      inline: true,
+    });
+  }
   if(move['flags']['snatch']) {
     fields.push({
       name: 'Snatch',
@@ -271,6 +278,13 @@ function moveInfo(move, gen, verbose) {
     fields.push({
       name: 'Sound',
       value: 'Does not affect Soundproof.',
+      inline: true,
+    });
+  }
+  if(move['flags']['wind']) {
+    fields.push({
+      name: 'Wind',
+      value: 'Triggers Wind Power and Wind Rider.',
       inline: true,
     });
   }
