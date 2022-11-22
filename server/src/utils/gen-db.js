@@ -3,9 +3,9 @@ import Sim from '@pkmn/sim';
 
 const existedEver = (d) => {
   if (!d.exists) return false;
-  if ('isNonstandard' in d && ![null, 'Past', 'Future', 'LGPE', 'Gigantamax'].includes(d.isNonstandard)) return false;
+  if ('isNonstandard' in d && ![null, 'Past', 'Future', 'LGPE', 'Gigantamax', 'Unobtainable'].includes(d.isNonstandard)) return false;
   if (d.kind === 'Ability' && d.id === 'noability') return false;
-  return !('tier' in d && d.tier === 'Unreleased');
+  return true;
 };
 
 const existsInGen = (d) => {
