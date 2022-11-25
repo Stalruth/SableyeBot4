@@ -5,6 +5,7 @@ import { buildEmbed } from '#utils/embed-builder';
 
 const definition = {
   type: 2,
+  dm_permission: false,
 };
 
 async function process(interaction, respond) {
