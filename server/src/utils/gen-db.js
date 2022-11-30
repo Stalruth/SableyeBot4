@@ -58,8 +58,6 @@ const genNames = [
   },
 ];
 
-const natDex = new Data.Generations(Sim.Dex, existedEver).get(8);
-
 function getGen(dex, gen, existsFn) {
   if(existsFn) {
     return new Data.Generations(dex, existsFn).get(gen);
