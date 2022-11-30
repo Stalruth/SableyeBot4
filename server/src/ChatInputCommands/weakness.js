@@ -108,7 +108,7 @@ async function process(interaction, respond) {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [
-          buildError(`Could not find Type(s) named ${nonTypes.join(',')} in Generation ${args.gen}.`,)
+          buildError(`Please provide a Pokémon and/or Types.`,)
         ],
         flags: InteractionResponseFlags.EPHEMERAL,
       },
