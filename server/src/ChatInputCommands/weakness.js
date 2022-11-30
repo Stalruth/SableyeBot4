@@ -6,6 +6,74 @@ import gens from '#utils/gen-db';
 import colours from '#utils/pokemon-colours';
 import { completePokemon, completeType, getMultiComplete, getAutocompleteHandler } from '#utils/pokemon-complete';
 
+const typeNotes = [
+  {
+    note: 'are immune to effects that prevent Switching.',
+    gens: [6,7,8,9],
+    types: ['ghost'],
+  },
+  {
+    note: 'are immune to Powder-based Moves.',
+    gens: [6,7,8,9],
+    types: ['grass'],
+  },
+  {
+    note: 'cannot be Burned by Fire-type Moves.',
+    gens: [2],
+    types: ['fire'],
+  },
+  {
+    note: 'cannot be Burned.',
+    gens: [3,4,5,6,7,8,9],
+    types: ['fire'],
+  },
+  {
+    note: 'cannot be Frozen by Ice-type Moves.',
+    gens: [2],
+    types: ['ice'],
+  },
+  {
+    note: 'cannot be Frozen.',
+    gens: [3,4,5,6,7,8,9],
+    types: ['ice'],
+  },
+  {
+    note: 'cannot be paralyzed.',
+    gens: [6,7,8,9],
+    types: ['electric'],
+  },
+  {
+    note: 'cannot be Poisoned by Poison-type Moves.',
+    gens: [2],
+    types: ['poison','steel'],
+  },
+  {
+    note: 'cannot be Poisoned.',
+    gens: [1,3,4,5,6,7,8,9],
+    types: ['poison','steel'],
+  },
+  {
+    note: 'take no damage from Hail.',
+    gens: [2,3,4,5,6,7,8],
+    types: ['ice'],
+  },
+  {
+    note: 'have their Defense increased by 50% in Snow.',
+    gens: [9],
+    types: ['ice'],
+  },
+  {
+    note: 'take no damage from Sandstorm.',
+    gens: [2,3,4,5,6,7,8,9],
+    types: ['ground','rock','steel'],
+  },
+  {
+    note: 'have their Special Defense increased by 50% in a Sandstorm.',
+    gens: [4,5,6,7,8,9],
+    types: ['rock'],
+  },
+];
+
 const definition = {
   description: 'Weaknesses based on a given Pokémon and/or types.',
   options: [
@@ -68,8 +136,6 @@ async function process(interaction, respond) {
         return data.types.get(el)?.name;
       });
 
-  console.log(argTypes);
-
   if(argTypes.some((el) => {return !el;})) {
     let nonTypes = [];
     for(const i in argTypes) {
@@ -120,7 +186,7 @@ async function process(interaction, respond) {
   for(const i of data.types) {
     eff[i.totalEffectiveness(types)].push(i.name);
   }
-  
+
   const names = {
     0: 'Immune',
     0.125: 'Resists (0.125x)',
@@ -137,6 +203,26 @@ async function process(interaction, respond) {
     fields.push({
       name: names[i],
       value: eff[i].join(', '),
+    });
+  }
+
+  const notes = [];
+
+  typeNotes.forEach(note => {
+    if(!note.gens.includes(data.num)) { return; }
+
+    const affectedTypes = types.filter(type => note.types.includes(type.toLowerCase()));
+    if(!affectedTypes.length) { return; }
+
+    const lastType = `**${affectedTypes.pop()}**-`;
+    const firstTypes = affectedTypes.map(el => `**${el}**-`).join(', ');
+    notes.push(`${!firstTypes.length ? '' : `${firstTypes} and `}${lastType}types ${note.note}`);
+  });
+
+  if(notes.length > 0) {
+    fields.push({
+      name: "Type Notes",
+      value: notes.join('\n'),
     });
   }
 
