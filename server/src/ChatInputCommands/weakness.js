@@ -155,7 +155,7 @@ async function process(interaction, respond) {
     });
   }
 
-  const types = [...new Set([...pokemon.types, ...argTypes])];
+  const types = [...new Set([...(pokemon?.types ?? []), ...argTypes])];
 
   if(types.length > 3) {
     return await respond({
