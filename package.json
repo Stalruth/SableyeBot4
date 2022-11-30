@@ -1,6 +1,6 @@
 {
   "name": "sableyebot4",
-  "version": "4.19.0",
+  "version": "4.19.1",
   "description": "Competitive Pokemon Discord Bot",
   "main": "server/index.js",
   "scripts": {
