@@ -74,6 +74,10 @@ const definition = {
       description: "Is legal in certain VGC formats.",
       choices: [
         {
+          name: 'No Legendaries',
+          value: 'commons',
+        },
+        {
           name: 'VGC Legal',
           value: 'vgc',
         },
@@ -88,7 +92,7 @@ const definition = {
         {
           name: 'Always Banned',
           value: 'banned',
-        }
+        },
       ],
     },
     {

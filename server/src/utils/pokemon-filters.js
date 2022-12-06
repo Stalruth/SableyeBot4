@@ -292,23 +292,27 @@ const filterFactory = {
   },
   'vgc-legality': (dataSet, arg, isVgc) => {
     const descriptions = {
+      'commons': 'not a Legendary Pokémon',
       'vgc': 'legal in most VGC formats',
       'gsc': 'legal in GS Cup formats',
       'gsc-restricted': 'restricted to 2 per team in GS Cup formats',
-      'banned': 'always banned in VGC formats',
+      'banned': 'not a Mythical Pokémon',
     };
 
     return {
       description: `Is ${descriptions[arg]}`,
       predicate: (pokemon) => {
-        if(pokemon.tags[0] === 'Restricted Legendary') {
+        if(pokemon.tags.includes('Restricted Legendary')) {
           return arg === 'gsc' || arg === 'gsc-restricted';
         }
-        if(pokemon.tags[0] === 'Mythical') {
+        if(pokemon.tags.includes('Mythical')) {
           return arg === 'banned';
         }
-        else {
+        if(pokemon.tags.includes('Sub-Legendary')) {
           return arg === 'vgc' || arg === 'gsc';
+        }
+        else {
+          return arg === 'vgc' || arg === 'gsc' || arg === 'commons';
         }
       },
     }
