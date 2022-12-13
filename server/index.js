@@ -49,7 +49,7 @@ Sentry.init({
     new Sentry.Integrations.Http({ tracing: true }),
     new Tracing.Integrations.Express({ app }),
   ],
-  tracesSampleRate: 0.15,
+  tracesSampleRate: 1 / process.env.SENTRY_FRACTION,
   release: process.env.npm_package_version,
   autoSessionTracking: false,
 });
