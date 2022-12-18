@@ -76,10 +76,37 @@ async function learnPokemon(data, pokemon, restriction, gen) {
 
   const fields = [
     {
-      name: 'Note',
+      name: 'Notes',
       value: `A move displayed with **Bold text** benefits from Same-Type Attack Bonus when used by ${pokemon.name}.`,
     },
-  ]
+  ];
+
+  const types = [];
+  for(let type of data.types) {
+    types.push({
+      label: type.name,
+      value: type.id,
+    });
+  }
+
+  const teraRow = data.num !== 9 ? [] : [
+    {
+      type: MessageComponentTypes.ACTION_ROW,
+      components: [
+        {
+          type: MessageComponentTypes.STRING_SELECT,
+          custom_id: 'tera',
+          options: [
+            {
+              label: 'Clear Tera Type',
+              value: 'reset',
+            },
+            ...types,
+          ],
+        }
+      ],
+    },
+  ];
 
   if(allLength > allThreshold || maxLength > threshold) {
     // split
@@ -103,6 +130,7 @@ async function learnPokemon(data, pokemon, restriction, gen) {
               label: category,
             }))
           },
+          ...teraRow,
         ]
       },
     };
@@ -131,6 +159,7 @@ async function learnPokemon(data, pokemon, restriction, gen) {
         fields,
         color: colours.types[Data.toID(pokemon.types[0])]
       })],
+      components: teraRow,
     },
   };
 }
