@@ -25,19 +25,9 @@ const definition = {
       autocomplete: true,
     },
     {
-      name: 'mode',
-      type: 3,
-      description: 'Exclude previous generations in accordance with VGC rules',
-      choices: [
-        {
-          name: 'VGC',
-          value: 'vgc',
-        },
-        {
-          name: 'Default',
-          value: 'smogon',
-        },
-      ],
+      name: 'vgc',
+      type: 5,
+      description: 'Exclude moves learned via transfer in accordance with VGC rules',
     },
     {
       name: 'gen',
@@ -184,7 +174,7 @@ async function learnPokemonMove(data, pokemon, moves, restriction, gen) {
 async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
-  const vgcNotes = [,,,,,'Pentagon','Plus','Galar'];
+  const vgcNotes = [,,,,,'Pentagon','Plus','Galar','Paldea'];
 
   const data = gens.data[args.gen ? args.gen : 'natdex'];
 
@@ -202,7 +192,7 @@ async function process(interaction, respond) {
     });
   }
 
-  const restriction = args.mode === 'vgc' ? vgcNotes[data.num - 1] : undefined;
+  const restriction = args.vgc ? vgcNotes[data.num - 1] : undefined;
 
   if(!args.moves) {
     return await respond(await learnPokemon(data, pokemon, restriction, args.gen));
