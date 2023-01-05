@@ -110,7 +110,7 @@ This data is deleted after 30 days.
 The data listed below is also shared with Logtail (https://logtail.com) for
 the purposes of analysing command popularity and usage.
 
-This data is deleted after 1 week.
+This data is deleted after 3 days.
 
   - Guild ID
 
