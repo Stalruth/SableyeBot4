@@ -51,14 +51,3 @@ footer a {
   --color-link: #0E77CD;
 }
 
-@media(prefers-color-scheme: dark) {
-  footer {
-    background-color: #2d213d;
-  }
-  
-  :root {
-    --color-link: #0097fc;
-    --color-bg: #222222;
-  }
-}
-
