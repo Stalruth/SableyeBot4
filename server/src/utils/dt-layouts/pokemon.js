@@ -30,6 +30,9 @@ function pokemonInfo(pokemon, gen, verbose) {
     if(pokemon['abilities']['H'] && !pokemon['unreleasedHidden']) {
       abilities.push(pokemon['abilities']['H'] + ' (Hidden)');
     }
+    if(pokemon['abilities']['S']) {
+      abilities.push(pokemon['abilities']['S'] + ' (Special)');
+    }
     fields.push({
       name: 'Abilities',
       value: abilities.join(', '),
