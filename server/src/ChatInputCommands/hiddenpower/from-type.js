@@ -1,12 +1,12 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 import Data from '@pkmn/data';
-import Sim from '@pkmn/sim';
+import { Dex } from '@pkmn/sim';
 
 import getargs from '#utils/discord-getarg';
 import { buildEmbed } from '#utils/embed-builder';
 import colours from '#utils/pokemon-colours';
 
-const types = new Data.Generations(Sim.Dex).get(7).types;
+const types = new Data.Generations(Dex).get(7).types;
 
 const listTypes = function(typeList) {
   const result = [];
@@ -67,7 +67,7 @@ async function process(interaction, respond) {
   const args = getargs(interaction).params;
   args.gen ??= 7;
 
-  const types = new Data.Generations(Sim.Dex).get(args.gen).types;
+  const types = new Data.Generations(Dex).get(args.gen).types;
   const type = types.get(args.type);
 
   if(['normal','fairy'].includes(type['id'])) {

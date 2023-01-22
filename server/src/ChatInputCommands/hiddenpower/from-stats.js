@@ -1,6 +1,6 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 import Data from '@pkmn/data';
-import Sim from '@pkmn/sim';
+import { Dex } from '@pkmn/sim';
 
 import getargs from '#utils/discord-getarg';
 import { buildEmbed } from '#utils/embed-builder';
@@ -95,7 +95,7 @@ async function process(interaction, respond) {
   const args = getargs(interaction).params;
   args.gen ??= 7;
 
-  const types = new Data.Generations(Sim.Dex).get(args.gen).types;
+  const types = new Data.Generations(Dex).get(args.gen).types;
 
   const result = types.getHiddenPower(args);
 

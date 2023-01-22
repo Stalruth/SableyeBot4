@@ -1,4 +1,4 @@
-import Sim from '@pkmn/sim';
+import { Dex } from '@pkmn/sim';
 import Data from '@pkmn/data';
 import { InteractionResponseType } from 'discord-interactions';
 
@@ -47,7 +47,7 @@ const graphs = {
   // this one's built different
   get ['sprites']() {
     delete graphs['sprites'];
-    const graph = Sim.Dex.species.all()
+    const graph = Dex.species.all()
         .filter(el=>!['Custom','CAP'].includes(el.isNonstandard))
         .reduce((acc, cur)=>[
           ...acc,
@@ -79,7 +79,7 @@ function getSpriteMatches(query) {
       .filter(e=>e.startsWith(Data.toID(query)))
       .map((e,i)=>{
         return {
-          name: Sim.Dex.species.get(e).name,
+          name: Dex.species.get(e).name,
           value: e,
         };
       });

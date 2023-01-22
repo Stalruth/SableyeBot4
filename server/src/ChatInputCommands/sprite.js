@@ -1,7 +1,7 @@
 import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
 import Data from '@pkmn/data';
 import { Sprites } from '@pkmn/img';
-import Sim from '@pkmn/sim';
+import { Dex } from '@pkmn/sim';
 
 import getargs from '#utils/discord-getarg';
 import { buildError } from '#utils/embed-builder';
@@ -76,7 +76,7 @@ async function process(interaction, respond) {
 
   const gen = args['april-fools'] ? 'gen5' : (args.gen ?? 'ani');
 
-  const pokemon = Sim.Dex.species.get(Data.toID(args.pokemon));
+  const pokemon = Dex.species.get(Data.toID(args.pokemon));
 
   if(!pokemon?.exists || ['Custom','CAP'].includes(pokemon.isNonstandard)) {
     return await respond({

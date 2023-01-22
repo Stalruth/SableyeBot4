@@ -1,6 +1,6 @@
 import { InteractionResponseType } from 'discord-interactions';
 import Data from '@pkmn/data';
-import Sim from '@pkmn/sim';
+import { Dex } from '@pkmn/sim';
 
 import colours from '#utils/pokemon-colours';
 import getargs from '#utils/discord-getarg';
@@ -52,7 +52,7 @@ const definition = {
 async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
-  const gen = new Data.Generations(Sim.Dex).get(8);
+  const gen = new Data.Generations(Dex).get(8);
 
   // Uh oh sisters! hardcoding!
   const neutralNatures = {

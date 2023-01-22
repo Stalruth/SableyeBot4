@@ -1,5 +1,5 @@
 import Data from '@pkmn/data';
-import Sim from '@pkmn/sim';
+import { Dex } from '@pkmn/sim';
 
 const existedEver = (d) => {
   if (!d.exists) return false;
@@ -68,43 +68,43 @@ function getGen(dex, gen, existsFn) {
 const genData = {
   get ['gen1']() {
     delete genData['gen1'];
-    return genData['gen1'] = getGen(Sim.Dex, 1, existsInGen);
+    return genData['gen1'] = getGen(Dex, 1, existsInGen);
   },
   get ['gen2']() {
     delete genData['gen2'];
-    return genData['gen2'] = getGen(Sim.Dex, 2, existsInGen);
+    return genData['gen2'] = getGen(Dex, 2, existsInGen);
   },
   get ['gen3']() {
     delete genData['gen3'];
-    return genData['gen3'] = getGen(Sim.Dex, 3, existsInGen);
+    return genData['gen3'] = getGen(Dex, 3, existsInGen);
   },
   get ['gen4']() {
     delete genData['gen4'];
-    return genData['gen4'] = getGen(Sim.Dex, 4, existsInGen);
+    return genData['gen4'] = getGen(Dex, 4, existsInGen);
   },
   get ['gen5']() {
     delete genData['gen5'];
-    return genData['gen5'] = getGen(Sim.Dex, 5, existsInGen);
+    return genData['gen5'] = getGen(Dex, 5, existsInGen);
   },
   get ['gen6']() {
     delete genData['gen6'];
-    return genData['gen6'] = getGen(Sim.Dex, 6, existsInGen);
+    return genData['gen6'] = getGen(Dex, 6, existsInGen);
   },
   get ['gen7']() {
     delete genData['gen7'];
-    return genData['gen7'] = getGen(Sim.Dex, 7, existsInGen);
+    return genData['gen7'] = getGen(Dex, 7, existsInGen);
   },
   get ['gen8']() {
     delete genData['gen8'];
-    return genData['gen8'] = getGen(Sim.Dex, 8, existsInGen);
+    return genData['gen8'] = getGen(Dex, 8, existsInGen);
   },
   get ['gen9']() {
     delete genData['gen9'];
-    return genData['gen9'] = getGen(Sim.Dex, 9, existsInGen);
+    return genData['gen9'] = getGen(Dex, 9, existsInGen);
   },
   get ['natdex']() {
     delete genData['natdex'];
-    return genData['natdex'] = getGen(Sim.Dex, 9, existedEver);
+    return genData['natdex'] = getGen(Dex, 9, existedEver);
   },
 }
 
