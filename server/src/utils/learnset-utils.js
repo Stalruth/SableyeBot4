@@ -47,9 +47,15 @@ async function listMoves(data, pokemon, restriction) {
 function getPrevo(data, pokemon, stages) {
   let currentStage = pokemon;
   for(let i = 0; i < stages; i++) {
-    const nextId = currentStage.battleOnly ??
-        (Data.toID(currentStage.baseSpecies) === currentStage.id ? currentStage.prevo : currentStage.baseSpecies);
-    currentStage = data.species.get(nextId);
+    if(currentStage.id === 'lycanrocdusk') {
+      currentStage = data.species.get('rockruff');
+    } else if (currentStage.id === 'gastrodoneast') {
+      currentStage = data.species.get('gastrodon');
+    } else if (currentStage.id === 'pumpkaboosuper') {
+      currentStage = data.species.get('pumpkaboo');
+    } else {
+      currentStage = data.species.get(currentStage.battleOnly || currentStage.changesFrom || currentStage.prevo);
+    }
   }
   return currentStage;
 }
@@ -59,7 +65,6 @@ async function checkMove(data, pokemon, move) {
   let latestGen = 0;
   let loopCount = -1;
   for await (const learnset of data.learnsets.all(pokemon)) {
-    console.log(learnset);
     loopCount++;
     const sources = (learnset?.learnset?.[move.id] ?? []).filter(el => {
         return Number(el[0] <= data.num);
@@ -75,6 +80,11 @@ async function checkMove(data, pokemon, move) {
     }
 
     const currentStage = getPrevo(data, pokemon, loopCount);
+
+    // TODO: Remove once @pkmn/data is fixed
+    if(!currentStage) {
+      continue;
+    }
 
     finalSources.push(...sources.filter(el=>Number(el[0]) === data.num)
         .map(el => `- As ${currentStage.name} ${decodeSource(el)}`));
