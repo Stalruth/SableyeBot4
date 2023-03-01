@@ -18,6 +18,10 @@ async function process(interaction, respond) {
 
   const result = dt[effectType](effect, gen, verboseArg);
 
+  if(!isAuthor) {
+    result.components = [];
+  }
+
   return respond({
     type: isAuthor ? InteractionResponseType.UPDATE_MESSAGE : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
