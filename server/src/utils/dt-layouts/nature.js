@@ -1,5 +1,4 @@
 import { buildEmbed } from '#utils/embed-builder';
-import gens from '#utils/gen-db';
 import colours from '#utils/pokemon-colours';
 
 // Uh oh sisters! hardcoding!
@@ -19,7 +18,7 @@ const fullNames = {
   'spe': 'Speed',
 };
 
-function natureInfo(nature, gen, verbose) {
+function natureInfo(nature) {
   const title = `Nature: ${nature.name}`;
   const fields = [
     {

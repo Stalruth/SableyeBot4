@@ -62,8 +62,9 @@ async function process(interaction, respond) {
     const data = [...results][0];
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: Object.assign(dt[data.effectType](data, genData.num, false), {
+      data: Object.assign(dt[data.effectType](data, 'natdex', false), {
         flags: InteractionResponseFlags.EPHEMERAL,
+        components: []
       }),
     });
   }
@@ -86,7 +87,7 @@ async function process(interaction, respond) {
         type: MessageComponentTypes.ACTION_ROW,
         components: [{
           type: MessageComponentTypes.STRING_SELECT,
-          custom_id: '|natdex|',
+          custom_id: '-',
           options: [...results].map(e=>({
             label: `${e.name} (${e.effectType})`,
             value: `${e.effectType}|${e.id}`,

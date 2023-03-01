@@ -7,16 +7,13 @@ import gens from '#utils/gen-db';
 async function process(interaction, respond) {
   const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;
 
-  const [ id, gen, verboseArg, componentEffect ] = interaction.data.custom_id.split('|');
-  const [ itemEffect ] = interaction.data.values?.[0].split('|') ?? [];
+  const [ effectType, id ] = interaction.data.values?.[0].split('|') ?? [];
 
-  const effectType = itemEffect ?? componentEffect;
+  const effect = getData(gens.data['natdex'], id).filter(e=>e.effectType === effectType)[0];
 
-  const verbose = !!verboseArg;
+  const result = dt[effectType](effect, 'natdex');
 
-  const effect = getData(gens.data[gen], id).filter(e=>e.effectType === effectType)[0];
-
-  const result = dt[effectType](effect, gen, verboseArg);
+  result.components = interaction.message.components;
 
   return respond({
     type: isAuthor ? InteractionResponseType.UPDATE_MESSAGE : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

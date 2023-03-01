@@ -1,7 +1,6 @@
-import { InteractionResponseFlags } from 'discord-interactions';
+import { ButtonStyleTypes, InteractionResponseFlags, MessageComponentTypes } from 'discord-interactions';
 
 import { buildEmbed } from '#utils/embed-builder';
-import gens from '#utils/gen-db';
 
 function itemInfo(item, gen, verbose) {
   const title = `Item: ${item['name']}`;
@@ -28,12 +27,14 @@ function itemInfo(item, gen, verbose) {
       fields.push({
         'name': 'Fling',
         'value': `${item['fling']['basePower']} Power${flingStatus ? (', ' + statusNames[flingStatus] + ' the target.') : ''}`,
+        'inline': true,
       });
     }
 
     fields.push({
       'name': 'Introduced',
       'value': `Generation ${item['gen']}`,
+      'inline': true,
     });
   }
 
@@ -43,6 +44,15 @@ function itemInfo(item, gen, verbose) {
       description,
       fields,
     })],
+    components: [{
+      type: MessageComponentTypes.ACTION_ROW,
+      components: [{
+        type: MessageComponentTypes.BUTTON,
+        custom_id: `${item['id']}|${gen}|${!verbose ? 'true' : ''}|Item`,
+        style: ButtonStyleTypes.SECONDARY,
+        label: !verbose ? 'Verbose' : 'Compact',
+      }],
+    }],
   };
 }
 

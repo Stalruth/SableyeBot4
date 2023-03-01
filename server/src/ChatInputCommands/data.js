@@ -17,11 +17,6 @@ const definition = {
       autocomplete: true,
     },
     {
-      name: 'verbose',
-      type: 5,
-      description: 'Return extra information.',
-    },
-    {
       name: 'gen',
       type: 3,
       description: 'The Generation to check against.',
@@ -33,8 +28,9 @@ const definition = {
 async function process(interaction, respond) {
   const args = getargs(interaction);
   const { params } = args;
+  const gen = params.gen ?? 'natdex';
 
-  const data = gens.data[params.gen ? params.gen : 'natdex'];
+  const data = gens.data[gen];
 
   const results = getData(data, params.name);
 
@@ -51,7 +47,7 @@ async function process(interaction, respond) {
   if(results.length === 1) {
     return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: dt[results[0].effectType](results[0], data.num, params.verbose),
+      data: dt[results[0].effectType](results[0], params.gen ?? 'natdex'),
     });
   }
 
@@ -66,7 +62,7 @@ async function process(interaction, respond) {
         type: MessageComponentTypes.ACTION_ROW,
         components: [{
           type: MessageComponentTypes.STRING_SELECT,
-          custom_id: `${results[0].id}|${params.gen ?? 'natdex'}|${params.verbose ? 'true' : ''}`,
+          custom_id: `${results[0].id}|${params.gen ?? 'natdex'}|true`,
           options: results.map(entity => ({
             label: entity.effectType,
             value: entity.effectType,

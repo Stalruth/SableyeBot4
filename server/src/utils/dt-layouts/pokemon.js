@@ -1,4 +1,4 @@
-import { InteractionResponseFlags } from 'discord-interactions';
+import { ButtonStyleTypes, InteractionResponseFlags, MessageComponentTypes } from 'discord-interactions';
 import { toID } from '@pkmn/data';
 
 import { buildEmbed } from '#utils/embed-builder';
@@ -22,7 +22,7 @@ function pokemonInfo(pokemon, gen, verbose) {
     value: pokemon['types'].join('/'),
   });
 
-  if(gen >= 3) {
+  if(gens.data[gen].num >= 3) {
     const abilities = [pokemon['abilities'][0]]
     if(pokemon['abilities'][1]) {
       abilities.push(pokemon['abilities'][1]);
@@ -39,12 +39,12 @@ function pokemonInfo(pokemon, gen, verbose) {
     });
   }
 
-  const statNames = ['HP', 'Atk', 'Def', ...(gen <= 2 ? ['Spc'] : ['SpA', 'SpD']), 'Spe']
+  const statNames = ['HP', 'Atk', 'Def', ...(gens.data[gen].num <= 2 ? ['Spc'] : ['SpA', 'SpD']), 'Spe']
   const stats = [
     pokemon.baseStats.hp,
     pokemon.baseStats.atk,
     pokemon.baseStats.def,
-    ...(gen === 1 ? [
+    ...(gens.data[gen].num === 1 ? [
       pokemon.baseStats.spa
     ] : [
       pokemon.baseStats.spa,
@@ -175,6 +175,15 @@ function pokemonInfo(pokemon, gen, verbose) {
       fields,
       color: colours.types[toID(pokemon.types[0])]
     })],
+    components: [{
+      type: MessageComponentTypes.ACTION_ROW,
+      components: [{
+        type: MessageComponentTypes.BUTTON,
+        custom_id: `${pokemon['id']}|${gen}|${!verbose ? 'true' : ''}|Pokemon`,
+        style: ButtonStyleTypes.SECONDARY,
+        label: !verbose ? 'Verbose' : 'Compact',
+      }],
+    }],
   };
 }
 

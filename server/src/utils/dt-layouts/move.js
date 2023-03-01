@@ -1,4 +1,4 @@
-import { InteractionResponseFlags } from 'discord-interactions';
+import { ButtonStyleTypes, InteractionResponseFlags, MessageComponentTypes } from 'discord-interactions';
 import { toID } from '@pkmn/data';
 
 import { buildEmbed } from '#utils/embed-builder';
@@ -25,7 +25,7 @@ function moveInfo(move, gen, verbose) {
     inline: true
   });
 
-  if(gen === 7) {
+  if(gens.data[gen].num === 7) {
     if(move['isZ']) {
       fields.push({
         name: 'Z Crystal',
@@ -59,7 +59,7 @@ function moveInfo(move, gen, verbose) {
     }
   }
 
-  if(gen === 8) {
+  if(gens.data[gen].num === 8) {
     if(move.maxMove && move.maxMove.basePower) {
       fields.push({
         name: 'Max Power',
@@ -197,7 +197,7 @@ function moveInfo(move, gen, verbose) {
       inline: true,
     });
   }
-  if(move['flags']['distance'] && gen >= 5 && gen <= 6) {
+  if(move['flags']['distance'] && gens.data[gen].num >= 5 && gens.data[gen].num <= 6) {
     fields.push({
       name: 'Distance',
       value: 'Targets any Pokémon in a Triple Battle.',
@@ -218,7 +218,7 @@ function moveInfo(move, gen, verbose) {
       inline: true,
     });
   }
-  if(move['flags']['nonsky'] && gen === 6) {
+  if(move['flags']['nonsky'] && gens.data[gen].num === 6) {
     fields.push({
       name: 'Non-Sky',
       value: 'Cannot be selected in a Sky Battle.',
@@ -296,6 +296,15 @@ function moveInfo(move, gen, verbose) {
       color: colours.types[toID(move.type)],
       fields
     })],
+    components: [{
+      type: MessageComponentTypes.ACTION_ROW,
+      components: [{
+        type: MessageComponentTypes.BUTTON,
+        custom_id: `${move['id']}|${gen}|${!verbose ? 'true' : ''}|Move`,
+        style: ButtonStyleTypes.SECONDARY,
+        label: !verbose ? 'Verbose' : 'Compact',
+      }],
+    }],
   };
 }
 

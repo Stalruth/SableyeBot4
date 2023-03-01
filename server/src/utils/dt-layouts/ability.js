@@ -1,9 +1,10 @@
-import { InteractionResponseFlags } from 'discord-interactions';
+import { InteractionResponseFlags, MessageComponentTypes } from 'discord-interactions';
+
 
 import { buildEmbed } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 
-function abilityInfo(ability, gen, verbose) {
+function abilityInfo(ability) {
   return {
     embeds: [buildEmbed({
       title: `Ability: ${ability['name']}`,
