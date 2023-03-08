@@ -50,7 +50,7 @@ function itemInfo(item, gen, verbose) {
         type: MessageComponentTypes.BUTTON,
         custom_id: `${item['id']}|${gen}|${!verbose ? 'true' : ''}|Item`,
         style: ButtonStyleTypes.SECONDARY,
-        label: !verbose ? 'Verbose' : 'Compact',
+        label: !verbose ? 'Show More' : 'Show Less',
       }],
     }],
   };

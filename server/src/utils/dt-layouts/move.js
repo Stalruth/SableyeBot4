@@ -302,7 +302,7 @@ function moveInfo(move, gen, verbose) {
         type: MessageComponentTypes.BUTTON,
         custom_id: `${move['id']}|${gen}|${!verbose ? 'true' : ''}|Move`,
         style: ButtonStyleTypes.SECONDARY,
-        label: !verbose ? 'Verbose' : 'Compact',
+        label: !verbose ? 'Show More' : 'Show Less',
       }],
     }],
   };

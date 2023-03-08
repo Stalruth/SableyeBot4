@@ -181,7 +181,7 @@ function pokemonInfo(pokemon, gen, verbose) {
         type: MessageComponentTypes.BUTTON,
         custom_id: `${pokemon['id']}|${gen}|${!verbose ? 'true' : ''}|Pokemon`,
         style: ButtonStyleTypes.SECONDARY,
-        label: !verbose ? 'Verbose' : 'Compact',
+        label: !verbose ? 'Show More' : 'Show Less',
       }],
     }],
   };
