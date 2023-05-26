@@ -24,7 +24,6 @@ addComponent('data', await import('./MessageComponents/data.js'));
 addComponent('dt', await import('./MessageComponents/data.js'));
 addComponent('learn', await import('./MessageComponents/learn.js'));
 addComponent('Pokémon Glossary', await import('./MessageComponents/Pokémon Glossary.js'));
-addComponent('usage', await import('./MessageComponents/usage.js'));
 
 const handlers = {
   1: onPingInteraction,
