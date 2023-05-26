@@ -1,6 +1,6 @@
 {
   "name": "sableyebot-server",
-  "version": "4.22.5",
+  "version": "4.22.6",
   "description": "Server Package for SableyeBot 4",
   "main": "index.js",
   "imports": {
@@ -25,13 +25,13 @@
   },
   "homepage": "https://sableye-bot.xyz",
   "dependencies": {
-    "@pkmn/data": "^0.7.39",
+    "@pkmn/data": "^0.7.40",
     "@pkmn/img": "^0.2.9",
-    "@pkmn/sim": "^0.7.39",
-    "@sentry/node": "^7.50.0",
-    "@sentry/tracing": "^7.50.0",
-    "discord-interactions": "^3.3.0",
-    "discord-verify": "^1.0.2",
+    "@pkmn/sim": "^0.7.40",
+    "@sentry/node": "^7.53.1",
+    "@sentry/tracing": "^7.53.1",
+    "discord-interactions": "^3.4.0",
+    "discord-verify": "^1.1.0",
     "express": "^4.18.2",
     "lokijs": "^1.5.12",
     "node-fetch": "^3.3.1"
