@@ -21,8 +21,18 @@ async function onComponentInteraction(req, res) {
     res.json(response)
   }
 
+  const fallbackHandler = (interaction, respond) => {
+    respond({
+      type: InteractionResponseType.UPDATE_MESSAGE,
+      data: {
+        embeds: interaction.message.embeds,
+        components: []
+      },
+    });
+  }
+
   try {
-    await processes[req.body.message.interaction.name](req.body, respond);
+    await (processes[req.body.message.interaction.name] ?? fallbackHandler)(req.body, respond);
   } catch (e) {
     console.error(JSON.stringify({
       interactionType: req.body.type,
@@ -35,7 +45,6 @@ async function onComponentInteraction(req, res) {
       }
     }));
     console.error(e);
-    res.sendStatus(500);
   }
 
   return;
