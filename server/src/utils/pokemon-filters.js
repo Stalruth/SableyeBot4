@@ -76,8 +76,8 @@ function statFilterFactory(stat) {
       };
     }
     if(query.indexOf('-') !== -1) {
-      const range = query.split('-').map(e=>Number(e));
-      if(range.length === 2 && !range.some(e=>isNaN(e)) && range[0] < range[1]) {
+      const range = query.split('-').map(e=>Number(e)).sort((a,b)=>a-b);
+      if(range.length === 2 && !range.some(e=>isNaN(e))) {
         return {
           description: `Has ${statData[stat].article} ${statData[stat].fullName} ${statData[stat].suffix}between ${range[0]} and ${range[1]}`,
           predicate: (pokemon) => {
