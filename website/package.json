@@ -9,7 +9,7 @@
   "author": "Stuart Rutheford",
   "license": "MIT",
   "devDependencies": {
-    "@11ty/eleventy": "^1.0.2"
+    "@11ty/eleventy": "^2.0.1"
   },
   "dependencies": {
     "mvp.css": "^1.8.0"
