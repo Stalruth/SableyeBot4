@@ -77,7 +77,7 @@ function moveInfo(move, gen, verbose) {
 
   fields.push({
     name: 'Accuracy',
-    value: move['accuracy'],
+    value: move['accuracy'] === true ? '—' : move['accuracy'],
     inline: true
   });
   fields.push({
