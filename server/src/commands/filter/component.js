@@ -1,7 +1,7 @@
 import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import fetch from 'node-fetch';
 
-import db from '#utils/db-service';
+import db from './db-service.js';
 import { buildEmbed, buildError } from '#utils/embed-builder';
 
 async function getPage(interaction, respond) {

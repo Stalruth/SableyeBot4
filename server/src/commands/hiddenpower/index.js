@@ -1,5 +1,5 @@
-import fromStats from './hiddenpower/from-stats.js';
-import fromType from './hiddenpower/from-type.js';
+import fromStats from './from-stats.js';
+import fromType from './from-type.js';
 
 const definition = {
   description: 'Retrieve information about Hidden Power.',

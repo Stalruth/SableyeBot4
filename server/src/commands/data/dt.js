@@ -1,4 +1,4 @@
-import Data from './data.js';
+import Data from './index.js';
 
 export default {
   definition: {

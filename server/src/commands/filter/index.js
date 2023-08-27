@@ -1,11 +1,11 @@
 import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
-import db from '#utils/db-service';
+import db from './db-service.js';
 import getargs from '#utils/discord-getarg';
 import { buildEmbed, buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 import { completeAbility, completeMove, completeType, completePokemon, getMultiComplete, getAutocompleteHandler } from '#utils/pokemon-complete';
-import { filterFactory, applyFilters } from '#utils/pokemon-filters';
+import { filterFactory, applyFilters } from './pokemon-filters.js';
 
 const natdex = gens.data['natdex'];
 
