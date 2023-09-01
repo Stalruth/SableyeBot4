@@ -1,5 +1,4 @@
 import loki from 'lokijs';
-import fetch from 'node-fetch';
 
 let filters = undefined;
 
