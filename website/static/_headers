@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'self'; img-src https://*.cloudfront.net 'self'; script-src 'none'; style-src https://*.cloudfront.net;
+  Content-Security-Policy: default-src 'self'; img-src 'self'; script-src 'none'; style-src 'self';
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: same-origin
