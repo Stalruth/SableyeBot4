@@ -1,4 +1,5 @@
 import Data from '@pkmn/data';
+import gens from '#utils/gen-db';
 
 const decodeSource = (source) => {
   const method = source[1];
@@ -25,6 +26,10 @@ const decodeSource = (source) => {
   return result;
 };
 
+function isGen9SV(data) {
+  return data.num === 9 && data !== gens.data['natdex'];
+}
+
 async function listMoves(data, pokemon, restriction) {
   const learnables = await data.learnsets.learnable(pokemon.id, restriction);
 
@@ -37,7 +42,7 @@ async function listMoves(data, pokemon, restriction) {
     .filter(id => learnsets.map(l => l['learnset']?.[id])
         .flat()
         .filter(source => !!source)
-        .filter(source => !restriction || (source.startsWith(String(data.num)) && !source.endsWith('V')))
+        .filter(source => (!restriction && !isGen9SV(data)) || (source.startsWith(String(data.num)) && !source.endsWith('V')))
         .length > 0
     )
     .map(id=>data.moves.get(id))
@@ -67,24 +72,19 @@ async function checkMove(data, pokemon, move) {
   for await (const learnset of data.learnsets.all(pokemon)) {
     loopCount++;
     const sources = (learnset?.learnset?.[move.id] ?? []).filter(el => {
-        return Number(el[0] <= data.num);
+        return Number(el[0]) <= data.num;
     });
 
     if(!sources.length) {
       continue;
     }
 
-    if(Number(sources[0][0]) < data.num) {
+    if(Number(sources[0][0]) < data.num && !isGen9SV(data)) {
       latestGen = Number(sources[0][0]);
       continue;
     }
 
     const currentStage = getPrevo(data, pokemon, loopCount);
-
-    // TODO: Remove once @pkmn/data is fixed
-    if(!currentStage) {
-      continue;
-    }
 
     finalSources.push(...sources.filter(el=>Number(el[0]) === data.num)
         .map(el => `- As ${currentStage.name} ${decodeSource(el)}`));
