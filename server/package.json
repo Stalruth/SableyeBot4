@@ -10,9 +10,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "debug": "node -r dotenv/config index.js",
-    "update-commands": "node -r dotenv/config updateCommands.js",
-    "delete-commands": "node -r dotenv/config deleteCommands.js"
+    "debug": "node --env-file .env index.js",
+    "update-commands": "node --env-file .env updateCommands.js",
+    "delete-commands": "node --env-file .env deleteCommands.js"
   },
   "repository": {
     "type": "git",

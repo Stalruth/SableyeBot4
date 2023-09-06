@@ -5,15 +5,12 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
-    "debug": "node -r dotenv/config server/index.js",
-    "update-commands": "node -r dotenv/config server/updateCommands.js",
-    "delete-commands": "node -r dotenv/config server/deleteCommands.js"
+    "debug": "node --env-file .env server/index.js",
+    "update-commands": "node --env-file .env server/updateCommands.js",
+    "delete-commands": "node --env-file .env server/deleteCommands.js"
   },
   "author": "Stuart Rutheford",
   "license": "MIT",
-  "devDependencies": {
-    "dotenv": "^10.0.0"
-  },
   "engines": {
     "node": "20.x"
   }
