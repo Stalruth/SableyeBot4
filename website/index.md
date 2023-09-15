@@ -3,7 +3,7 @@
 [Invite this bot to your server!][invite]
 
 Competitive Pokémon Discord Bot.  Features accurate data for every Pokémon
-game from Red and Blue to Sword and Shield.
+game from Red and Blue to Scarlet and Violet: The Teal Mask.
 
 ## Features
 
