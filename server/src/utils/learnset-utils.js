@@ -86,6 +86,10 @@ async function checkMove(data, pokemon, move) {
 
     const currentStage = getPrevo(data, pokemon, loopCount);
 
+    if(!currentStage) {
+      continue;
+    }
+
     finalSources.push(...sources.filter(el=>Number(el[0]) === data.num)
         .map(el => `- As ${currentStage.name} ${decodeSource(el)}`));
   }
