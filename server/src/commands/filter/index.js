@@ -155,7 +155,7 @@ const definition = {
     {
       name: 'transfer-moves',
       type: 5,
-      description: 'Include moves learned in older gens. (Enabled by default, exclude for VGC rules)',
+      description: 'Include moves learned in past gens. (Enabled by default unless `gen` is Scarlet/Violet)',
     },
     {
       name: 'sort',
@@ -207,7 +207,7 @@ async function process(interaction, respond) {
   const gen = args.gen ?? 'natdex';
   const data = gens.data[gen];
   const filters = [];
-  const isVgc = !(args['transfer-moves'] ?? true);
+  const isVgc = !(args['transfer-moves'] ?? (gen !== 'gen9'));
 
   if(args.abilities) {
     const abilities = args.abilities.split(',');
