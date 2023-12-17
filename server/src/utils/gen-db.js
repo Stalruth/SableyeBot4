@@ -49,7 +49,7 @@ const genNames = [
     value: 'gen8',
   },
   {
-    name: 'Scarlet/Violet: The Teal Mask',
+    name: 'Scarlet/Violet: The Indigo Disk',
     value: 'gen9',
   },
   {
