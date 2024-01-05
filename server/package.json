@@ -25,9 +25,9 @@
   },
   "homepage": "https://sableye-bot.xyz",
   "dependencies": {
-    "@pkmn/data": "^0.8.0",
-    "@pkmn/img": "^0.2.20",
-    "@pkmn/sim": "^0.8.0",
+    "@pkmn/data": "^0.8.4",
+    "@pkmn/img": "^0.2.22",
+    "@pkmn/sim": "^0.8.4",
     "@sentry/node": "^7.80.1",
     "@sentry/tracing": "^7.80.1",
     "discord-interactions": "^3.4.0",
