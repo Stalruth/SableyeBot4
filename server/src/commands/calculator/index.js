@@ -4,6 +4,8 @@ import { buildEmbed } from '#utils/embed-builder';
 
 const definition = {
   description: 'Get links to Damage Calculators.',
+  integration_types: [0, 1],
+  contexts: [0, 1, 2]
 };
 
 async function process(interaction, respond) {

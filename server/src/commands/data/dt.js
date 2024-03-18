@@ -6,5 +6,7 @@ export default {
     options: Data.definition.options,
   },
   command: Data.command,
+  integration_types: Data.definition.integration_types,
+  contexts: Data.definition.contexts
 };
 

@@ -68,7 +68,9 @@ const definition = {
         },
       ]
     },
-  ]
+  ],
+  integration_types: [0, 1],
+  contexts: [0, 1, 2]
 };
 
 async function process(interaction, respond) {

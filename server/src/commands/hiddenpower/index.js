@@ -13,6 +13,8 @@ const definition = {
       type: 1,
     }, fromType.definition),
   ],
+  integration_types: [0, 1],
+  contexts: [0, 1, 2]
 };
 
 export default {

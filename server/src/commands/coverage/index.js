@@ -38,6 +38,8 @@ const definition = {
       choices: gens.names,
     },
   ],
+  integration_types: [0, 1],
+  contexts: [0, 1, 2]
 };
 
 const neutralIfNotImmune = (base) => base !== 0 ? 1 : 0;

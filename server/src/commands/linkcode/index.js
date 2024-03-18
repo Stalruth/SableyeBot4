@@ -6,7 +6,6 @@ import { buildEmbed } from '#utils/embed-builder';
 
 const definition = {
   description: 'Generate a linking code for you and the user provided.',
-  dm_permission: false,
   options: [
     {
       name: 'user',
@@ -15,6 +14,8 @@ const definition = {
       required: true,
     },
   ],
+  integration_types: [0, 1],
+  contexts: [0, 2]
 };
 
 async function process(interaction, respond) {
