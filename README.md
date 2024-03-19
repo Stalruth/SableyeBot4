@@ -51,7 +51,7 @@ I'll fuss over the specifics myself.
 [MIT License][LICENSE]
 
 [hatemail]: https://github.com/Stalruth/SableyeBot4/issues/new
-[invite]: https://discord.com/api/oauth2/authorize?client_id=211522070620667905&permissions=0&scope=applications.commands%20bot
+[invite]: https://discord.com/oauth2/authorize?client_id=211522070620667905
 [LICENSE]: /LICENSE
 [1]: https://github.com/Zarel/Pokemon-Showdown
 [2]: https://github.com/pkmn/ps

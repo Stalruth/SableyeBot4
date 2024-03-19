@@ -5,7 +5,8 @@ import { buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 
 async function process(interaction, respond) {
-  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;
+  console.log({'interaction': JSON.stringify(interaction.message.interaction), 'metadata': JSON.stringify(interaction.message.interaction_metadata)});
+  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction_metadata.user_id;
 
   const [ id, gen, verboseArg, componentEffect ] = interaction.data.custom_id.split('|');
   const [ itemEffect ] = interaction.data.values?.[0].split('|') ?? [];

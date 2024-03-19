@@ -5,7 +5,7 @@ import gens from '#utils/gen-db';
 import { listMoves } from '#utils/learnset-utils';
 
 async function process(interaction, respond) {
-  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction.user.id;
+  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction_metadata.user_id;
   if(!isAuthor) {
     return respond({
       type: InteractionResponseType.UPDATE_MESSAGE,
