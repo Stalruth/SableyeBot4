@@ -7,17 +7,17 @@ function addComponent(name, module) {
 
 async function onComponentInteraction(req, res) {
   try {
-  console.log(JSON.stringify({
-    interactionType: req.body.type,
-    guildId: req.body.guild_id,
-    id: req.body.id,
-    command: req.body.message.interaction_metadata.name,
-    params: {
-      custom_id: req.body.data.custom_id,
-      values: req.body.data.values,
-    }
-  }));
-  catch(e) {
+    console.log(JSON.stringify({
+      interactionType: req.body.type,
+      guildId: req.body.guild_id,
+      id: req.body.id,
+      command: req.body.message.interaction_metadata.name,
+      params: {
+        custom_id: req.body.data.custom_id,
+        values: req.body.data.values,
+      }
+    }));
+  } catch(e) {
     console.error(req.body);
     console.error(e);
   }
