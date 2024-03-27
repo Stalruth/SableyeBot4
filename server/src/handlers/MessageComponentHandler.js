@@ -6,6 +6,7 @@ function addComponent(name, module) {
 };
 
 async function onComponentInteraction(req, res) {
+  try {
   console.log(JSON.stringify({
     interactionType: req.body.type,
     guildId: req.body.guild_id,
@@ -16,6 +17,10 @@ async function onComponentInteraction(req, res) {
       values: req.body.data.values,
     }
   }));
+  catch(e) {
+    console.error(req.body);
+    console.error(e);
+  }
 
   const respond = (response) => {
     res.json(response)
