@@ -18,7 +18,7 @@ async function onComponentInteraction(req, res) {
       }
     }));
   } catch(e) {
-    console.error(req.body);
+    console.error(JSON.stringify(req.body));
     console.error(e);
   }
 
