@@ -4,7 +4,7 @@ import db from './db-service.js';
 import { buildEmbed, buildError } from '#utils/embed-builder';
 
 async function getPage(interaction, respond) {
-  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction_metadata.user_id;
+  const isAuthor = (interaction.member?.user ?? interaction.user).id === (interaction.message.interaction_metadata?.user_id ?? interaction.message.interaction.user.id);
 
   const pageNumber = parseInt(interaction.data.custom_id, 10);
   if(!pageNumber || isNaN(pageNumber)) {

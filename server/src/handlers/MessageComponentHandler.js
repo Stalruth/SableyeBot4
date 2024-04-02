@@ -11,7 +11,7 @@ async function onComponentInteraction(req, res) {
       interactionType: req.body.type,
       guildId: req.body.guild_id,
       id: req.body.id,
-      command: req.body.message.interaction_metadata.name,
+      command: req.body.message.interaction_metadata?.name ?? req.body.message.interaction.name,
       params: {
         custom_id: req.body.data.custom_id,
         values: req.body.data.values,
@@ -37,13 +37,13 @@ async function onComponentInteraction(req, res) {
   }
 
   try {
-    await (processes[req.body.message.interaction_metadata.name] ?? fallbackHandler)(req.body, respond);
+    await (processes[req.body.message.interaction_metadata?.name ?? req.body.message.interaction.name] ?? fallbackHandler)(req.body, respond);
   } catch (e) {
     console.error(JSON.stringify({
       interactionType: req.body.type,
       guildId: req.body.guild_id,
       id: req.body.id,
-      command: req.body.message.interaction_metadata.name,
+      command: req.body.message.interaction_metadata?.name ?? req.body.message.interaction.name,
       params: {
         custom_id: req.body.data.custom_id,
         values: req.body.data.values,
