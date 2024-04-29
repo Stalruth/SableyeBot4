@@ -37,8 +37,8 @@ async function process(interaction, respond) {
           {
             type: MessageComponentTypes.BUTTON,
             style: ButtonStyleTypes.LINK,
-            label: 'Add to Server',
-            url: 'https://discord.com/api/oauth2/authorize?client_id=211522070620667905&permissions=0&scope=bot%20applications.commands',
+            label: 'Add App to Server/User',
+            url: 'https://discord.com/api/oauth2/authorize?client_id=211522070620667905',
           },
           
           {
@@ -66,4 +66,3 @@ export default {
     process,
   },
 };
-
