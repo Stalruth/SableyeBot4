@@ -10,13 +10,13 @@ import Tracing from '@sentry/tracing';
 
 import { sableye } from './src/sableye.js';
 
-const PUBLIC_KEY = process.env.PUBLIC_KEY;
+const PUBLIC_KEYS = process.env.PUBLIC_KEYS.split(',');
 const PORT = process.env.PORT;
 
 const app = express();
 
-function verifyKeyMiddleware(clientPublicKey) {
-  if (!clientPublicKey) {
+function verifyKeyMiddleware(clientPublicKeys) {
+  if (!clientPublicKeys || clientPublicKeys.length === 0) {
     throw new Error('Missing Public Key');
   }
 
@@ -31,7 +31,13 @@ function verifyKeyMiddleware(clientPublicKey) {
 
     req.on('end', async () => {
       const rawBody = Buffer.concat(chunks);
-      if (!await verify(rawBody, signature, timestamp, clientPublicKey, webcrypto.subtle)) {
+      let verified = false;
+      for(let clientPublicKey of clientPublicKeys) {
+        verified = verified | await verify(rawBody, signature, timestamp,
+            clientPublicKey, webcrypto.subtle)
+      }
+
+      if (!verified) {
         res.statusCode = 401;
         res.end('Invalid signature');
         return;
@@ -58,7 +64,7 @@ app.use('/', Sentry.Handlers.requestHandler());
 
 app.use('/', Sentry.Handlers.tracingHandler());
 
-app.post('/', verifyKeyMiddleware(PUBLIC_KEY), sableye);
+app.post('/', verifyKeyMiddleware(PUBLIC_KEYS), sableye);
 
 app.use(Sentry.Handlers.errorHandler());
 
