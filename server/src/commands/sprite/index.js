@@ -4,7 +4,8 @@ import { Sprites } from '@pkmn/img';
 import { Dex } from '@pkmn/sim';
 
 import getargs from '#utils/discord-getarg';
-import { buildError } from '#utils/embed-builder';
+import { buildEmbed, buildError } from '#utils/embed-builder';
+import colours from '#utils/pokemon-colours';
 import { completeSprite, getAutocompleteHandler } from '#utils/pokemon-complete';
 
 const definition = {
@@ -116,7 +117,12 @@ async function process(interaction, respond) {
   return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      content: args['april-fools'] ? spriteUrl.replace('gen5', 'afd') : spriteUrl,
+      embeds: [buildEmbed({
+        image: {
+          url: args['april-fools'] ? spriteUrl.replace('gen5', 'afd') : spriteUrl
+        },
+        color: colours.types[Data.toID(pokemon.types[0])]
+      })]
     },
   });
 };

@@ -1,4 +1,6 @@
-import { InteractionResponseType } from 'discord-interactions';
+import { ButtonStyleTypes, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
+
+import { buildEmbed } from '#utils/embed-builder';
 
 import getargs from '#utils/discord-getarg';
 
@@ -36,6 +38,47 @@ async function onApplicationCommand(req, res) {
 
   let isFirstResponse = true;
   const respond = async (response) => {
+    if(response.type == InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE) {
+      if(!response.data.embeds) {
+        response.data.embeds = [];
+      }
+      response.data.embeds.push(buildEmbed({
+        title: 'Sableye Bot Deprecation',
+        description: 'Due to changes in how Discord handles Verification, Sableye Bot will no longer operate at some point in the coming weeks. To continue using Sableye Bot, Please add "Sableye" to your server using the button below. Sableye will also be receiving fixes and new features that this version of Sableye Bot will not.\n\nFor more information please either get in touch via the Support Server linked below or read more in [this GitHub issue](https://github.com/Stalruth/SableyeBot4/issues/3#issuecomment-2311363974).',
+        color: 0xa80000
+      }));
+
+      response.data.components = [{
+        type: MessageComponentTypes.ACTION_ROW,
+        components: [
+          {
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.LINK,
+            label: 'Add the New App to Server/User',
+            url: 'https://discord.com/oauth2/authorize?client_id=1254384836685336616',
+          },
+          {
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.LINK,
+            label: 'Support Server',
+            url: 'https://discord.gg/etUxhVfA7u',
+          },
+          {
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.LINK,
+            label: 'Terms of Use',
+            url: 'https://sableye-bot.xyz/TERMS',
+          },
+          {
+            type: MessageComponentTypes.BUTTON,
+            style: ButtonStyleTypes.LINK,
+            label: 'Privacy Policy',
+            url: 'https://sableye-bot.xyz/PRIVACY',
+          },
+        ]
+      }]
+    }
+
     if(isFirstResponse) {
       isFirstResponse = false;
       res.json(response)
