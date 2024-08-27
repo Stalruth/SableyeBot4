@@ -69,7 +69,7 @@ This bot limits its data collection and retention as much as it reasonably can.
 * [SableyeBot3][3] (by @JsKingBoo), the direct predecessor to this bot.
 
 [hatemail]: https://github.com/Stalruth/SableyeBot4/issues/new
-[invite]: https://sableye-bot.xyz/invite/
+[invite]: https://discord.com/oauth2/authorize?client_id=1254384836685336616
 [LICENSE]: LICENSE/
 [TERMS]: TERMS/
 [PRIVACY]: PRIVACY/

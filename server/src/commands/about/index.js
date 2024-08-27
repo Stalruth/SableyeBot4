@@ -38,16 +38,14 @@ async function process(interaction, respond) {
             type: MessageComponentTypes.BUTTON,
             style: ButtonStyleTypes.LINK,
             label: 'Add App to Server/User',
-            url: 'https://discord.com/api/oauth2/authorize?client_id=211522070620667905',
+            url: 'https://discord.com/api/oauth2/authorize?client_id=1254384836685336616',
           },
-          
           {
             type: MessageComponentTypes.BUTTON,
             style: ButtonStyleTypes.LINK,
             label: 'Terms of Use',
             url: 'https://sableye-bot.xyz/TERMS',
           },
-          
           {
             type: MessageComponentTypes.BUTTON,
             style: ButtonStyleTypes.LINK,
