@@ -4,10 +4,6 @@ import getargs from '#utils/discord-getarg';
 
 const definitions = [];
 const commands = {};
-const modulePaths = {};
-
-function initCommand(name) {
-}
 
 function addCommand(name, module) {
   if(commands[name]) {
@@ -74,10 +70,7 @@ async function onApplicationCommand(req, res) {
     }));
 
     const commandData = getCommandData(commandPath);
-    const process = (commandData.process ?? (()=>{}))(req.body, respond);
-    const followUp = commandData.followUp ?? (()=>{});
-
-    await process;
+    await (commandData.process ?? (()=>{}))(req.body, respond);
   } catch (e) {
     console.error(JSON.stringify({
       interactionType: req.body.type,
@@ -94,6 +87,17 @@ async function onApplicationCommand(req, res) {
 async function onAutocomplete(req, res) {
   const info = getargs(req.body);
   const commandPath = [req.body.data?.name, ...info.subcommand];
+  console.log(info.params[info.focused]);
+
+  function echo() {
+    return {
+      type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+      choices: [{
+        name: info.params[info.focused],
+        value: info.params[info.focused]
+      }]
+    };
+  }
 
   try {
     console.log(JSON.stringify({
@@ -103,33 +107,18 @@ async function onAutocomplete(req, res) {
       command: `${[0,1,2].map(e=>commandPath[e] ?? null).join(' ').trim()}`,
       params: info.params
     }));
-    initCommand(commandPath[0]);
 
     const commandData = getCommandData(commandPath);
-    const autocompleteProcess = commandData.autocomplete[info.focused] ?? (()=>({type:8,choices:[info.params[info.focused]]}));
+    const autocompleteProcess = commandData.autocomplete[info.focused] ?? echo;
 
     res.json(await autocompleteProcess(req.body));
   } catch(e) {
-    res.json({
-      type: 8,
-      data: {
-        choices: [
-          {
-            name: info.params[info.focused],
-            value: info.params[info.focused],
-          },
-        ],
-      },
-    });
+    res.json(echo());
     throw e;
   }
 }
 
 function getCommandDefinitions() {
-  const commands = Object.keys(modulePaths);
-  for(const i of commands) {
-    initCommand(i);
-  }
   return definitions;
 }
 

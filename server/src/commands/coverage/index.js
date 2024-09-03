@@ -35,6 +35,7 @@ const definition = {
       name: 'gen',
       type: 3,
       description: 'Generation to check against.',
+      required: false,
       choices: gens.names,
     },
   ],

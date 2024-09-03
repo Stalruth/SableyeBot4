@@ -14,34 +14,6 @@ async function onComponentInteraction(req, res) {
     res.json(response)
   }
 
-  // old structure so expire command
-  if(!req.body.message.interaction_metadata) {
-    respond({
-      type: InteractionResponseType.UPDATE_MESSAGE,
-      data: {
-        embeds: req.body.message.embeds,
-        components: []
-      },
-    });
-
-    await fetch(`https://discord.com/api/v10/webhooks/${req.body.application_id}/${req.body.token}`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          embeds: [
-            buildError('This command execution has expired, please run it again.')
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': `DiscordBot (https://github.com/Stalruth/SableyeBot4, v${process.env.npm_package_version})`,
-        },
-      }
-    );
-    return;
-  }
-
   console.log(JSON.stringify({
     interactionType: req.body.type,
     guildId: req.body.guild_id,
