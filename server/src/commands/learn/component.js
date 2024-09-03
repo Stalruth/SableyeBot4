@@ -3,9 +3,10 @@ import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, Me
 import { buildEmbed, buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 import { listMoves } from '#utils/learnset-utils';
+import isInteractionStarter from '#utils/isInteractionStarter';
 
 async function process(interaction, respond) {
-  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction_metadata.user_id;
+  const isAuthor = isInteractionStarter(interaction);
   if(!isAuthor) {
     return respond({
       type: InteractionResponseType.UPDATE_MESSAGE,

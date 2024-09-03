@@ -3,9 +3,10 @@ import { InteractionResponseFlags, InteractionResponseType } from 'discord-inter
 import { dt, getData } from '#utils/dt-formatter';
 import { buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
+import isInteractionStarter from '#utils/isInteractionStarter';
 
 async function process(interaction, respond) {
-  const isAuthor = (interaction.member?.user ?? interaction.user).id === interaction.message.interaction_metadata.user_id;
+  const isAuthor = isInteractionStarter(interaction);
 
   const [ effectType, id ] = interaction.data.values?.[0].split('|') ?? [];
 
