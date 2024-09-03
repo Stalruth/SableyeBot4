@@ -1,8 +1,8 @@
 import { getCommandDefinitions } from './src/handlers/AppCommandHandler.js';
 import { sableye } from './src/sableye.js';
 
-const CLIENT_SECRETS = process.env.CLIENT_SECRETS.split(',');
-const APP_IDS = process.env.APP_IDS.split(',');
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const APP_ID = process.env.APP_ID;
 const GUILD_ID = process.env.GUILD_ID;
 
 function getOptions(token) {
@@ -38,18 +38,14 @@ async function getToken(appId, clientSecret) {
 }
 
 async function main() {
-  for(let i in APP_IDS) {
-    const APP_ID = APP_IDS[i];
-    const CLIENT_SECRET = CLIENT_SECRETS[i];
-    const token = await getToken(APP_ID, CLIENT_SECRET);
-    const result = await fetch(`https://discord.com/api/v10/applications/${APP_ID}`
-      + (GUILD_ID ? `/guilds/${GUILD_ID}` : '') + `/commands`, getOptions(token));
-    if(result.ok) {
-      console.log('Updated!');
-    } else {
-      console.log('Oh no!');
-      console.log(await result.json());
-    }
+  const token = await getToken(APP_ID, CLIENT_SECRET);
+  const result = await fetch(`https://discord.com/api/v10/applications/${APP_ID}`
+    + (GUILD_ID ? `/guilds/${GUILD_ID}` : '') + `/commands`, getOptions(token));
+  if(result.ok) {
+    console.log('Updated!');
+  } else {
+    console.log('Oh no!');
+    console.log(await result.json());
   }
 }
 
