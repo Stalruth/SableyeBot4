@@ -1,9 +1,6 @@
 'use strict';
 
-import { webcrypto } from 'node:crypto';
-
-import { InteractionResponseType, InteractionType } from 'discord-interactions';
-import { verify } from 'discord-verify';
+import { verifyKeyMiddleware } from 'discord-interactions';
 import express from 'express';
 import Sentry from '@sentry/node';
 import Tracing from '@sentry/tracing';
@@ -14,37 +11,6 @@ const PUBLIC_KEY = process.env.PUBLIC_KEY;
 const PORT = process.env.PORT;
 
 const app = express();
-
-function verifyKeyMiddleware(clientPublicKey) {
-  if (!clientPublicKey) {
-    throw new Error('Missing Public Key');
-  }
-
-  return async function (req, res, next) {
-    const timestamp = req.header('X-Signature-Timestamp') || '';
-    const signature = req.header('X-Signature-Ed25519') || '';
-
-    const chunks = [];
-    req.on('data', (chunk) => {
-      chunks.push(chunk);
-    });
-
-    req.on('end', async () => {
-      const rawBody = Buffer.concat(chunks);
-      const verified = await verify(rawBody, signature, timestamp,
-            clientPublicKey, webcrypto.subtle)
-
-      if (!verified) {
-        res.statusCode = 401;
-        res.end('Invalid signature');
-        return;
-      }
-
-      req.body = JSON.parse(rawBody);
-      next();
-    });
-  };
-}
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,

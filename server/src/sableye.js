@@ -1,6 +1,5 @@
 import { addCommand, onApplicationCommand, onAutocomplete } from './handlers/AppCommandHandler.js';
 import { addComponent, onComponentInteraction } from './handlers/MessageComponentHandler.js';
-import { onPingInteraction } from './handlers/PingHandler.js';
 
 addCommand('about', await import('./commands/about/index.js'));
 addCommand('calculator', await import('./commands/calculator/index.js'));
@@ -26,7 +25,6 @@ addComponent('learn', await import('./commands/learn/component.js'));
 addComponent('Pokémon Glossary', await import('./commands/Pokémon Glossary/component.js'));
 
 const handlers = {
-  1: onPingInteraction,
   2: onApplicationCommand,
   3: onComponentInteraction,
   4: onAutocomplete
