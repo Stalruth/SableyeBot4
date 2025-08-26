@@ -21,7 +21,10 @@ const definition = {
 async function process(interaction, respond) {
   const { params } = getargs(interaction);
 
-  const linkingCode = getLinkingCode([interaction.member.user.id, params.user]);
+  const linkingCode = getLinkingCode([
+    interaction.member.user.id,
+    params.user
+  ]);
 
   const partnerName = interaction.data.resolved.members?.[params.user].nick ?? interaction.data.resolved.users?.[params.user].username;
 
