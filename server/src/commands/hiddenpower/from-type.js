@@ -70,14 +70,15 @@ async function process(interaction, respond) {
   const types = new Data.Generations(Dex).get(args.gen).types;
   const type = types.get(args.type);
 
-  if(['normal','fairy'].includes(type['id'])) {
+  if(!type || ['normal','fairy'].includes(type['id'])) {
+    const typeName = type ? type['name'] : args.type;
     return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         embeds: [buildEmbed({
-          title: `Hidden Power ${type['name']}`,
-          description: `There is no way to get a ${type['name']}-Type Hidden Power.`,
-          color: colours.types[Data.toID(type['name'])],
+          title: `Hidden Power ${typeName}`,
+          description: `There is no way to get a ${typeName}-Type Hidden Power.`,
+          color: colours.types[Data.toID(typeName)],
         })],
       },
     });
