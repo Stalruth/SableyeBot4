@@ -32,6 +32,12 @@ function moveInfo(move, gen, verbose) {
         value: gens.data.natdex.items.get(move['isZ'])['name'],
         inline: true
       });
+    } else if (!move['zMove']) {
+      fields.push({
+        name: 'Z Move',
+        value: 'Varies',
+        inline: true
+      });
     } else if (move['zMove']['effect']) {
       fields.push({
         name: 'Z Move',
