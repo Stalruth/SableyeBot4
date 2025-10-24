@@ -21,6 +21,8 @@ const definition = {
 async function process(interaction, respond) {
   const { params } = getargs(interaction);
 
+  console.log(JSON.stringify(interaction.member), JSON.stringify(params.user));
+
   const linkingCode = getLinkingCode([
     interaction.member.user.id,
     params.user
