@@ -11,11 +11,9 @@ const definition = {
 
 async function process(interaction, respond) {
 
-  console.log(JSON.stringify(interaction.member), JSON.stringify(interaction.data));
-
   const linkingCode = getLinkingCode([
-    interaction.member.user.id,
-    interaction.data.target_id
+    interaction.member?.user?.id || interaction.user.id, // user
+    interaction.data.target_id  // target
   ]);
 
   const partnerName = interaction.data.resolved.members?.[interaction.data.target_id].nick ?? interaction.data.resolved.users?.[interaction.data.target_id].username;
