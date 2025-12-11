@@ -5,7 +5,7 @@ import { buildEmbed } from '#utils/embed-builder';
 function itemInfo(item, gen, verbose) {
   const title = `Item: ${item['name']}`;
   const description = item['desc'];
-  
+
   const fields = [];
 
   if(verbose) {

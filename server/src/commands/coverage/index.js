@@ -1,8 +1,7 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { InteractionResponseType, InteractionResponseFlags, MessageComponentTypes } from 'discord-interactions';
 import Data from '@pkmn/data';
 
 import getargs from '#utils/discord-getarg';
-import { buildEmbed, buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 import colours from '#utils/pokemon-colours';
 import { completePokemon, completeAttack, completeType, getMultiComplete, getAutocompleteHandler } from '#utils/pokemon-complete';
@@ -75,11 +74,20 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError('Please provide a Pokémon and/or at least one Type.')
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Please provide a Pokémon and/or at least one Type or Move.`
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 
@@ -91,10 +99,19 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`The Pokémon ${args.pokemon} does not exist in the given generation.`)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `The Pokémon ${args.pokemon} does not exist in the given generation.`
+              }
+            ]
+          }
+        ]
       },
     });
   }
@@ -113,10 +130,19 @@ async function process(interaction, respond) {
       return await respond({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [
-            buildError(`The Type${plural ? 's' : ''} ${invalidTypes.join(', ')} do${plural ? '' : 'es'} not exist in the given generation.`),
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
+          flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+          components: [
+            {
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: `The Type${plural ? 's' : ''} ${invalidTypes.join(', ')} do${plural ? '' : 'es'} not exist in the given generation.`
+                }
+              ]
+            }
+          ]
         },
       });
     }
@@ -136,10 +162,19 @@ async function process(interaction, respond) {
       return await respond({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [
-            buildError(`The Move${plural ? 's' : ''} ${invalidMoves.join(', ')} do${plural ? '' : 'es'} not exist in the given generation or ${plural ? 'are' : 'is a'} Status move${plural ? 's' : ''}.`),
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
+          flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+          components: [
+            {
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: `The Move${plural ? 's' : ''} ${invalidMoves.join(', ')} do${plural ? '' : 'es'} not exist in the given generation or ${plural ? 'are' : 'is a'} Status move${plural ? 's' : ''}.`
+                }
+              ]
+            }
+          ]
         },
       });
     }
@@ -154,6 +189,9 @@ async function process(interaction, respond) {
   const results = {};
 
   for (const type of data.types) {
+    if(type.id === 'stellar') {
+      continue;
+    }
     const effectiveness = allTypes.reduce((acc, cur) => {
       const attackType = cur.type ?? cur.name;
       const baseEffectiveness = data.types.totalEffectiveness(attackType, [type.name]);
@@ -181,8 +219,8 @@ async function process(interaction, respond) {
   for (const i of ['0', '0.5', '1', '2']) {
     if (results[i]) {
       fields.push({
-        name: fieldNames[i],
-        value: results[i].join(', '),
+        type: MessageComponentTypes.TEXT_DISPLAY,
+        content: `### ${fieldNames[i]}\n${results[i].join(', ')}`,
       });
     }
   }
@@ -190,11 +228,20 @@ async function process(interaction, respond) {
   return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        title: titleParts.join(' + '),
-        fields,
-        color: colours.types[allTypes[0].type?.toLowerCase() ?? allTypes[0].id]
-      })],
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+      components: [
+        {
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: colours.types[allTypes[0].type?.toLowerCase() ?? allTypes[0].id],
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: `# ${titleParts.join(' + ')}`
+            },
+            ...fields
+          ]
+        }
+      ]
     },
   });
 };

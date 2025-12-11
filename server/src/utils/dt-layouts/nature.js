@@ -1,4 +1,4 @@
-import { buildEmbed } from '#utils/embed-builder';
+import { InteractionResponseFlags, MessageComponentTypes } from 'discord-interactions';
 import colours from '#utils/pokemon-colours';
 
 // Uh oh sisters! hardcoding!
@@ -20,26 +20,23 @@ const fullNames = {
 
 function natureInfo(nature) {
   const title = `Nature: ${nature.name}`;
-  const fields = [
-    {
-      name: 'Boosted',
-      value: fullNames[nature['plus'] ? nature['plus'] : neutralNatures[nature.name]],
-      inline: true,
-    },
-    {
-      name: 'Lowered',
-      value: fullNames[nature['minus'] ? nature['minus'] : neutralNatures[nature.name]],
-      inline: true,
-    },
-  ];
 
   return {
-    embeds: [buildEmbed({
-      title,
-      fields,
-      color: colours.stats[nature.plus],
-    })],
+    flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+    components: [
+      {
+        type: MessageComponentTypes.CONTAINER,
+        accent_color: colours.stats[nature.plus ?? neutralNatures[nature.name]],
+        components: [
+          {
+            type: MessageComponentTypes.TEXT_DISPLAY,
+            content: `# ${title}\n- Boosts ${fullNames[nature['plus'] ?? neutralNatures[nature.name]]}\n- Lowers ${fullNames[nature['minus'] ?? neutralNatures[nature.name]]}`
+          }
+        ]
+      }
+    ]
   };
 }
 
 export default natureInfo;
+

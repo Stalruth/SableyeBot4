@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import Data from '@pkmn/data';
 import { Dex } from '@pkmn/sim';
 
@@ -56,68 +56,41 @@ const definition = {
       required: true,
       min_value: 0,
       max_value: 31,
-    },
-    {
-      name: 'gen',
-      type: 4,
-      description: 'The Generation to calculate for.',
-      choices: [
-        {
-          name: 'GSC',
-          value: 2,
-        },
-        {
-          name: 'RSE',
-          value: 3,
-        },
-        {
-          name: 'DPPt/HGSS',
-          value: 4,
-        },
-        {
-          name: 'BW/BW2',
-          value: 5,
-        },
-        {
-          name: 'XY/ORAS',
-          value: 6,
-        },
-        {
-          name: 'SM/USM',
-          value: 7,
-        },
-      ]
-    },
+    }
   ],
 }
 
 async function process(interaction, respond) {
   const args = getargs(interaction).params;
-  args.gen ??= 7;
 
-  const types = new Data.Generations(Dex).get(args.gen).types;
+  const types = new Data.Generations(Dex).get(5).types;
 
   const result = types.getHiddenPower(args);
+
+  const ivList = ['hp','atk','def','spa','spd','spe'].map(el => args[el]).join('/');
+  const resultString = `Hidden Power is **${result['type']}-type** and has **${result['power']}** Base Power.`;
 
   return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        fields : [
-          {
-            name: 'Type',
-            value: result['type'],
-            inline: true,
-          },
-          {
-            name: 'Power',
-            value: result['power'],
-            inline: true,
-          },
-        ],
-        color: colours.types[Data.toID(result['type'])]
-      })],
-    },
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+      components: [
+        {
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: colours.types[Data.toID(result['type'])],
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: `Given the IVs ${ivList},`
+            },
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: resultString
+            }
+          ]
+        }
+      ]
+    }
   });
 }
 

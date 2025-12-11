@@ -2,7 +2,10 @@ import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, Me
 
 import db from './db-service.js';
 import { buildEmbed, buildError } from '#utils/embed-builder';
+import { getComponentsById } from '#utils/get-component';
 import isInteractionStarter from '#utils/isInteractionStarter';
+
+import { componentIDs } from './component-index.js';
 
 async function getPage(interaction, respond) {
   const isAuthor = isInteractionStarter(interaction);
@@ -15,14 +18,22 @@ async function getPage(interaction, respond) {
   }
 
   const pages = db.getFilterCollection().findOne({interactionId: interaction.message.interaction_metadata.id})?.pages;
+  const components = getComponentsById(interaction.message, componentIDs);
 
   // cache miss
   if(!pages) {
     respond({
       type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
-        embeds: interaction.message.embeds,
-        components: []
+        flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0x5F32AB,
+            id: componentIDs.ROOT,
+            components: components.ROOT.components.filter(el => el.id != componentIDs.BUTTON_BAR)
+          }
+        ]
       },
     });
 
@@ -30,10 +41,19 @@ async function getPage(interaction, respond) {
       {
         method: 'POST',
         body: JSON.stringify({
-          embeds: [
-            buildError('This command execution has expired, please run it again.')
-          ],
-          flags: InteractionResponseFlags.EPHEMERAL,
+          flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+          components: [
+            {
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: 'This command has expired, please run it again.'
+                }
+              ]
+            }
+          ]
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -44,15 +64,7 @@ async function getPage(interaction, respond) {
     return;
   }
 
-  const fields = interaction.message.embeds[0].fields.map(field => {
-    if(field.name.startsWith('Results')) {
-      return {
-        name: field.name,
-        value: pages[pageNumber - 1],
-      };
-    }
-    return field;
-  });
+  const results = `${components.RESULTS.content.split('\n')[0]}\n${pages[pageNumber - 1]}`;
 
   const threePages = [];
 
@@ -75,25 +87,41 @@ async function getPage(interaction, respond) {
       pages.length
     ]))];
 
+  const resultComponents = [
+    components.FILTERS,
+    {
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      id: componentIDs.RESULTS,
+      content: results
+    },
+    ...(!isAuthor ? [] : [
+      {
+        type: MessageComponentTypes.ACTION_ROW,
+        id: componentIDs.BUTTON_BAR,
+        components: pageList.map(page => ({
+          type: MessageComponentTypes.BUTTON,
+          custom_id: page === pageNumber ? '-' : `${page}`,
+          disabled: page === pageNumber,
+          style: ButtonStyleTypes.SECONDARY,
+          label: `Page ${page}`,
+        }))
+      }
+    ]),
+    components.NOTES
+  ]
+
   return respond({
     type: isAuthor ? InteractionResponseType.UPDATE_MESSAGE : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      components: isAuthor ? [
+      components: [
         {
-          type: MessageComponentTypes.ACTION_ROW,
-          components: pageList.map(page => ({
-            type: MessageComponentTypes.BUTTON,
-            custom_id: page === pageNumber ? '-' : `${page}`,
-            disabled: page === pageNumber,
-            style: ButtonStyleTypes.SECONDARY,
-            label: `Page ${page}`,
-          }))
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: 0x5F32AB,
+          id: componentIDs.ROOT,
+          components: resultComponents
         }
-      ] : [],
-      embeds: [buildEmbed({
-        fields: fields,
-      })],
-      flags: isAuthor ? 0 : InteractionResponseFlags.EPHEMERAL,
+      ],
+      flags: (isAuthor ? 0 : InteractionResponseFlags.EPHEMERAL) | InteractionResponseFlags.IS_COMPONENTS_V2,
     },
   });
 }

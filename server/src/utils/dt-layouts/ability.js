@@ -6,10 +6,19 @@ import gens from '#utils/gen-db';
 
 function abilityInfo(ability) {
   return {
-    embeds: [buildEmbed({
-      title: `Ability: ${ability['name']}`,
-      description: ability['desc'],
-    })],
+    flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+    components: [
+      {
+        type: MessageComponentTypes.CONTAINER,
+        accent_color: 0x5F32AB,
+        components: [
+          {
+            type: MessageComponentTypes.TEXT_DISPLAY,
+            content: `# Ability: ${ability['name']}\n${ability['desc']}`
+          }
+        ]
+      }
+    ]
   };
 }
 

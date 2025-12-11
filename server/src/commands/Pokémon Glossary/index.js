@@ -52,10 +52,19 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`Could not find any results in the selected message.`)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Could not find any results in the selected message.`
+              }
+            ]
+          }
+        ]
       },
     });
   }

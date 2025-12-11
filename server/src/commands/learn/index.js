@@ -8,6 +8,8 @@ import { decodeSource, listMoves, getPrevo, checkMove } from '#utils/learnset-ut
 import colours from '#utils/pokemon-colours';
 import { completePokemon, completeMove, getMultiComplete, getAutocompleteHandler } from '#utils/pokemon-complete';
 
+import { componentIDs } from './component-index.js';
+
 const definition = {
   description: 'Display the learnset of the Pokémon given, or how it learns a given move.',
   options: [
@@ -57,21 +59,14 @@ async function learnPokemon(data, pokemon, restriction, gen) {
       .join(', '),
   };
 
-  const threshold = 1024; // Maximum length of an Embed Field Value.
-  const allThreshold = 2048;
+  const threshold = 2048;
 
   const allLength = moveLists['Physical'].length + moveLists['Special'].length
     + moveLists['Status'].length;
 
-  const maxLength = Math.max(moveLists['Physical'].length, 
+  const maxLength = Math.max(moveLists['Physical'].length,
     moveLists['Special'].length, moveLists['Status'].length);
 
-  const fields = [
-    {
-      name: 'Notes',
-      value: `A move displayed with **Bold text** benefits from Same-Type Attack Bonus when used by ${pokemon.name}.`,
-    },
-  ];
 
   const types = [];
   for(let type of data.types) {
@@ -87,6 +82,7 @@ async function learnPokemon(data, pokemon, restriction, gen) {
       components: [
         {
           type: MessageComponentTypes.STRING_SELECT,
+          id: componentIDs.TERA,
           custom_id: 'tera',
           options: [
             {
@@ -100,97 +96,146 @@ async function learnPokemon(data, pokemon, restriction, gen) {
     },
   ];
 
-  if(allLength > allThreshold || maxLength > threshold) {
+  if(allLength > threshold) {
     // split
+    console.log(componentIDs.TITLE)
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: `${pokemon['name']}'s moveset: (Physical)`,
-          description: moveLists['Physical'],
-          fields,
-          color: colours.types[Data.toID(pokemon.types[0])],
-        })],
+        flags: 1 << 15,
         components: [
           {
-            type: MessageComponentTypes.ACTION_ROW,
-            components: ['Physical','Special','Status'].map(category => ({
-              type: MessageComponentTypes.BUTTON,
-              custom_id: `${pokemon.id}|${category}|${gen ?? ''}|${restriction ?? ''}`,
-              disabled: category === 'Physical',
-              style: ButtonStyleTypes.SECONDARY,
-              label: category,
-            }))
-          },
-          ...teraRow,
+            type: 17,
+            id: componentIDs.ROOT,
+            accent_color: colours.types[Data.toID(pokemon.types[0])],
+            components: [
+              {
+                type: 10,
+                id: componentIDs.TITLE,
+                content: `# ${pokemon['name']}'s moveset: (Physical)`
+              },
+              {
+                type: 10,
+                id: componentIDs.ONE_CATEGORY_LIST,
+                content: moveLists['Physical']
+              },
+              {
+                type: 10,
+                id: componentIDs.NOTES,
+                content: `### Notes\n- A move displayed with **Bold text** benefits from Same-Type Attack Bonus when used by ${pokemon.name}.`
+              },
+              {
+                type: MessageComponentTypes.ACTION_ROW,
+                id: componentIDs.BUTTON_BAR,
+                components: ['Physical','Special','Status'].map(category => ({
+                  type: MessageComponentTypes.BUTTON,
+                  custom_id: `${pokemon.id}|${category}|${gen ?? ''}|${restriction ?? ''}`,
+                  disabled: category === 'Physical',
+                  style: ButtonStyleTypes.SECONDARY,
+                  label: category,
+                }))
+              },
+              ...teraRow,
+            ]
+          }
         ]
-      },
+      }
     };
   }
-
-  fields.unshift(
-    {
-      name: 'Physical Moves',
-      value: moveLists['Physical'],
-    },
-    {
-      name: 'Special Moves',
-      value: moveLists['Special'],
-    },
-    {
-      name: 'Status Moves',
-      value: moveLists['Status'],
-    },
-  );
 
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        title: `${pokemon['name']}'s moveset:`,
-        fields,
-        color: colours.types[Data.toID(pokemon.types[0])]
-      })],
-      components: teraRow,
+      flags: 1 << 15,
+      components: [
+        {
+          type: 17,
+          id: 1,
+          accent_color: colours.types[Data.toID(pokemon.types[0])],
+          components: [
+            {
+              type: 10,
+              id: componentIDs.TITLE,
+              content: `# ${pokemon['name']}'s moveset:`
+            },
+            {
+              type: 10,
+              id: componentIDs.PHYSICAL_LIST,
+              content: `### Physical:\n${moveLists['Physical']}`
+            },
+            {
+              type: 10,
+              id: componentIDs.SPECIAL_LIST,
+              content: `### Special:\n${moveLists['Special']}`
+            },
+            {
+              type: 10,
+              id: componentIDs.STATUS_LIST,
+              content: `### Status:\n${moveLists['Status']}`
+            },
+            {
+              type: 10,
+              id: componentIDs.NOTES,
+              content: `### Notes\n- A move displayed with **Bold text** benefits from Same-Type Attack Bonus when used by ${pokemon.name}.`
+            },
+            ...teraRow
+          ]
+        },
+      ],
     },
   };
 }
 
 async function learnPokemonMove(data, pokemon, moves, restriction, gen) {
-  const fields = await Promise.all(moves.map(async (move) => {
+  const moveComponents = await Promise.all(moves.map(async (move) => {
     return await checkMove(data, pokemon, move);
   }));
 
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        title: `[${gen ?? 'Latest Gen'}] ${pokemon.name}`,
-        fields,
-        color: colours.types[Data.toID(pokemon.types[0])],
-      })],
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+      components: [
+        {
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: colours.types[Data.toID(pokemon.types[0])],
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: `# [${gen ?? 'Latest Gen'}] ${pokemon.name}`
+            },
+            ...moveComponents
+          ]
+        }
+      ]
     },
   };
 }
 
 async function process(interaction, respond) {
   const args = getargs(interaction).params;
-
   const vgcNotes = [,,,,,'Pentagon','Plus','Galar','Paldea'];
-
   const data = gens.data[args.gen ? args.gen : 'natdex'];
-
   const pokemon = data.species.get(Data.toID(args.pokemon));
 
   if(!pokemon?.exists) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`Could not find a Pokémon named ${args.pokemon} in the given generation.`)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Could not find a Pokémon named ${args.pokemon} in the given generation.`
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 
@@ -212,11 +257,20 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`Could not find ${invalidMoves.length === 1 ? 'a move' : 'moves'} named ${invalidMoves.join(', ')}${args.gen ? ` in Generation ${args.gen}` : ''}.`)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Could not find ${invalidMoves.length === 1 ? 'a move' : 'moves'} named ${invalidMoves.join(', ')}${args.gen ? ` in Generation ${args.gen}` : ''}.`
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 

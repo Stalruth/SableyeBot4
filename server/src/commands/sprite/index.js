@@ -1,10 +1,10 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import Data from '@pkmn/data';
 import { Sprites } from '@pkmn/img';
 import { Dex } from '@pkmn/sim';
 
 import getargs from '#utils/discord-getarg';
-import { buildError } from '#utils/embed-builder';
+import colours from '#utils/pokemon-colours';
 import { completeSprite, getAutocompleteHandler } from '#utils/pokemon-complete';
 
 const definition = {
@@ -84,8 +84,19 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildError(`Could not find a Pokemon named ${args.pokemon}.`)],
-        flags: InteractionResponseFlags.EPHEMERAL,
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Could not find a Pokémon named ${args.pokemon}.`
+              }
+            ]
+          }
+        ]
       },
     });
   }
@@ -107,8 +118,19 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildError(`Could not find a Pokemon named ${args.pokemon}.`)],
-        flags: InteractionResponseFlags.EPHEMERAL,
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Could not find a Pokémon named ${args.pokemon}.`
+              }
+            ]
+          }
+        ]
       },
     });
   }
@@ -116,7 +138,29 @@ async function process(interaction, respond) {
   return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      content: args['april-fools'] ? spriteUrl.replace('gen5', 'afd') : spriteUrl,
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+      components: [
+        {
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: colours.types[Data.toID(pokemon.types[0])],
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: `# ${pokemon.name}`
+            },
+            {
+              type: MessageComponentTypes.MEDIA_GALLERY,
+              items: [
+                {
+                   media: {
+                     url: args['april-fools'] ? spriteUrl.replace('gen5', 'afd') : spriteUrl
+                   }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
   });
 };

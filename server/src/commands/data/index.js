@@ -40,8 +40,19 @@ async function process(interaction, respond) {
     return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildError(`Could not find a result matching ${params.name} in the given generation.`)],
-        flags: InteractionResponseFlags.EPHEMERAL,
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentType.TEXT_DISPLAY,
+                content: `Could not find a result matching ${params.name} in the given generation.`
+              }
+            ]
+          }
+        ]
       },
     });
   }

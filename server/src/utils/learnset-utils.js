@@ -1,3 +1,4 @@
+import { MessageComponentTypes } from 'discord-interactions';
 import Data from '@pkmn/data';
 import gens from '#utils/gen-db';
 
@@ -96,18 +97,18 @@ async function checkMove(data, pokemon, move) {
 
   if(finalSources.length) {
     return {
-      name: `${move.name}:`,
-      value: finalSources.join('\n'),
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      content: `### ${move.name}:\n${finalSources.join('\n')}`
     };
   } else if (latestGen > 0) {
     return {
-      name: `${move.name}`,
-      value: `- when transferred from Generation ${latestGen}`,
-    }; 
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      content: `### ${move.name}:\n- when transferred from Generation ${latestGen}`,
+    };
   } else {
     return {
-      name: `${move.name}:`,
-      value: `- ${pokemon.name} does not learn ${move.name} in Generation ${data.num}`,
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      content: `### ${move.name}:\n- ${pokemon.name} does not learn ${move.name} in Generation ${data.num}`,
     };
   }
 }

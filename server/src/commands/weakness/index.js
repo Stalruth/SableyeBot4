@@ -1,7 +1,6 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
 import getargs from '#utils/discord-getarg';
-import { buildEmbed, buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 import colours from '#utils/pokemon-colours';
 import { completePokemon, completeType, getMultiComplete, getAutocompleteHandler } from '#utils/pokemon-complete';
@@ -109,11 +108,20 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`Please provide a Pokémon and/or Types.`,)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Please provide a Pokémon and/or Types.`
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 
@@ -123,11 +131,20 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`Could not find a Pokémon named ${args.pokemon} in the given generation.`)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Could not find a Pokémon named ${args.pokemon} in the given generation.`
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 
@@ -149,11 +166,20 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`Could not find Type(s) named ${nonTypes.join(',')} in Generation ${args.gen}.`,)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Could not find Type(s) named ${nonTypes.join(',')} in the given generation.`
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 
@@ -163,15 +189,23 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`Only three types total can be used with this command.`,)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Only three types total can be used with this command.`
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 
-  let title = `${pokemon?.name ?? '-'}${args.pokemon && args.types ? '+' : ''} [${types.join('/')}]`;
   let fields = [];
 
   const eff = {
@@ -186,6 +220,9 @@ async function process(interaction, respond) {
   };
 
   for(const i of data.types) {
+    if(i.id === 'stellar') {
+      continue;
+    }
     eff[i.totalEffectiveness(types)].push(i.name);
   }
 
@@ -203,8 +240,8 @@ async function process(interaction, respond) {
   for(const i of [0, 0.125, 0.25, 0.5, 1, 2, 4, 8]) {
     if(eff[i].length === 0) { continue; }
     fields.push({
-      name: names[i],
-      value: eff[i].join(', '),
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      content: `### ${names[i]}\n${eff[i].join(', ')}`,
     });
   }
 
@@ -218,24 +255,41 @@ async function process(interaction, respond) {
 
     const lastType = `**${affectedTypes.pop()}**-`;
     const firstTypes = affectedTypes.map(el => `**${el}**-`).join(', ');
-    notes.push(`${!firstTypes.length ? '' : `${firstTypes} and `}${lastType}types ${note.note}`);
+    notes.push(`- ${!firstTypes.length ? '' : `${firstTypes} and `}${lastType}types ${note.note}`);
   });
 
   if(notes.length > 0) {
     fields.push({
-      name: "Type Notes",
-      value: notes.join('\n'),
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      content: `### Type Notes\n${notes.join('\n')}`,
     });
+  }
+
+  let title = pokemon ? `# ${pokemon.name} [${pokemon.types.join('/')}] ` : `# \\- `
+  if(args.pokemon && args.types) {
+    title += '+ ';
+  }
+  if(args.types) {
+    title += `[${argTypes.join('/')}]`
   }
 
   return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        title,
-        fields,
-        color: colours.types[data.types.get(types[0]).id]
-      })]
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+      components: [
+        {
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: colours.types[data.types.get(types[0]).id],
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: title
+            },
+            ...fields
+          ]
+        }
+      ]
     },
   });
 }
