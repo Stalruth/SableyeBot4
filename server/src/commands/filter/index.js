@@ -7,6 +7,8 @@ import gens from '#utils/gen-db';
 import { completeAbility, completeMove, completeType, completePokemon, getMultiComplete, getAutocompleteHandler } from '#utils/pokemon-complete';
 import { filterFactory, applyFilters } from './pokemon-filters.js';
 
+import { componentIDs } from './component-index.js';
+
 const natdex = gens.data['natdex'];
 
 function paginate(array, limit) {
@@ -220,11 +222,18 @@ async function process(interaction, respond) {
         return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [
-              buildError(`The ability ${ability} could not be found in the given generation.`)
-            ],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+            flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+            components: [{
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: `The ability ${ability} could not be found in the given generation.`
+                }
+              ]
+            }]
+          }
         });
       }
     }
@@ -239,11 +248,18 @@ async function process(interaction, respond) {
         return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [
-              buildError(`The type ${type} could not be found in the given generation.`)
-            ],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+            flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+            components: [{
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: `The type ${type} could not be found in the given generation.`
+                }
+              ]
+            }]
+          }
         });
       }
     }
@@ -258,11 +274,18 @@ async function process(interaction, respond) {
         return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [
-              buildError(`The move ${move} could not be found in the given generation.`)
-            ],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+            flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+            components: [{
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: `The move ${move} could not be found in the given generation.`
+                }
+              ]
+            }]
+          }
         });
       }
     }
@@ -282,11 +305,18 @@ async function process(interaction, respond) {
         return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [
-              buildError(`The query ${args[stat]} is not valid for the '${stat}' argument.`)
-            ],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+            flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+            components: [{
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: `The query ${args[stat]} is not valid for the '${stat}' argument.`
+                }
+              ]
+            }]
+          }
         });
       }
     }
@@ -306,11 +336,18 @@ async function process(interaction, respond) {
         return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [
-              buildError(`The query ${args[stat]} is not valid for the '${stat}' argument.`)
-            ],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+            flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+            components: [{
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: `The query ${args[stat]} is not valid for the '${stat}' argument.`
+                }
+              ]
+            }]
+          }
         });
       }
     }
@@ -325,11 +362,18 @@ async function process(interaction, respond) {
         return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [
-              buildError(`The type ${type} could not be found in the given generation.`)
-            ],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+            flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+            components: [{
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: `The type ${type} could not be found in the given generation.`
+                }
+              ]
+            }]
+          }
         });
       }
     }
@@ -344,10 +388,17 @@ async function process(interaction, respond) {
         return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [
-              buildError(`The type ${type} could not be found in the given generation.`)
-            ],
-            flags: InteractionResponseFlags.EPHEMERAL,
+            flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+            components: [{
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: `The type ${type} could not be found in the given generation.`
+                }
+              ]
+            }]
           }
         });
       }
@@ -363,11 +414,18 @@ async function process(interaction, respond) {
         return await respond({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [
-              buildError(`The Pokémon ${partner} could not be found in the given generation.`)
-            ],
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
+            flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+            components: [{
+              type: MessageComponentTypes.CONTAINER,
+              accent_color: 0xCC0000,
+              components: [
+                {
+                  type: MessageComponentTypes.TEXT_DISPLAY,
+                  content: `The Pokémon ${partner} could not be found in the given generation.`
+                }
+              ]
+            }]
+          }
         });
       }
     }
@@ -389,11 +447,18 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError("You haven't added any filters.")
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [{
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: 0xCC0000,
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: "You haven't added any filters."
+            }
+          ]
+        }]
+      }
     });
   }
 
@@ -428,37 +493,26 @@ async function process(interaction, respond) {
     });
   }
 
-  const fields = [
-    {
-      name: 'Filters',
-      value: filters.map(el=>`- ${el['description']}`).join('\n'),
-    },
-    {
-      name: `Results (${results.length})`,
-      value: pages[0].length ? pages[0] : 'No results found.',
-    },
-    {
-      name: 'Generation',
-      value: gen,
-      inline: true,
-    },
-    {
-      name: 'Transferred Pokémon',
-      value: isVgc ? 'Excluded' : 'Included',
-      inline: true,
-    },
-  ];
-
+  const genNumbers = {
+    'gen1': 'Generation 1',
+    'gen2': 'Generation 2',
+    'gen3': 'Generation 3',
+    'gen4': 'Generation 4',
+    'gen5': 'Generation 5',
+    'gen6': 'Generation 6',
+    'gen7': 'Generation 7',
+    'gen8': 'Generation 8',
+    'gen9': 'Generation 9',
+    'natdex': 'National Pokédex'
+  };
+  let notes = "### Notes";
+  notes += `\n- ${genNumbers[gen]}`;
+  notes += `\n- Transferred Pokémon are ${isVgc ? 'Excluded' : 'Included'}`;
   if(threshold !== filters.length) {
-    fields.push({
-      name: 'Threshold',
-      value: `At least ${threshold} filter${threshold === 1 ? '' : 's'} must match`,
-      inline: true,
-    });
+    notes += `\n- At least ${threshold} filter${threshold === 1 ? '' : 's'} must match`;
   }
-
   if(sortKey) {
-    const names= {
+    const names = {
       'hp': 'Hit Points',
       'atk': 'Attack',
       'def': 'Defence',
@@ -467,31 +521,54 @@ async function process(interaction, respond) {
       'spe': 'Speed',
       'bst': 'Base Stat Total',
     };
-    fields.push({
-      name: 'Sorted by (High to Low)',
-      value: names[sortKey],
-      inline: true,
-    });
+    notes += `\n- Sorted by ${names[sortKey]} (High to Low)`;
   }
 
   const pageList = pages.map((e, i) => i + 1).filter(e => e <= 4 || e === pages.length);
 
+  const buttonBar = (pages.length === 1 ? [] : [
+    {
+      type: MessageComponentTypes.ACTION_ROW,
+      id: componentIDs.BUTTON_BAR,
+      components: pageList.map(page => ({
+        type: MessageComponentTypes.BUTTON,
+        custom_id: page === 1 ? '-' : `${page}`,
+        disabled: page === 1,
+        style: ButtonStyleTypes.SECONDARY,
+        label: `Page ${page}`,
+      }))
+    }
+  ]);
+
+  const components = [
+    {
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      id: componentIDs.FILTERS,
+      content: `### Filters\n${filters.map(el=>`- ${el['description']}`).join('\n')}`
+    },
+    {
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      id: componentIDs.RESULTS,
+      content: pages[0].length ? `### Results (${results.length})\n${pages[0]}` : '### No results found.'
+    },
+    ...buttonBar,
+    {
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      id: componentIDs.NOTES,
+      content: notes
+    }
+  ]
+
   await respond({
-    embeds: [buildEmbed({
-      fields: fields,
-    })],
-    components: (pages.length === 1 ? undefined : [
+    flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+    components: [
       {
-        type: MessageComponentTypes.ACTION_ROW,
-        components: pageList.map(page => ({
-          type: MessageComponentTypes.BUTTON,
-          custom_id: page === 1 ? '-' : `${page}`,
-          disabled: page === 1,
-          style: ButtonStyleTypes.SECONDARY,
-          label: `Page ${page}`,
-        }))
+        type: MessageComponentTypes.CONTAINER,
+        accent_color: 0x5F32AB,
+        id: componentIDs.ROOT,
+        components,
       }
-    ]),
+    ]
   });
 }
 

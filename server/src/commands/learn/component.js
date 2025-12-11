@@ -1,9 +1,11 @@
 import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
-import { buildEmbed, buildError } from '#utils/embed-builder';
+import { getComponentsById } from '#utils/get-component';
 import gens from '#utils/gen-db';
 import { listMoves } from '#utils/learnset-utils';
 import isInteractionStarter from '#utils/isInteractionStarter';
+
+import { componentIDs } from './component-index.js';
 
 async function process(interaction, respond) {
   const isAuthor = isInteractionStarter(interaction);
@@ -25,16 +27,26 @@ async function processCategory(interaction, respond) {
   const data = gens.data[gen] ?? gens.data['natdex'];
   const pokemon = data.species.get(pokemonId);
   const restriction = restrictionId ? undefined : restrictionId;
+  const components = getComponentsById(interaction.message, componentIDs);
 
   if(!pokemon?.exists) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`Could not find a Pokémon named ${args.pokemon} in the given generation.`)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Could not find a Pokémon named ${args.pokemon} in the given generation.\nThis error should not appear! Something VERY STRANGE has happened!`
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 
@@ -42,29 +54,24 @@ async function processCategory(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`Invalid category: ${category}.`)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
-      },
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.SECTION,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Invalid category: ${category}`
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 
-  const embed = buildEmbed({
-    color: interaction.message.embeds[0].color,
-    title: `${pokemon.name}'s moveset: (${category})`,
-    description: (await listMoves(data, pokemon, restriction))
-      .filter(el => el.category === category)
-      .sort()
-      .map(el => pokemon.types.includes(el.type) && el.category !== 'Status' ? `**${el.name}**` : el.name)
-      .join(', '),
-    fields: [{
-      name: 'Notes',
-      value: `A move displayed with **Bold text** benefits from Same-Type Attack Bonus when used by ${pokemon.name}.`,
-    }],
-  });
-
-  const buttons = interaction.message.components[0].components.map(button => ({
+  const buttons = components.BUTTON_BAR.components.map(button => ({
     ...button,
     disabled: category === button.label,
   }));
@@ -74,13 +81,44 @@ async function processCategory(interaction, respond) {
     data: {
       components: [
         {
-          type: MessageComponentTypes.ACTION_ROW,
-          components: buttons,
-        },
-        interaction.message.components[1],
+          type: MessageComponentTypes.CONTAINER,
+          id: componentIDs.ROOT,
+          accent_color: components.ROOT.accent_color,
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              id: componentIDs.TITLE,
+              content: `# ${pokemon['name']}'s moveset: (${category})`
+            },
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              id: componentIDs.ONE_CATEGORY_LIST,
+              content: (await listMoves(data, pokemon, restriction))
+              .filter(el => el.category === category)
+              .sort()
+              .map(el => pokemon.types.includes(el.type) && el.category !== 'Status' ? `**${el.name}**` : el.name)
+              .join(', ')
+            },
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              id: componentIDs.NOTES,
+              content: `### Notes\n- A move displayed with **Bold text** benefits from Same-Type Attack Bonus when used by ${pokemon.name}.`
+            },
+            {
+              type: MessageComponentTypes.ACTION_ROW,
+              id: componentIDs.BUTTON_BAR,
+              components: buttons
+            },
+            {
+              type: MessageComponentTypes.ACTION_ROW,
+              components: [
+                components.TERA
+              ]
+            }
+          ]
+        }
       ],
-      embeds: [embed],
-      flags: 0,
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2
     },
   });
 }
@@ -111,42 +149,65 @@ function reformatMovelist(data, types, movelist, teraType) {
 }
 
 function processTera(interaction, respond) {
-  const embed = interaction.message.embeds[0];
   const data = gens.data['natdex'];
-  const title = embed.title;
-  const moveFields = embed.fields.slice(0, -1);
-  const pokemon = data.species.get(title.slice(0, title.lastIndexOf('\'')));
+  const components = getComponentsById(interaction.message, componentIDs);
+  const title = components.TITLE;
+  const pokemon = data.species.get(title.content.slice(2, title.content.lastIndexOf('\'')));
   const teraType = data.types.get(interaction.data.values[0]);
 
-  const notes = [`A move displayed with **Bold text** benefits from Same-Type Attack Bonus when used by ${pokemon.name}.`];
+  const notes = [`- A move displayed with **Bold text** benefits from Same-Type Attack Bonus when used by ${pokemon.name}.`];
   if(teraType?.name) {
-    notes.push(`A move displayed with __Underlined text__ benefits from Same-Type Attack Bonus when used by a Pokémon Terastalised as a ${teraType.name}-type.`);
+    notes.push(`- A move displayed with __Underlined text__ benefits from Same-Type Attack Bonus when used by a Pokémon Terastalised as a ${teraType.name}-type.`);
   }
 
-  const noteField = {
-    name: 'Notes',
-    value: notes.join('\n'),
-  };
-
-  const results = buildEmbed({
-    color: embed.color,
-    title,
-    description: reformatMovelist(data, pokemon.types, embed.description, teraType),
-    fields: [
-      ...moveFields.map(el => ({
-        name: el.name,
-        value: reformatMovelist(data, pokemon.types, el.value, teraType),
-      })),
-      noteField,
-    ],
-  });
+  const singleList = components.ONE_CATEGORY_LIST;
+  const moveLists = singleList ? [
+    {
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      id: componentIDs.ONE_CATEGORY_LIST,
+      content: reformatMovelist(data, pokemon.types, singleList.content, teraType)
+    }
+  ] : [
+    components.PHYSICAL_LIST,
+    components.SPECIAL_LIST,
+    components.STATUS_LIST
+  ].map(({id, type, content}) => ({
+    id,
+    type,
+    content: content.split('\n').map((el, index) => {
+      if(index === 1) {
+        return reformatMovelist(data, pokemon.types, el, teraType);
+      } else {
+        return el
+      }
+    }).join('\n')
+  }));
 
   return respond({
     type: InteractionResponseType.UPDATE_MESSAGE,
     data: {
-      embeds: [results],
-      flags: InteractionResponseFlags.EPHEMERAL,
-      components: interaction.message.components,
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+      components: [
+        {
+          type: MessageComponentTypes.CONTAINER,
+          id: componentIDs.ROOT,
+          accent_color: components.ROOT.accent_color,
+          components: [
+            title,
+            ...moveLists,
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              id: componentIDs.NOTES,
+              content: `### Notes\n${notes.join('\n')}`
+            },
+            ...[components.BUTTON_BAR].filter(el => !!el),
+            {
+              type: MessageComponentTypes.ACTION_ROW,
+              components: [components.TERA]
+            }
+          ]
+        }
+      ]
     },
   });
 }

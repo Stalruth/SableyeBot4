@@ -1,4 +1,4 @@
-import { InteractionResponseType } from 'discord-interactions';
+import { InteractionResponseType, InteractionResponseFlags, MessageComponentTypes } from 'discord-interactions';
 import Data from '@pkmn/data';
 import { Dex } from '@pkmn/sim';
 
@@ -74,38 +74,47 @@ async function process(interaction, respond) {
   };
 
   let title = '';
-  let fields = [
-    {
-      name: 'Boosted',
-      value: fullNames[args.boosted],
-      inline: true,
-    },
-    {
-      name: 'Lowered',
-      value: fullNames[args.lowered],
-      inline: true,
-    }
-  ]
-
   if(args.boosted === args.lowered) {
     title = neutralNatures[args.boosted];
-  }
-
-  for(const nature of gen.natures) {
-    if (nature.plus === args.boosted && nature.minus === args.lowered) {
-      title = nature.name;
-      break;
+  } else {
+    for(const nature of gen.natures) {
+      if (nature.plus === args.boosted && nature.minus === args.lowered) {
+        title = nature.name;
+        break;
+      }
     }
   }
+
+  const description = (args.boosted === args.lowered ? [{
+    type: MessageComponentTypes.TEXT_DISPLAY,
+    content: 'This nature does not affect the Pokémon\'s stats.'
+  }] : [{
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      content: `Boosts **${fullNames[args.boosted]}**.`
+    },
+    {
+      type: MessageComponentTypes.TEXT_DISPLAY,
+      content: `Lowers **${fullNames[args.lowered]}**.`
+    }
+  ]);
 
   return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        title,
-        fields,
-        color: colours.stats[args.boosted],
-      })],
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+      components: [
+        {
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: colours.stats[args.boosted],
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: `# ${title} Nature`
+            },
+            ...description
+          ]
+        }
+      ]
     },
   });
 }

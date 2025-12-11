@@ -1,10 +1,12 @@
-import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
+import { ButtonStyleTypes, InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
 import getargs from '#utils/discord-getarg';
 import { dt, getData } from '#utils/dt-formatter';
 import { buildEmbed, buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 import { completeAll, getAutocompleteHandler } from '#utils/pokemon-complete';
+
+import { componentIDs } from '#utils/dt-layouts/component-index';
 
 const definition = {
   description: 'Display information on the given Pokemon, Ability, Move, Item, or Nature.',
@@ -40,8 +42,19 @@ async function process(interaction, respond) {
     return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildError(`Could not find a result matching ${params.name} in the given generation.`)],
-        flags: InteractionResponseFlags.EPHEMERAL,
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Could not find a result matching ${params.name} in the given generation.`
+              }
+            ]
+          }
+        ]
       },
     });
   }
@@ -56,22 +69,28 @@ async function process(interaction, respond) {
   return respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        title: "Disambiguation",
-        description: `There are multiple results matching ${params.name}.  Please pick the entity you are looking up below.`,
-      })],
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
       components: [{
-        type: MessageComponentTypes.ACTION_ROW,
-        components: [{
-          type: MessageComponentTypes.STRING_SELECT,
-          custom_id: `${results[0].id}|${params.gen ?? 'natdex'}|true`,
-          options: results.map(entity => ({
-            label: entity.effectType,
-            value: entity.effectType,
-          })),
-        }],
-      }]
-    },
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: 0x5F32AB,
+          components: [
+            {
+              type: MessageComponentTypes.ACTION_ROW,
+              id: componentIDs.DISAM_BUTTONS,
+              components: results.map(entity => ({
+                type: MessageComponentTypes.BUTTON,
+                custom_id: `${results[0].id}|${params.gen ?? 'natdex'}||${entity.effectType}`,
+                style: ButtonStyleTypes.SECONDARY,
+                label: entity.effectType
+              }))
+            },
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: `# Disambiguation\nThere are multiple results matching ${params.name}.\nPlease pick the entity you are looking up below.`
+            }
+          ]
+        }]
+      },
   });
 };
 

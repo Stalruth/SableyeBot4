@@ -6,7 +6,6 @@ addCommand('calculator', await import('./commands/calculator/index.js'));
 addCommand('coverage', await import('./commands/coverage/index.js'));
 addCommand('data', await import('./commands/data/index.js'));
 addCommand('dt', await import('./commands/data/dt.js'));
-addCommand('event', await import('./commands/event/index.js'));
 addCommand('filter', await import('./commands/filter/index.js'));
 addCommand('hiddenpower', await import('./commands/hiddenpower/index.js'));
 addCommand('learn', await import('./commands/learn/index.js'));

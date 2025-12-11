@@ -1,4 +1,4 @@
-import fromStats from './from-stats.js';
+import fromStats from './from-stats/index.js';
 import fromType from './from-type.js';
 
 const definition = {
@@ -6,7 +6,7 @@ const definition = {
   options: [
     Object.assign({
       name: 'from-stats',
-      type: 1,
+      type: 2,
     }, fromStats.definition),
     Object.assign({
       name: 'from-type',

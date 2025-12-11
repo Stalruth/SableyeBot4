@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 
 import getargs from '#utils/discord-getarg';
 import getLinkingCode from '#utils/link-code';
@@ -33,10 +33,19 @@ async function process(interaction, respond) {
   return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        description: `Your linking code for use with **${partnerName}** is **${linkingCode}**`,
-      })],
-      flags: InteractionResponseFlags.EPHEMERAL,
+      flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+      components: [
+        {
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: 0x5F32AB,
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: `Your linking code for use with **${partnerName}** is **${linkingCode}**`
+            }
+          ]
+        }
+      ],
     },
   });
 };

@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
 import Data from '@pkmn/data';
 import { Dex } from '@pkmn/sim';
 
@@ -75,12 +75,20 @@ async function process(interaction, respond) {
     return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [buildEmbed({
-          title: `Hidden Power ${typeName}`,
-          description: `There is no way to get a ${typeName}-Type Hidden Power.`,
-          color: colours.types[Data.toID(typeName)],
-        })],
-      },
+        flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: colours.types[Data.toID(typeName)],
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `# Hidden Power ${typeName}\nThere is no way to get a ${typeName}-Type Hidden Power`
+              }
+            ]
+          }
+        ]
+      }
     });
   }
 
@@ -94,60 +102,49 @@ async function process(interaction, respond) {
     spe: args.gen == 2 ? 15 : 31,
   }, ...(args.gen == 2 ? type.HPdvs : type.HPivs)};
 
-  const title = `Hidden Power ${type['name']}`;
+  const statList = [
+    'hp',
+    'atk',
+    'def',
+    ...(
+      args.gen === 2 ? ['spc'] : ['spa', 'spd']
+    ),
+    'spe'
+  ];
+
+  const statNames = {
+    'hp': 'HP',
+    'atk': 'Attack',
+    'def': 'Defence',
+    'spc': 'Special',
+    'spa': 'Special Attack',
+    'spd': 'Special Defence',
+    'spe': 'Speed'
+  };
+
+  const transformer = (el, ind, arr) => `${ind == arr.length - 1 ? 'and ' : ''}**${statNames[el]}**`
+  const odds = statList.filter(el => stats[el] % 2 == 1).map(transformer);
+  const evens = statList.filter(el => stats[el] % 2 == 0).map(transformer);
+  const oddString = `- The ${odds.join(odds.length == 2 ? ' ' : ', ')} IVs should be **Odd**.\n`;
+  const evenString = `- The ${evens.join(evens.length == 2 ? ' ' : ', ')} IVs should be **Even**.`;
+
   return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        title,
-        fields: [
-          {
-            name: 'HP',
-            value: stats['hp'],
-            inline: true,
-          },
-          {
-            name: 'Attack',
-            value: stats['atk'],
-            inline: true,
-          },
-          {
-            name: 'Defence',
-            value: stats['def'],
-            inline: true,
-          },
-          ...(
-            args.gen === 2 ?
-            [
-              {
-                name: 'Special',
-                value: stats['spc'],
-                inline: true,
-              }
-            ]
-            :
-            [
-              {
-                name: 'Sp. Attack',
-                value: stats['spa'],
-                inline: true,
-              },
-              {
-                name: 'Sp. Defence',
-                value: stats['spd'],
-                inline: true,
-              }
-            ]
-          ),
-          {
-            name: 'Speed',
-            value: stats['spe'],
-            inline: true,
-          },
-        ],
-        color: colours.types[Data.toID(type['name'])]
-      })],
-    },
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+      components: [
+        {
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: colours.types[Data.toID(type['name'])],
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              content: `# Hidden Power ${type['name']}\nFor a ${type['name']}-Type Hidden Power:\n${odds.length == 0 ? '' : oddString}${evens.length == 0 ? '' : evenString}`
+            }
+          ]
+        }
+      ]
+    }
   });
 }
 

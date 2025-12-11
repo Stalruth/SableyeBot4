@@ -6,6 +6,8 @@ import { buildEmbed, buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 import { graphs } from '#utils/pokemon-complete';
 
+import { componentIDs } from './components-index.js';
+
 const definition = {
   type: 3,
   integration_types: [0, 1],
@@ -52,21 +54,30 @@ async function process(interaction, respond) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        embeds: [
-          buildError(`Could not find any results in the selected message.`)
-        ],
-        flags: InteractionResponseFlags.EPHEMERAL,
+        flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            accent_color: 0xCC0000,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Could not find any results in the selected message.`
+              }
+            ]
+          }
+        ]
       },
     });
   }
 
   if(results.size === 1) {
     const data = [...results][0];
+    const output = dt[data.effectType](data, 'natdex');
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: Object.assign(dt[data.effectType](data, 'natdex', false), {
-        flags: InteractionResponseFlags.EPHEMERAL,
-        components: []
+      data: Object.assign(output, {
+        flags: InteractionResponseFlags.EPHEMERAL | output.flags
       }),
     });
   }
@@ -81,22 +92,30 @@ async function process(interaction, respond) {
   return await respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
-      embeds: [buildEmbed({
-        title: "Select Object",
-        description: "Please select the item to look up",
-      })],
       components: [{
-        type: MessageComponentTypes.ACTION_ROW,
-        components: [{
-          type: MessageComponentTypes.STRING_SELECT,
-          custom_id: '-',
-          options: [...results].map(e=>({
-            label: `${e.name} (${e.effectType})`,
-            value: `${e.effectType}|${e.id}`,
-          })).sort(cmp).slice(0,25)
-        }]
+        type: MessageComponentTypes.CONTAINER,
+        id: componentIDs.ROOT,
+        accent_color: 0x5F32AB,
+        components: [
+          {
+            type: MessageComponentTypes.ACTION_ROW,
+            id: componentIDs.DISAM_DROPDOWN,
+            components: [{
+              type: MessageComponentTypes.STRING_SELECT,
+              custom_id: '-',
+              options: [...results].map(e=>({
+                label: `${e.name} (${e.effectType})`,
+                value: `${e.effectType}|${e.id}`,
+              })).sort(cmp).slice(0,25)
+            }]
+          },
+          {
+            type: MessageComponentTypes.TEXT_DISPLAY,
+            content: 'Select Object to look up'
+          }
+        ]
       }],
-      flags: InteractionResponseFlags.EPHEMERAL,
+      flags: InteractionResponseFlags.EPHEMERAL | InteractionResponseFlags.IS_COMPONENTS_V2,
     },
   });
 };

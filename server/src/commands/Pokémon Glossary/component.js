@@ -3,10 +3,13 @@ import { InteractionResponseFlags, InteractionResponseType } from 'discord-inter
 import { dt, getData } from '#utils/dt-formatter';
 import { buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
+import { getComponentsById } from '#utils/get-component';
 import isInteractionStarter from '#utils/isInteractionStarter';
 
+import { componentIDs } from './components-index.js';
+
 async function process(interaction, respond) {
-  const isAuthor = isInteractionStarter(interaction);
+  const components = getComponentsById(interaction.message, componentIDs);
 
   const [ effectType, id ] = interaction.data.values?.[0].split('|') ?? [];
 
@@ -14,14 +17,11 @@ async function process(interaction, respond) {
 
   const result = dt[effectType](effect, 'natdex');
 
-  result.components = interaction.message.components;
+  result['components'][0]['components'].unshift(components.DISAM_DROPDOWN);
 
   return respond({
-    type: isAuthor ? InteractionResponseType.UPDATE_MESSAGE : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-    data: {
-      ...result,
-      flags: isAuthor ? 0 : InteractionResponseFlags.EPHEMERAL,
-    }
+    type: InteractionResponseType.UPDATE_MESSAGE,
+    data: result
   });
 };
 

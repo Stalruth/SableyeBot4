@@ -5,312 +5,174 @@ import { buildEmbed } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 import colours from '#utils/pokemon-colours';
 
-function moveInfo(move, gen, verbose) {
-  const title = `Move: ${move['name']}`;
-  const fields = [];
+import { componentIDs } from './component-index.js';
 
-  fields.push({
-    name: 'Type',
-    value: move.type,
-    inline: true
-  });
-  fields.push({
-    name: 'Category',
-    value: move.category,
-    inline: true
-  });
-  fields.push({
-    name: 'Power',
-    value: move.basePower,
-    inline: true
-  });
-
-  if(gens.data[gen].num === 7) {
-    if(move['isZ']) {
-      fields.push({
-        name: 'Z Crystal',
-        value: gens.data.natdex.items.get(move['isZ'])['name'],
-        inline: true
-      });
-    } else if (!move['zMove']) {
-      fields.push({
-        name: 'Z Move',
-        value: 'Varies',
-        inline: true
-      });
-    } else if (move['zMove']['effect']) {
-      fields.push({
-        name: 'Z Move',
-        value: move.zMove.effect,
-        inline: true
-      });
-    } else if (move['zMove']['boost']) {
-      const boosts = [];
-      ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach((el) => {
-        if(move['zMove']['boost'][el]) {
-          boosts.push(el.toUpperCase() + '+' + move['zMove']['boost'][el]);
-        }
-      });
-      fields.push({
-        name: 'Z Move',
-        value: boosts.join(', '),
-        inline: true
-      });
+function makeGenString(move, gen) {
+  if (gens.data[gen].num === 7) {
+    let result = '\n## Gen 7 data';
+    if (move['isZ']) {
+      result += `\n**Z Crystal**: ${gens.data.natdex.items.get(move['isZ'])['name']}`;
     } else {
-      fields.push({
-        name: 'Z Move',
-        value: move['zMove']['basePower'],
-        inline: true
-      });
+      result += `\n**Z Move**: `
+      if (!move['zMove']) {
+        // TODO: Varies if the move calls another move (Z-Assist); does nothing otherwise (Z-Healing Wish)
+        result += 'Varies'
+      } else if (move['zMove']['effect']) {
+        const effects = {
+          'crit2': 'Crit Rate +2',
+          'redirect': 'Redirect Attacks',
+          'curse': 'Heal User (If user is Ghost-type); Atk +1 (Otherwise)',
+          'clearnegativeboost': 'Reset lowered stats',
+          'heal': 'Heal User',
+          'healreplacement': 'Heal incoming Pokémon',
+        };
+        result += effects[move['zMove']['effect']] ?? move['zMove']['effect'];
+      } else if (move['zMove']['boost']) {
+        const boosts = [];
+        const statAbbreviations = {
+          'hp': 'HP',
+          'atk': 'Atk',
+          'def': 'Def',
+          'spa': 'SpA',
+          'spd': 'SpD',
+          'spe': 'Spe',
+          'accuracy': 'Accuracy',
+          'evasion': 'Evasion'
+        };
+        ['hp', 'atk', 'def', 'spa', 'spd', 'spe', 'accuracy', 'evasion'].forEach((el) => {
+          if(move['zMove']['boost'][el]) {
+            boosts.push(statAbbreviations[el] + ' +' + move['zMove']['boost'][el]);
+          }
+        });
+        result += boosts.join(', ');
+      } else {
+        result += move['zMove']['basePower'];
+      }
     }
+    return result;
   }
 
-  if(gens.data[gen].num === 8) {
-    if(move.maxMove && move.maxMove.basePower) {
-      fields.push({
-        name: 'Max Power',
-        value: move['maxMove']['basePower'],
-        inline: true
-      });
+  if (gens.data[gen].num === 8) {
+    let result = '\n## Gen 8 data\n**Max Power**: ';
+    if (move.maxMove && move['maxMove']['basePower']) {
+      result += move['maxMove']['basePower'];
     } else {
-      fields.push({
-        name: 'Max Power',
-        value: '(Max Guard)',
-        inline: true
-      });
+      result += '(Max Guard)';
     }
+    return result;
   }
 
-  fields.push({
-    name: 'Accuracy',
-    value: move['accuracy'] === true ? '—' : move['accuracy'],
-    inline: true
-  });
-  fields.push({
-    name: 'PP (max)',
-    value: `${move['pp']} (${move['pp'] * 1.6})`,
-    inline: true
-  });
+  return '';
+}
 
-  const description = move['desc'] || move['shortDesc'];
+function moveInfo(move, gen) {
+  const accString = move['accuracy'] === true ? '—' : move['accuracy'];
+  const priorityString = move['priority'] === 0 ? '' : `\n**Priority**: ${move['priority'] > 0 ? '+' : ''}${move['priority']}`;
+  const targetTypes = {
+    'normal': 'Any adjacent Pokémon',
+    'allAdjacentFoes': 'All adjacent opponents',
+    'self': 'Self',
+    'any': 'Any Pokémon',
+    'adjacentAllyOrSelf': 'Adjacent ally or self',
+    'allyTeam': 'Ally Team',
+    'adjacentAlly': 'Any adjacent ally',
+    'allySide': 'Ally side',
+    'allAdjacent': 'All adjacent Pokémon',
+    'scripted': 'Special targeting',
+    'all': 'Field',
+    'randomNormal': 'Random adjacent opponent',
+    'allies': 'All allies',
+    'adjacentFoe': 'Any adjacent opponent',
+    'foeSide': 'Opponent\'s side',
+  };
 
-  if(move.priority !== 0) {
-    fields.push({
-      name: 'Priority',
-      value: move['priority'],
-      inline: true
-    });
-  }
-
-  if(verbose) {
-    const targetTypes = {
-      'normal': 'Any adjacent Pokémon',
-      'allAdjacentFoes': 'All adjacent opponents',
-      'self': 'Self',
-      'any': 'Any Pokémon',
-      'adjacentAllyOrSelf': 'Adjacent ally or self',
-      'allyTeam': 'Ally Team',
-      'adjacentAlly': 'Any adjacent ally',
-      'allySide': 'Ally side',
-      'allAdjacent': 'All adjacent Pokémon',
-      'scripted': 'Special targeting',
-      'all': 'Field',
-      'randomNormal': 'Random adjacent opponent',
-      'allies': 'All allies',
-      'adjacentFoe': 'Any adjacent opponent',
-      'foeSide': 'Opponent\'s side',
-    };
-    fields.push({
-      name: 'Targets',
-      value: targetTypes[move['target']],
-      inline: true
-    });
-    fields.push({
-      name: 'Introduced',
-      value: `Generation ${move['gen']}`,
-      inline: true
-    });
-  }
-
-  fields.push({name: 'Move Flags', value: '\u200b'});
+  let flagString = '';
 
   if(move['flags']['bullet']) {
-    fields.push({
-      name: 'Artillery',
-      value: 'Does not affect Bulletproof Pokémon.',
-      inline: true
-    });
+    flagString += `\n**Artillery**: Does not affect Bulletproof Pokémon.`;
   }
   if(!move['flags']['protect']) {
-    fields.push({
-      name: 'Protect',
-      value: 'Bypasses Protect-like moves.',
-      inline: true,
-    });
+    flagString += `\n**Protect**: Bypasses Protect-like moves.`;
   }
   if(move['flags']['mirror']) {
-    fields.push({
-      name: 'Mirror',
-      value: 'Copied by Mirror Move.',
-      inline: true,
-    });
+    flagString += `\n**Mirror**: Copied by Mirror Move.`;
   }
   if(move['flags']['bypasssub']) {
-    fields.push({
-      name: 'Authentic',
-      value: 'Bypasses substitute.',
-      inline: true,
-    });
+    flagString += `\n**Authentic**: Bypasses substitute.`;
   }
   if(move['flags']['bite']) {
-    fields.push({
-      name: 'Bite',
-      value: 'Boosted by Strong Jaw.',
-      inline: true,
-    });
+    flagString += `\n**Bite**: Boosted by Strong Jaw.`;
   }
   if(move['flags']['charge']) {
-    fields.push({
-      name: 'Charge',
-      value: 'Has a charging turn.',
-      inline: true,
-    });
+    flagString += `\n**Charge**: Has a charging turn.`;
   }
   if(move['flags']['contact']) {
-    fields.push({
-      name: 'Contact',
-      value: 'Makes contact.',
-      inline: true,
-    });
+    flagString += `\n**Contact**: Makes contact.`;
   } else {
-    fields.push({
-      name: 'Contact',
-      value: 'Does not make contact.',
-      inline: true,
-    });
+    flagString += `\n**Contact**: Does not make contact.`;
   }
   if(move['flags']['dance']) {
-    fields.push({
-      name: 'Dance',
-      value: 'Triggers Dancer.',
-      inline: true,
-    });
+    flagString += `\n**Dance**: Triggers Dancer.`;
   }
   if(move['flags']['defrost']) {
-    fields.push({
-      name: 'Defrost',
-      value: 'Thaws the user if frozen.',
-      inline: true,
-    });
+    flagString += `\n**Defrost**: Thaws the user if frozen.`;
   }
   if(move['flags']['distance'] && gens.data[gen].num >= 5 && gens.data[gen].num <= 6) {
-    fields.push({
-      name: 'Distance',
-      value: 'Targets any Pokémon in a Triple Battle.',
-      inline: true,
-    });
+    flagString += `\n**Distance**: Targets any Pokémon in a Triple Battle.`;
   }
   if(move['flags']['gravity']) {
-    fields.push({
-      name: 'Gravity',
-      value: 'Cannot be selected under Gravity.',
-      inline: true,
-    });
+    flagString += `\n**Gravity**: Cannot be selected under Gravity.`;
   }
   if(move['flags']['heal']) {
-    fields.push({
-      name: 'Heal',
-      value: 'Cannot be selected under Heal Block.',
-      inline: true,
-    });
+    flagString += `\n**Heal**: Cannot be selected under Heal Block.`;
   }
+  // TODO: reconsider. why is this in a comp oriented bot.
   if(move['flags']['nonsky'] && gens.data[gen].num === 6) {
-    fields.push({
-      name: 'Non-Sky',
-      value: 'Cannot be selected in a Sky Battle.',
-      inline: true,
-    });
+    flagString += `\n**Non-Sky**: Cannot be selected in a Sky Battle.`;
   }
   if(move['flags']['powder']) {
-    fields.push({
-      name: 'Powder',
-      value: 'Fails against Grass-types, Overcoat, and Safety Goggles.',
-      inline: true,
-    });
+    flagString += `\n**Powder**: Fails against Grass-types, Overcoat, and Safety Goggles.`;
   }
   if(move['flags']['pulse']) {
-    fields.push({
-      name: 'Pulse',
-      value: 'Boosted by Mega Launcher.',
-      inline: true,
-    });
+    flagString += `\n**Pulse**: Boosted by Mega Launcher.`;
   }
   if(move['flags']['punch']) {
-    fields.push({
-      name: 'Punch',
-      value: 'Boosted by Iron Fist.',
-      inline: true,
-    });
+    flagString += `\n**Punch**: Boosted by Iron Fist.`;
   }
   if(move['flags']['recharge']) {
-    fields.push({
-      name: 'Recharge',
-      value: 'Has a recharge turn.',
-      inline: true,
-    });
+    flagString += `\n**Recharge**: Has a recharge turn.`;
   }
   if(move['flags']['reflectable']) {
-    fields.push({
-      name: 'Reflectable',
-      value: 'Affected by Magic Coat and Magic Bounce.',
-      inline: true,
-    });
+    flagString += `\n**Reflectable**: Affected by Magic Coat and Magic Bounce.`;
   }
   if(move['flags']['slicing']) {
-    fields.push({
-      name: 'Slicing',
-      value: 'Boosted by Sharpness.',
-      inline: true,
-    });
+    flagString += `\n**Slicing**: Boosted by Sharpness.`;
   }
   if(move['flags']['snatch']) {
-    fields.push({
-      name: 'Snatch',
-      value: 'Affected by Snatch.',
-      inline: true,
-    });
+    flagString += `\n**Snatch**: Affected by Snatch.`;
   }
   if(move['flags']['sound']) {
-    fields.push({
-      name: 'Sound',
-      value: 'Does not affect Soundproof.',
-      inline: true,
-    });
+    flagString += `\n**Sound**: Does not affect Soundproof.`;
   }
   if(move['flags']['wind']) {
-    fields.push({
-      name: 'Wind',
-      value: 'Triggers Wind Power and Wind Rider.',
-      inline: true,
-    });
+    flagString += `\n**Wind**: Triggers Wind Power and Wind Rider.`;
   }
 
   return {
-    embeds: [buildEmbed({
-      title,
-      description,
-      color: colours.types[toID(move.type)],
-      fields
-    })],
-    components: [{
-      type: MessageComponentTypes.ACTION_ROW,
-      components: [{
-        type: MessageComponentTypes.BUTTON,
-        custom_id: `${move['id']}|${gen}|${!verbose ? 'true' : ''}|Move`,
-        style: ButtonStyleTypes.SECONDARY,
-        label: !verbose ? 'Show More' : 'Show Less',
-      }],
-    }],
+    flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+    components: [
+      {
+        type: MessageComponentTypes.CONTAINER,
+        id: componentIDs.ROOT,
+        accent_color: colours.types[toID(move.type)],
+        components: [
+          {
+            type: MessageComponentTypes.TEXT_DISPLAY,
+            content: `# Move: ${move['name']}\n${move['desc']}\n\n**Type**: ${move['type']}\n**Category**: ${move['category']}\n**Power**: ${move['basePower']}\n**Accuracy**: ${accString}\n**PP**: ${move['pp']} (max. ${move['pp'] * 1.6})${priorityString}\n**Targets**: ${targetTypes[move['target']]}${makeGenString(move, gen)}\n## Move Flags${flagString}`
+          }
+        ]
+      }
+    ]
   };
 }
 

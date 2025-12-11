@@ -1,58 +1,51 @@
 import { ButtonStyleTypes, InteractionResponseFlags, MessageComponentTypes } from 'discord-interactions';
 
 import { buildEmbed } from '#utils/embed-builder';
+import gens from '#utils/gen-db';
 
-function itemInfo(item, gen, verbose) {
-  const title = `Item: ${item['name']}`;
-  const description = item['desc'];
-  
-  const fields = [];
+import { componentIDs } from './component-index.js';
 
-  if(verbose) {
+function getRecentGenInfo(item, gen) {
+  if(gens.data[gen].num < 4) {
+    return '';
+  } else {
+    let result = `\n\n**Fling**: Has ${item['fling']['basePower']} Power`;
+    const flingStatus = item['fling']['status'] || item['fling']['volatileStatus'];
+    const flingEffectNames = {
+      'flinch': 'flinches',
+      'brn': 'burns',
+      'par': 'paralyzes',
+      'psn': 'poisons',
+      'tox': 'badly poisons'
+    };
+    if(flingStatus) {
+      result += ` and ${flingEffectNames[flingStatus]} the target.`;
+    } else {
+      result += '.';
+    }
     if(item['naturalGift']) {
-      fields.push({
-        'name': 'Natural Gift',
-        'value':`${item['naturalGift']['basePower']} Power ${item['naturalGift']['type']}-type.`,
-      });
+      result += `\n**Natural Gift**: Has ${item['naturalGift']['basePower']} Power and is ${item['naturalGift']['type']}-type when this Item is held.`
     }
-    if(item['fling']) {
-      const flingStatus = item['fling']['status'] || item['fling']['volatileStatus'];
-      const statusNames = {
-        'flinch': 'Flinches',
-        'brn': 'Burns',
-        'par': 'Paralyzes',
-        'psn': 'Poisons',
-        'tox': 'Badly Poisons'
-      };
-      fields.push({
-        'name': 'Fling',
-        'value': `${item['fling']['basePower']} Power${flingStatus ? (', ' + statusNames[flingStatus] + ' the target.') : ''}`,
-        'inline': true,
-      });
-    }
-
-    fields.push({
-      'name': 'Introduced',
-      'value': `Generation ${item['gen']}`,
-      'inline': true,
-    });
+    return result;
   }
+}
 
+function itemInfo(item, gen) {
   return {
-    embeds: [buildEmbed({
-      title,
-      description,
-      fields,
-    })],
-    components: [{
-      type: MessageComponentTypes.ACTION_ROW,
-      components: [{
-        type: MessageComponentTypes.BUTTON,
-        custom_id: `${item['id']}|${gen}|${!verbose ? 'true' : ''}|Item`,
-        style: ButtonStyleTypes.SECONDARY,
-        label: !verbose ? 'Show More' : 'Show Less',
-      }],
-    }],
+    flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+    components: [
+      {
+        type: MessageComponentTypes.CONTAINER,
+        id: componentIDs.ROOT,
+        accent_color: 0x5F32AB,
+        components: [
+          {
+            type: MessageComponentTypes.TEXT_DISPLAY,
+            content: `# Item: ${item['name']}\n${item['desc']}${getRecentGenInfo(item, gen)}`
+          }
+        ]
+      }
+    ]
   };
 }
 
