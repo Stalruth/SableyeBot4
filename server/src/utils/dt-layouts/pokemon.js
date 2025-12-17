@@ -72,7 +72,7 @@ function pokemonInfo(pokemon, gen, page) {
       pokemon.baseStats.spe
     ];
     items.push(`**${statNames.join('/')} (BST)**: ${stats.join('/')} (${stats.reduce((acc, cur) => acc + cur, 0)})`);
-    items.push(`**Weight (Low Kick BP)**: ${pokemon['weightkg']} (${lowKickPower(pokemon['weightkg'])})`);
+    items.push(`**Weight**: ${pokemon['weightkg'].toFixed(1)}kg (**Low Kick**: ${lowKickPower(pokemon['weightkg'])} BP)`);
     if(pokemon['requiredItems']) {
       items.push(`This Pokémon will always be holding${pokemon['requiredItems'].length > 1 ? ' one of' : ''} the ${pokemon['requiredItems'].join(', ')}`);
     }
