@@ -9,19 +9,24 @@ function getRecentGenInfo(item, gen) {
   if(gens.data[gen].num < 4) {
     return '';
   } else {
-    let result = `\n\n**Fling**: Has ${item['fling']['basePower']} Power`;
-    const flingStatus = item['fling']['status'] || item['fling']['volatileStatus'];
-    const flingEffectNames = {
-      'flinch': 'flinches',
-      'brn': 'burns',
-      'par': 'paralyzes',
-      'psn': 'poisons',
-      'tox': 'badly poisons'
-    };
-    if(flingStatus) {
-      result += ` and ${flingEffectNames[flingStatus]} the target.`;
+    let result = '\n\n';
+    if(item['fling']) {
+      result += `**Fling**: Has ${item['fling']['basePower']} Power`;
+      const flingStatus = item['fling']['status'] || item['fling']['volatileStatus'];
+      const flingEffectNames = {
+        'flinch': 'flinches',
+        'brn': 'burns',
+        'par': 'paralyzes',
+        'psn': 'poisons',
+        'tox': 'badly poisons'
+      };
+      if(flingStatus) {
+        result += ` and ${flingEffectNames[flingStatus]} the target.`;
+      } else {
+        result += '.';
+      }
     } else {
-      result += '.';
+      result += 'This item cannot be used with **Fling**.';
     }
     if(item['naturalGift']) {
       result += `\n**Natural Gift**: Has ${item['naturalGift']['basePower']} Power and is ${item['naturalGift']['type']}-type when this Item is held.`
