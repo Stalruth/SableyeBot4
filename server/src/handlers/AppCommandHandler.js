@@ -87,7 +87,6 @@ async function onApplicationCommand(req, res) {
 async function onAutocomplete(req, res) {
   const info = getargs(req.body);
   const commandPath = [req.body.data?.name, ...info.subcommand];
-  console.log(info.params[info.focused]);
 
   function echo() {
     return {
@@ -105,7 +104,8 @@ async function onAutocomplete(req, res) {
       guildId: req.body.guild_id,
       id: req.body.id,
       command: `${[0,1,2].map(e=>commandPath[e] ?? null).join(' ').trim()}`,
-      params: info.params
+      params: info.params,
+      focused: info.focused
     }));
 
     const commandData = getCommandData(commandPath);
