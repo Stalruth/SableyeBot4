@@ -168,7 +168,7 @@ function moveInfo(move, gen) {
         components: [
           {
             type: MessageComponentTypes.TEXT_DISPLAY,
-            content: `# Move: ${move['name']}\n${move['desc']}\n\n**Type**: ${move['type']}\n**Category**: ${move['category']}\n**Power**: ${move['basePower']}\n**Accuracy**: ${accString}\n**PP**: ${move['pp']} (max. ${move['pp'] * 1.6})${priorityString}\n**Targets**: ${targetTypes[move['target']]}${makeGenString(move, gen)}\n## Move Flags${flagString}`
+            content: `# Move: ${move['name']}\n${move['desc']}\n\n**Type**: ${move['type']}\n**Category**: ${move['category']}\n**Power**: ${move['basePower']}\n**Accuracy**: ${accString}\n**PP**: ${move['pp']} (max. ${Math.floor(move['pp'] * 1.6)})${priorityString}\n**Targets**: ${targetTypes[move['target']]}${makeGenString(move, gen)}\n## Move Flags${flagString}`
           }
         ]
       }
