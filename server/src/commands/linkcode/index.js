@@ -21,10 +21,10 @@ const definition = {
 async function process(interaction, respond) {
   const { params } = getargs(interaction);
 
-  console.log(JSON.stringify(interaction.member), JSON.stringify(params.user));
+  console.log(JSON.stringify(interaction.member?.user?.id || interaction.user.id), JSON.stringify(params.user));
 
   const linkingCode = getLinkingCode([
-    interaction.member.user.id,
+    interaction.member?.user?.id || interaction.user.id,
     params.user
   ]);
 
