@@ -227,14 +227,14 @@ async function process(interaction, respond) {
   }
 
   const names = {
-    0: 'Immune',
-    0.125: 'Resists (0.125x)',
-    0.25: 'Resists (0.25x)',
-    0.5: 'Resists (0.5x)',
+    0: 'No effect',
+    0.125: 'Almost Ineffective (0.125x)',
+    0.25: 'Almost Ineffective',
+    0.5: 'Not very effective',
     1: 'Neutral damage',
-    2: 'Weak (2x)',
-    4: 'Weak (4x)',
-    8: 'Weak (8x)',
+    2: 'Super Effective',
+    4: 'Extremely Effective',
+    8: 'Extremely Effective (8x)',
   };
 
   for(const i of [0, 0.125, 0.25, 0.5, 1, 2, 4, 8]) {

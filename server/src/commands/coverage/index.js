@@ -211,10 +211,10 @@ async function process(interaction, respond) {
 
   const fields = [];
   const fieldNames = {
-    '0': 'Does not hit',
-    '0.5': 'Hits for 0.5x',
-    '1': 'Hits for 1x',
-    '2': 'Hits for 2x',
+    '0': 'Has no effect',
+    '0.5': 'Not very effective (0.5x)',
+    '1': 'Effective',
+    '2': 'Super Effective (2x)',
   };
   for (const i of ['0', '0.5', '1', '2']) {
     if (results[i]) {
