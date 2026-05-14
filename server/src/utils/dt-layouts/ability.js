@@ -16,7 +16,7 @@ function abilityInfo(ability) {
         components: [
           {
             type: MessageComponentTypes.TEXT_DISPLAY,
-            content: `# Ability: ${ability['name']}\n${ability['desc']}`
+            content: `# Ability: ${ability['name']}\n${ability['desc'] || ability['shortDesc']}`
           }
         ]
       }

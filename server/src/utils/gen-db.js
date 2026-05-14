@@ -1,5 +1,6 @@
 import Data from '@pkmn/data';
 import { Dex } from '@pkmn/sim';
+import { ModdedDex } from '@pkmn/mods';
 
 const existedEver = (d) => {
   if (!d.exists) return false;
@@ -53,6 +54,10 @@ const genNames = [
     value: 'gen9',
   },
   {
+    name: 'Pokémon Champions',
+    value: 'champions',
+  },
+  {
     name: 'National Dex',
     value: 'natdex',
   },
@@ -102,6 +107,7 @@ const genData = {
     delete genData['gen9'];
     return genData['gen9'] = getGen(Dex, 9, existsInGen);
   },
+  'champions': new Data.Generations(new ModdedDex(Dex.mod('champions', await import('@pkmn/mods/champions')))).get(9),
   get ['natdex']() {
     delete genData['natdex'];
     return genData['natdex'] = getGen(Dex, 9, existedEver);
