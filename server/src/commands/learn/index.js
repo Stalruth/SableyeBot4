@@ -76,7 +76,7 @@ async function learnPokemon(data, pokemon, restriction, gen) {
     });
   }
 
-  const teraRow = data.num !== 9 ? [] : [
+  const teraRow = (data.num !== 9 || data.dex.baseMod !== 'base') ? [] : [
     {
       type: MessageComponentTypes.ACTION_ROW,
       components: [
