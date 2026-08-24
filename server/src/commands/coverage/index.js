@@ -91,7 +91,7 @@ async function process(interaction, respond) {
     });
   }
 
-  const data = gens.data[args.gen ? args.gen : 'natdex'];
+  const data = gens.data[args.gen ? args.gen : 'championsnatdex'];
 
   const pokemon = data.species.get(args.pokemon ?? '');
 
@@ -248,8 +248,8 @@ async function process(interaction, respond) {
 
 const autocomplete = {
   pokemon: getAutocompleteHandler(completePokemon, 'pokemon'),
-  types: getAutocompleteHandler(getMultiComplete(gens.data['natdex'].types, completeType, {canNegate: false, canRepeat: false}), 'types'),
-  moves: getAutocompleteHandler(getMultiComplete(gens.data['natdex'].moves, completeAttack, {canNegate: false, canRepeat: false}), 'moves'),
+  types: getAutocompleteHandler(getMultiComplete(gens.data['championsnatdex'].types, completeType, {canNegate: false, canRepeat: false}), 'types'),
+  moves: getAutocompleteHandler(getMultiComplete(gens.data['championsnatdex'].moves, completeAttack, {canNegate: false, canRepeat: false}), 'moves'),
 };
 
 export default {

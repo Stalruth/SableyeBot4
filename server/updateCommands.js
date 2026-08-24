@@ -4,8 +4,24 @@ import { sableye } from './src/sableye.js';
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const APP_ID = process.env.APP_ID;
 const GUILD_ID = process.env.GUILD_ID;
+const ACTIVITY_COMMAND_ID = process.env.ACTIVITY_COMMAND_ID;
 
 function getOptions(token) {
+  const commandList = getCommandDefinitions();
+  if(ACTIVITY_COMMAND_ID) {
+    commandList.push({
+      'id': ACTIVITY_COMMAND_ID,
+      'default_member_permissions': null,
+      'type': 4,
+      'name': 'launch',
+      'description': 'Launch an Activity',
+      'dm_permission': true,
+      'contexts': [0,1,2],
+      'integaation_types': [0,1],
+      'nsfw': false,
+      'handler': 2
+    });
+  }
   return {
     method: 'PUT',
     headers: {

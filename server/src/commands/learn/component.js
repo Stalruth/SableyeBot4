@@ -24,7 +24,7 @@ async function process(interaction, respond) {
 
 async function processCategory(interaction, respond) {
   const [pokemonId, category, gen, restrictionId] = interaction.data.custom_id.split('|');
-  const data = gens.data[gen] ?? gens.data['natdex'];
+  const data = gens.data[gen] ?? gens.data['championsnatdex'];
   const pokemon = data.species.get(pokemonId);
   const restriction = restrictionId ? undefined : restrictionId;
   const components = getComponentsById(interaction.message, componentIDs);
@@ -149,7 +149,7 @@ function reformatMovelist(data, types, movelist, teraType) {
 }
 
 function processTera(interaction, respond) {
-  const data = gens.data['natdex'];
+  const data = gens.data['championsnatdex'];
   const components = getComponentsById(interaction.message, componentIDs);
   const title = components.TITLE;
   const pokemon = data.species.get(title.content.slice(2, title.content.lastIndexOf('\'')));

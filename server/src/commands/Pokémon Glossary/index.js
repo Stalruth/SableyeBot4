@@ -17,7 +17,7 @@ const definition = {
 async function process(interaction, respond) {
   const contents = [];
   const results = new Set();
-  const genData = gens.data['natdex'];
+  const genData = gens.data['championsnatdex'];
 
   for(const message of Object.values(interaction.data.resolved.messages)) {
     const searchSpace = [
@@ -73,7 +73,7 @@ async function process(interaction, respond) {
 
   if(results.size === 1) {
     const data = [...results][0];
-    const output = dt[data.effectType](data, 'natdex');
+    const output = dt[data.effectType](data, 'championsnatdex');
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: Object.assign(output, {

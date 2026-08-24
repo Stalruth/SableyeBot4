@@ -32,7 +32,7 @@ const definition = {
 async function process(interaction, respond) {
   const args = getargs(interaction);
   const { params } = args;
-  const gen = params.gen ?? 'natdex';
+  const gen = params.gen ?? 'championsnatdex';
 
   const data = gens.data[gen];
 
@@ -62,7 +62,7 @@ async function process(interaction, respond) {
   if(results.length === 1) {
     return respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: dt[results[0].effectType](results[0], params.gen ?? 'natdex'),
+      data: dt[results[0].effectType](results[0], params.gen ?? 'championsnatdex'),
     });
   }
 
@@ -79,7 +79,7 @@ async function process(interaction, respond) {
               id: componentIDs.DISAM_BUTTONS,
               components: results.map(entity => ({
                 type: MessageComponentTypes.BUTTON,
-                custom_id: `${results[0].id}|${params.gen ?? 'natdex'}||${entity.effectType}`,
+                custom_id: `${results[0].id}|${params.gen ?? 'championsnatdex'}||${entity.effectType}`,
                 style: ButtonStyleTypes.SECONDARY,
                 label: entity.effectType
               }))

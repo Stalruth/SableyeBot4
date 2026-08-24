@@ -102,7 +102,7 @@ const definition = {
 async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
-  const data = gens.data[args.gen ? args.gen : 'natdex'];
+  const data = gens.data[args.gen ? args.gen : 'championsnatdex'];
 
   if(!args.pokemon && !args.types) {
     return await respond({
@@ -296,7 +296,7 @@ async function process(interaction, respond) {
 
 const autocomplete = {
   'pokemon': getAutocompleteHandler(completePokemon, 'pokemon'),
-  'types': getAutocompleteHandler(getMultiComplete(gens.data['natdex'].types, completeType, {canNegate: false, canRepeat: false}), 'types'),
+  'types': getAutocompleteHandler(getMultiComplete(gens.data['championsnatdex'].types, completeType, {canNegate: false, canRepeat: false}), 'types'),
 };
 
 export default {

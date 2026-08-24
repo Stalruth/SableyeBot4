@@ -9,7 +9,7 @@ import { filterFactory, applyFilters } from './pokemon-filters.js';
 
 import { componentIDs } from './component-index.js';
 
-const natdex = gens.data['natdex'];
+const natdex = gens.data['championsnatdex'];
 
 function paginate(array, limit) {
   const results = [''];
@@ -208,7 +208,7 @@ const definition = {
 async function process(interaction, respond) {
   const args = getargs(interaction).params;
 
-  const gen = args.gen ?? 'natdex';
+  const gen = args.gen ?? 'championsnatdex';
   const data = gens.data[gen];
   const filters = [];
   const isVgc = !(args['transfer-moves'] ?? (gen !== 'gen9'));
@@ -503,7 +503,9 @@ async function process(interaction, respond) {
     'gen7': 'Generation 7',
     'gen8': 'Generation 8',
     'gen9': 'Generation 9',
-    'natdex': 'National Pokédex'
+    'gen9natdex': 'S/V National Pokédex',
+    'champions': 'Pokémon Champions',
+    'championsnatdex': 'Champions National Pokédex'
   };
   let notes = "### Notes";
   notes += `\n- ${genNumbers[gen]}`;

@@ -76,7 +76,7 @@ async function learnPokemon(data, pokemon, restriction, gen) {
     });
   }
 
-  const teraRow = (data.num !== 9 || data.dex.baseMod !== 'base') ? [] : [
+  const teraRow = (data.num === 9 && data.dex.modid !== 'champions') ? [
     {
       type: MessageComponentTypes.ACTION_ROW,
       components: [
@@ -94,7 +94,7 @@ async function learnPokemon(data, pokemon, restriction, gen) {
         }
       ],
     },
-  ];
+  ] : [];
 
   if(allLength > threshold) {
     // split
@@ -215,7 +215,7 @@ async function learnPokemonMove(data, pokemon, moves, restriction, gen) {
 async function process(interaction, respond) {
   const args = getargs(interaction).params;
   const vgcNotes = [,,,,,'Pentagon','Plus','Galar','Paldea'];
-  const data = gens.data[args.gen ? args.gen : 'natdex'];
+  const data = gens.data[args.gen ? args.gen : 'championsnatdex'];
   const pokemon = data.species.get(Data.toID(args.pokemon));
 
   if(!pokemon?.exists) {
@@ -279,7 +279,7 @@ async function process(interaction, respond) {
 
 const autocomplete = {
   pokemon: getAutocompleteHandler(completePokemon, 'pokemon'),
-  moves: getAutocompleteHandler(getMultiComplete(gens.data['natdex'].moves, completeMove, {canNegate: false, canRepeat: false}), 'moves'),
+  moves: getAutocompleteHandler(getMultiComplete(gens.data['championsnatdex'].moves, completeMove, {canNegate: false, canRepeat: false}), 'moves'),
 };
 
 export default {

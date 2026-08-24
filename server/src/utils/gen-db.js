@@ -54,12 +54,16 @@ const genNames = [
     value: 'gen9',
   },
   {
+    name: 'National Dex - Scarlet/Violet',
+    value: 'gen9natdex'
+  },
+  {
     name: 'Pokémon Champions',
     value: 'champions',
   },
   {
-    name: 'National Dex',
-    value: 'natdex',
+    name: 'National Dex - Pokémon Champions',
+    value: 'championsnatdex',
   },
 ];
 
@@ -107,11 +111,12 @@ const genData = {
     delete genData['gen9'];
     return genData['gen9'] = getGen(Dex, 9, existsInGen);
   },
-  'champions': new Data.Generations(new ModdedDex(Dex.mod('champions', await import('@pkmn/mods/champions')))).get(9),
-  get ['natdex']() {
-    delete genData['natdex'];
-    return genData['natdex'] = getGen(Dex, 9, existedEver);
+  get ['gen9natdex']() {
+    delete genData['gen9natdex'];
+    return genData['gen9natdex'] = getGen(Dex, 9, existedEver);
   },
+  'champions': new Data.Generations(new ModdedDex(Dex.mod('champions', await import('@pkmn/mods/champions')))).get(9),
+  'championsnatdex': new Data.Generations(new ModdedDex(Dex.mod('champions', await import('@pkmn/mods/champions'))), existedEver).get(9),
 }
 
 export default {names: genNames, data: genData};

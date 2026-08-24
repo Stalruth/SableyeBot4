@@ -28,7 +28,7 @@ const decodeSource = (source) => {
 };
 
 function isGen9SV(data) {
-  return data.num === 9 && data !== gens.data['natdex'];
+  return data.num === 9 && data !== gens.data['championsnatdex'];
 }
 
 async function listMoves(data, pokemon, restriction) {

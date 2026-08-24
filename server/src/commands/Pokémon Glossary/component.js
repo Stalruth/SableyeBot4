@@ -13,9 +13,9 @@ async function process(interaction, respond) {
 
   const [ effectType, id ] = interaction.data.values?.[0].split('|') ?? [];
 
-  const effect = getData(gens.data['natdex'], id).filter(e=>e.effectType === effectType)[0];
+  const effect = getData(gens.data['championsnatdex'], id).filter(e=>e.effectType === effectType)[0];
 
-  const result = dt[effectType](effect, 'natdex');
+  const result = dt[effectType](effect, 'championsnatdex');
 
   result['components'][0]['components'].unshift(components.DISAM_DROPDOWN);
 

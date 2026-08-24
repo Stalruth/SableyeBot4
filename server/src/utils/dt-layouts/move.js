@@ -11,7 +11,7 @@ function makeGenString(move, gen) {
   if (gens.data[gen].num === 7) {
     let result = '\n## Gen 7 data';
     if (move['isZ']) {
-      result += `\n**Z Crystal**: ${gens.data.natdex.items.get(move['isZ'])['name']}`;
+      result += `\n**Z Crystal**: ${gens.data.championsnatdex.items.get(move['isZ'])['name']}`;
     } else {
       result += `\n**Z Move**: `
       if (!move['zMove']) {

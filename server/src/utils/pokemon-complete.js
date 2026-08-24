@@ -6,7 +6,7 @@ import gens from '#utils/gen-db';
 import getargs from '#utils/discord-getarg';
 
 function graphGetter(type) {
-  const graph = Array.from(gens.data['natdex'][type])
+  const graph = Array.from(gens.data['championsnatdex'][type])
       .map(e=>e.id)
       .sort();
   return graph;
@@ -23,7 +23,7 @@ const graphs = {
   },
   get ['attacks']() {
     delete graphs['attacks'];
-    return graphs['attacks'] = Array.from(gens.data['natdex']['moves'])
+    return graphs['attacks'] = Array.from(gens.data['championsnatdex']['moves'])
       .filter(e=>e.category !== 'Status')
       .map(e=>e.id)
       .sort();
@@ -66,7 +66,7 @@ function getMatcher(graphType, effectType) {
         .filter(e=>e.includes(id))
         .map((e,i) => {
           return {
-            name: gens.data['natdex'][effectType ?? graphType].get(e).name,
+            name: gens.data['championsnatdex'][effectType ?? graphType].get(e).name,
             value: e,
           };
         });
