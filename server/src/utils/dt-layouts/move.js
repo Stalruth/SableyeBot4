@@ -65,6 +65,17 @@ function makeGenString(move, gen) {
   return '';
 }
 
+function getPPString(move, gen) {
+  const dex = gens.data[gen].dex;
+  if(dex.currentMod === 'champions') {
+    if(move['pp'] === 1) {
+      return "1";
+    }
+    return `${4 + (move['pp'] * 4 / 5)}`;
+  }
+  return `${move['pp']} (max. ${Math.floor(move['pp'] * 1.6)})`;
+}
+
 function moveInfo(move, gen) {
   const accString = move['accuracy'] === true ? '—' : move['accuracy'];
   const priorityString = move['priority'] === 0 ? '' : `\n**Priority**: ${move['priority'] > 0 ? '+' : ''}${move['priority']}`;
@@ -168,7 +179,7 @@ function moveInfo(move, gen) {
         components: [
           {
             type: MessageComponentTypes.TEXT_DISPLAY,
-            content: `# Move: ${move['name']}\n${move['desc']}\n\n**Type**: ${move['type']}\n**Category**: ${move['category']}\n**Power**: ${move['basePower']}\n**Accuracy**: ${accString}\n**PP**: ${move['pp']} (max. ${Math.floor(move['pp'] * 1.6)})${priorityString}\n**Targets**: ${targetTypes[move['target']]}${makeGenString(move, gen)}\n## Move Flags${flagString}`
+            content: `# Move: ${move['name']}\n${move['desc']}\n\n**Type**: ${move['type']}\n**Category**: ${move['category']}\n**Power**: ${move['basePower']}\n**Accuracy**: ${accString}\n**PP**: ${getPPString(move, gen)}${priorityString}\n**Targets**: ${targetTypes[move['target']]}${makeGenString(move, gen)}\n## Move Flags${flagString}`
           }
         ]
       }

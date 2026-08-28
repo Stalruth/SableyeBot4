@@ -16,11 +16,36 @@ function lowKickPower(weight) {
   return 120;
 }
 
-function pokemonInfo(pokemon, gen, page) {
+function getBase(species) {
+  return species.dex.species.get(species.battleOnly ?? species.name);
+}
+
+function formeList(dex, species) {
+  const base = species.baseSpecies === species.name ? species : dex.species.get(species.baseSpecies);
+
+  if(!base.otherFormes) {
+    return [species];
+  }
+
+  const results = [];
+  for(let name of base.formeOrder) {
+    const forme = dex.species.get(name);
+    if(forme.battleOnly == undefined && forme.id === species.id) {
+      results.push(forme);
+    }
+    if(forme.battleOnly == species.name) {
+      results.push(forme);
+    }
+  }
+  return results;
+}
+
+function pokemonInfo(pokemon, genId, page) {
+  const gen = gens.data[genId];
   const title = `## Pokémon No. ${pokemon['num']}: ${pokemon['name']}`;
   const items = [];
 
-  if(page === 'breeding') {
+  if(page === 'breeding' && gen.dex.currentMod !== 'champions') {
     items.push(`**Egg Group${pokemon['eggGroups'].length > 1 ? 's' : ''}**: ${pokemon['eggGroups'].join(', ')}`);
 
     const genderRatio = {
@@ -44,7 +69,7 @@ function pokemonInfo(pokemon, gen, page) {
     }
   } else {
     items.push(`**Type${pokemon['types'].length > 1 ? 's' : ''}**: ${pokemon['types'].join('/')}`);
-    if(gens.data[gen].num >= 3) {
+    if(gen.num >= 3) {
       const abilities = [pokemon['abilities'][0]]
       if(pokemon['abilities'][1]) {
         abilities.push(pokemon['abilities'][1]);
@@ -58,12 +83,12 @@ function pokemonInfo(pokemon, gen, page) {
       items.push(`**${abilities.length > 1 ? 'Abilities' : 'Ability'}**: ${abilities.join(', ')}`);
     }
 
-    const statNames = ['HP', 'Atk', 'Def', ...(gens.data[gen].num <= 2 ? ['Spc'] : ['SpA', 'SpD']), 'Spe'];
+    const statNames = ['HP', 'Atk', 'Def', ...(gen.num <= 2 ? ['Spc'] : ['SpA', 'SpD']), 'Spe'];
     const stats = [
       pokemon.baseStats.hp,
       pokemon.baseStats.atk,
       pokemon.baseStats.def,
-      ...(gens.data[gen].num <= 2 ? [
+      ...(gen.num <= 2 ? [
         pokemon.baseStats.spa
       ] : [
         pokemon.baseStats.spa,
@@ -79,9 +104,25 @@ function pokemonInfo(pokemon, gen, page) {
     if(pokemon['requiredAbility']) {
       items.push(`This Pokémon will always have the Ability ${pokemon['requiredAbility']}.`);
     }
-    if(pokemon['battleOnly']) {
-      items.push(`This Pokémon only appears in battle.`);
-    }
+  }
+
+  const baseForme = getBase(pokemon);
+  const button_row = formeList(gen.dex, baseForme).map(el => ({
+    type: MessageComponentTypes.BUTTON,
+    custom_id: `${el['id']}|${genId}||Pokemon`,
+    style: ButtonStyleTypes.SECONDARY,
+    label: `${el['battleOnly'] === undefined ? el['name'] : el['forme']}`,
+    disabled: !page && pokemon['id'] == el['id']
+  }));
+
+  if(gen.dex.currentMod !== 'champions') {
+    button_row.push({
+      type: MessageComponentTypes.BUTTON,
+      custom_id: `${baseForme['id']}|${genId}|breeding|Pokemon`,
+      style: ButtonStyleTypes.SECONDARY,
+      label: 'Breeding',
+      disabled: page === 'breeding'
+    });
   }
 
   return {
@@ -98,22 +139,7 @@ function pokemonInfo(pokemon, gen, page) {
           },
           {
             type: MessageComponentTypes.ACTION_ROW,
-            components: [
-              {
-                type: MessageComponentTypes.BUTTON,
-                custom_id: `${pokemon['id']}|${gen}||Pokemon`,
-                style: ButtonStyleTypes.SECONDARY,
-                label: 'Basic Info',
-                disabled: !page
-              },
-              {
-                type: MessageComponentTypes.BUTTON,
-                custom_id: `${pokemon['id']}|${gen}|breeding|Pokemon`,
-                style: ButtonStyleTypes.SECONDARY,
-                label: 'Breeding',
-                disabled: page === 'breeding'
-              }
-            ]
+            components: button_row
           },
           {
             type: MessageComponentTypes.TEXT_DISPLAY,
