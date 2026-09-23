@@ -17,23 +17,48 @@ function lowKickPower(weight) {
 }
 
 function getBase(species) {
-  return species.dex.species.get(species.battleOnly ?? species.name);
+  // i am going to shoot zygarde in his fat fucking head
+  const battleOnly = Array.isArray(species.battleOnly) ? species.battleOnly[0] : species.battleOnly;
+  return species.dex.species.get(battleOnly ?? species.name);
+}
+
+function findOtherBases(dex, base) {
+  const bases = [base.name];
+  let newBases = true;
+
+  while(newBases) {
+    newBases = false;
+    for(let name of base.formeOrder.filter((ele, ind, arr) => arr.indexOf(ele) === ind)) {
+      const forme = dex.species.get(name);
+      if(Array.isArray(forme.battleOnly) && forme.battleOnly.includes(base.name)) {
+        for(let baseName of forme.battleOnly) {
+          if(!bases.includes(baseName)) {
+            bases.push(baseName);
+            newBases = true;
+          }
+        }
+      }
+    }
+  }
+  return bases;
 }
 
 function formeList(dex, species) {
   const base = species.baseSpecies === species.name ? species : dex.species.get(species.baseSpecies);
 
-  if(!base.otherFormes) {
+  if(!base.formeOrder) {
     return [species];
   }
 
   const results = [];
-  for(let name of base.formeOrder) {
+  const otherBases = findOtherBases(dex, base)
+  for(let name of base.formeOrder.filter((ele, ind, arr) => arr.indexOf(ele) === ind)) {
     const forme = dex.species.get(name);
-    if(forme.battleOnly == undefined && forme.id === species.id) {
+    if(forme.battleOnly == undefined && otherBases.includes(forme.name)) {
       results.push(forme);
     }
-    if(forme.battleOnly == species.name) {
+    // Second condition is for Zygarde-Complete
+    if(otherBases.includes(forme.battleOnly) || forme.battleOnly?.filter(el => otherBases.includes(el))?.length) {
       results.push(forme);
     }
   }
