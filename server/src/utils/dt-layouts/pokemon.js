@@ -58,7 +58,7 @@ function formeList(dex, species) {
       results.push(forme);
     }
     // Second condition is for Zygarde-Complete
-    if(otherBases.includes(forme.battleOnly) || forme.battleOnly?.filter(el => otherBases.includes(el))?.length) {
+    if(otherBases.includes(forme.battleOnly) || (Array.isArray(forme.battleOnly) && forme.battleOnly.filter(el => otherBases.includes(el))?.length)) {
       results.push(forme);
     }
   }
