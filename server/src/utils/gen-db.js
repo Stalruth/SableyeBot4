@@ -115,8 +115,8 @@ const genData = {
     delete genData['gen9natdex'];
     return genData['gen9natdex'] = getGen(Dex, 9, existedEver);
   },
-  'champions': new Data.Generations(new ModdedDex(Dex.mod('champions', await import('@pkmn/mods/champions')))).get(9),
-  'championsnatdex': new Data.Generations(new ModdedDex(Dex.mod('champions', await import('@pkmn/mods/champions'))), existedEver).get(9),
+  'champions': new Data.Generations(new ModdedDex(Dex.mod('champions', await import('#utils/champions-mod/index')))).get(9),
+  'championsnatdex': new Data.Generations(new ModdedDex(Dex.mod('champions', await import('#utils/champions-mod/index'))), existedEver).get(9),
 }
 
 export default {names: genNames, data: genData};

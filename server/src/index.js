@@ -5,7 +5,7 @@ import express from 'express';
 import Sentry from '@sentry/node';
 import Tracing from '@sentry/tracing';
 
-import { sableye } from './src/sableye.js';
+import { sableye } from './sableye.js';
 
 const PUBLIC_KEY = process.env.PUBLIC_KEY;
 const PORT = process.env.PORT;

@@ -1,0 +1,1 @@
+{"compilerOptions":{"allowJs":true,"outDir":"./build","rootDir":"./src"},"include":["./src/**/*"]}
