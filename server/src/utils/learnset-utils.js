@@ -32,11 +32,15 @@ function isGen9SV(data) {
 }
 
 async function listMoves(data, pokemon, restriction) {
-  const learnables = await data.learnsets.learnable(pokemon.id, restriction);
+  const learnables = await data.learnsets.learnable(pokemon.id, restriction || data);
 
   const learnsets = [];
-  for await (const l of data.learnsets.all(pokemon)) {
-    learnsets.push(l);
+  if(data.dex.currentMod === 'champions') {
+    learnsets.push(await data.learnsets.get(pokemon.id));
+  } else {
+    for await (const l of data.learnsets.all(pokemon)) {
+      learnsets.push(l);
+    }
   }
 
   return Object.keys(learnables)
