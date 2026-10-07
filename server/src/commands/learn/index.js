@@ -6,7 +6,7 @@ import { buildEmbed, buildError } from '#utils/embed-builder';
 import gens from '#utils/gen-db';
 import { decodeSource, listMoves, getPrevo, checkMove } from '#utils/learnset-utils';
 import colours from '#utils/pokemon-colours';
-import { completePokemon, completeMove, getMultiComplete, getAutocompleteHandler } from '#utils/pokemon-complete';
+import { completeBasePokemon, completeMove, getMultiComplete, getAutocompleteHandler } from '#utils/pokemon-complete';
 
 import { componentIDs } from './component-index.js';
 
@@ -218,7 +218,7 @@ async function process(interaction, respond) {
   const data = gens.data[args.gen ? args.gen : 'championsnatdex'];
   const pokemon = data.species.get(Data.toID(args.pokemon));
 
-  if(!pokemon?.exists) {
+  if(!pokemon?.exists || pokemon.battleOnly) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
@@ -230,7 +230,7 @@ async function process(interaction, respond) {
             components: [
               {
                 type: MessageComponentTypes.TEXT_DISPLAY,
-                content: `Could not find a Pokémon named ${args.pokemon} in the given generation.`
+                content: `Could not find a base Pokémon named ${args.pokemon} in the given generation.`
               }
             ]
           }
@@ -278,7 +278,7 @@ async function process(interaction, respond) {
 };
 
 const autocomplete = {
-  pokemon: getAutocompleteHandler(completePokemon, 'pokemon'),
+  pokemon: getAutocompleteHandler(completeBasePokemon, 'pokemon'),
   moves: getAutocompleteHandler(getMultiComplete(gens.data['championsnatdex'].moves, completeMove, {canNegate: false, canRepeat: false}), 'moves'),
 };
 

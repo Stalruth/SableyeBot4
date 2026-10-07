@@ -5,8 +5,9 @@ import { InteractionResponseType } from 'discord-interactions';
 import gens from '#utils/gen-db';
 import getargs from '#utils/discord-getarg';
 
-function graphGetter(type) {
+function graphGetter(type, f) {
   const graph = Array.from(gens.data['championsnatdex'][type])
+      .filter(f ? f : e => true)
       .map(e=>e.id)
       .sort();
   return graph;
@@ -39,6 +40,10 @@ const graphs = {
   get ['species']() {
     delete graphs['species'];
     return graphs['species'] = graphGetter('species');
+  },
+  get ['baseSpecies']() {
+    delete graphs['baseSpecies'];
+    return graphs['baseSpecies'] = graphGetter('species', e => !e.battleOnly);
   },
   get ['types']() {
     delete graphs['types'];
@@ -91,6 +96,7 @@ const getAttackMatches = getMatcher('attacks', 'moves');
 const getItemMatches = getMatcher('items');
 const getNatureMatches = getMatcher('natures');
 const getPokemonMatches = getMatcher('species');
+const getBasePokemonMatches = getMatcher('baseSpecies', 'species');
 const getTypeMatches = getMatcher('types');
 
 function getMatchSorter(query) {
@@ -191,6 +197,7 @@ const completeMove = getCompleter([getMoveMatches]);
 const completeAttack = getCompleter([getAttackMatches]);
 const completeItem = getCompleter([getItemMatches]);
 const completePokemon = getCompleter([getPokemonMatches]);
+const completeBasePokemon = getCompleter([getBasePokemonMatches]);
 const completeType = getCompleter([getTypeMatches]);
 const completeSprite = getCompleter([getSpriteMatches]);
 const completeAll = getCompleter([getAbilityMatches, getMoveMatches, getItemMatches, getNatureMatches, getPokemonMatches]);
@@ -202,6 +209,7 @@ export {
   completeAttack,
   completeItem,
   completePokemon,
+  completeBasePokemon,
   completeType,
   completeSprite,
   completeAll,
