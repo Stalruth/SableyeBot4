@@ -218,7 +218,7 @@ async function process(interaction, respond) {
   const data = gens.data[args.gen ? args.gen : 'championsnatdex'];
   const pokemon = data.species.get(Data.toID(args.pokemon));
 
-  if(!pokemon?.exists || pokemon.battleOnly) {
+  if(!pokemon?.exists || pokemon.battleOnly || pokemon.forme.endswith('Gmax')) {
     return await respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
