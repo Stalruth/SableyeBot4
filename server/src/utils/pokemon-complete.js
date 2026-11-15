@@ -43,7 +43,8 @@ const graphs = {
   },
   get ['baseSpecies']() {
     delete graphs['baseSpecies'];
-    return graphs['baseSpecies'] = graphGetter('species', e => !e.battleOnly && !e.forme.endsWith('Gmax'));
+    return graphs['baseSpecies'] = graphGetter('species',
+        e => !e.battleOnly && !e.forme.endsWith('Gmax') && e.forme !== 'Mega-Z');
   },
   get ['types']() {
     delete graphs['types'];
